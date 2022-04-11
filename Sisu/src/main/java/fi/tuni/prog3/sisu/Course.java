@@ -1,4 +1,4 @@
-package project;
+package fi.tuni.prog3.sisu;
 
 public class Course {
     private final String courseName;

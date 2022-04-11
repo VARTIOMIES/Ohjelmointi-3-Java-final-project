@@ -1,4 +1,9 @@
-package project;
+package fi.tuni.prog3.sisu;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class Degree {
     private final String id;
@@ -40,4 +45,15 @@ public class Degree {
     public String getCode() {
         return code;
     }
+
+    /*
+    public HttpClient getClient() {
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest
+                    .uri(URI.create("https://sis-tuni.funidata.fi/kori/api/modules/otm-47b7d28d-e5c3-4dd1-bbf1-2e57fe913978"))
+                    .build();
+    }
+*/
+
 }

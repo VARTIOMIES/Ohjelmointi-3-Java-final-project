@@ -1,4 +1,4 @@
-package project;
+package fi.tuni.prog3.sisu;
 
 import java.util.ArrayList;
 
