@@ -1,4 +1,4 @@
-package project;
+package fi.tuni.prog3.sisu;
 
 public class Attainment {
     private final String courseCode;
