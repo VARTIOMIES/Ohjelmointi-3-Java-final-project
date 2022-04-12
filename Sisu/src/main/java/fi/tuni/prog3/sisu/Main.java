@@ -15,8 +15,43 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends Application {
+
+    /* Lists containing references to every object used in the program. Just to
+    make sure that every object can be accessed at least somehow. */
+    private List<Student> students;
+    private List<Teacher> teachers;
+    private List<Degree> degrees;
+    private List<Attainment> attainments;
+    private List<Course> courses;
+
+    // Constructor
+    public Main(){
+        // First read datafile.
+        // Then get everything from datafile and create objects.
+        // Then add those objects to the lists.
+        // ...
+        // profit.
+
+        // TODO: Datafile reading
+
+        // Initializing all containers
+        students = new ArrayList<>();
+
+        teachers = new ArrayList<>();
+
+        degrees = new ArrayList<>();
+
+        attainments = new ArrayList<>();
+
+        courses = new ArrayList<>();
+
+        // TODO: Fill containers with the data from datafile.
+
+    }
 
     @Override
     public void start(Stage stage) {
