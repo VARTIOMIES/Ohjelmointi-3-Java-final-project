@@ -1,6 +1,5 @@
 package fi.tuni.prog3.sisu;
 
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,11 +16,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-
-
-
 public class Main extends Application {
-
 
     @Override
     public void start(Stage stage) {
@@ -33,14 +28,10 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) throws IOException {
-
         JSONread();
 
         launch();
     }
-
-
-
 
     public static void JSONread() throws IOException {
         String stringURL = "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000";
@@ -69,8 +60,5 @@ public class Main extends Application {
             System.out.println(newDegree.getName());
 
         }
-
     }
-
-
 }
