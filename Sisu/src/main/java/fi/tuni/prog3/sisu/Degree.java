@@ -1,6 +1,17 @@
 package fi.tuni.prog3.sisu;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -11,9 +22,9 @@ public class Degree {
     private final String language;
     private final String groupId;
     private final String name;
-    private final int creditsMin;
+    private final String creditsMin;
 
-    public Degree(String id, String code, String language, String groupId, String name, int creditsMin) {
+    public Degree(String id, String code, String language, String groupId, String name, String creditsMin) {
         this.id = id;
         this.code = code;
         this.language = language;
@@ -38,7 +49,7 @@ public class Degree {
         return name;
     }
 
-    public int getCreditsMin() {
+    public String getCreditsMin() {
         return creditsMin;
     }
 
@@ -46,14 +57,6 @@ public class Degree {
         return code;
     }
 
-    /*
-    public HttpClient getClient() {
 
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest
-                    .uri(URI.create("https://sis-tuni.funidata.fi/kori/api/modules/otm-47b7d28d-e5c3-4dd1-bbf1-2e57fe913978"))
-                    .build();
-    }
-*/
 
 }
