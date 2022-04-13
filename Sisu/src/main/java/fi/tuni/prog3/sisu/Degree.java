@@ -22,9 +22,9 @@ public class Degree {
     private final String language;
     private final String groupId;
     private final String name;
-    private final String creditsMin;
+    private final int creditsMin;
 
-    public Degree(String id, String code, String language, String groupId, String name, String creditsMin) {
+    public Degree(String id, String code, String language, String groupId, String name, int creditsMin) {
         this.id = id;
         this.code = code;
         this.language = language;
@@ -49,7 +49,7 @@ public class Degree {
         return name;
     }
 
-    public String getCreditsMin() {
+    public int getCreditsMin() {
         return creditsMin;
     }
 

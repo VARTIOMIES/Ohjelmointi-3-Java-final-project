@@ -29,7 +29,7 @@ public class Main extends Application {
     private List<Course> courses;
 
     // Constructor
-    public Main(){
+    public Main() throws IOException {
         // First read datafile.
         // Then get everything from datafile and create objects.
         // Then add those objects to the lists.
@@ -51,6 +51,8 @@ public class Main extends Application {
 
         // TODO: Fill containers with the data from datafile.
 
+        degreeRead(degrees);
+
     }
 
     @Override
@@ -62,13 +64,13 @@ public class Main extends Application {
         stage.show();
     }
 
+
     public static void main(String[] args) throws IOException {
-        JSONread();
 
         launch();
     }
 
-    public static void JSONread() throws IOException {
+    public static void degreeRead(List<Degree> degrees) throws IOException {
         String stringURL = "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000";
 
 
@@ -89,11 +91,22 @@ public class Main extends Application {
             var language = degree.getAsJsonObject().get("lang").getAsString();
             var groupId = degree.getAsJsonObject().get("groupId").getAsString();
             var name = degree.getAsJsonObject().get("name").getAsString();
-            var creditsMin = degree.getAsJsonObject().get("credits").toString();
+            var creditEntries = degree.getAsJsonObject().get("credits").getAsJsonObject().entrySet();
 
-            var newDegree = new Degree(id,code,language,groupId,name,creditsMin);
-            System.out.println(newDegree.getName());
+            var creditMin = 0;
+            for(var entry : creditEntries) {
+                if(entry.getKey() == "min") {
+                    creditMin = entry.getValue().getAsInt();
+                }
+            }
+
+            var newDegree = new Degree(id,code,language,groupId,name, creditMin);
+            degrees.add(newDegree);
 
         }
     }
+
+
+
+
 }
