@@ -67,7 +67,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) throws IOException {
-
         launch();
     }
 
@@ -107,7 +106,20 @@ public class Main extends Application {
         }
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
 
+    public void addStudent(String name, String studentNumber, int startingYear, Degree degree) {
+        Student newStudent = new Student(name, studentNumber, startingYear, degree);
+        students.add(newStudent);
+    }
 
+    public List<Teacher> getTeachers() {
+        return teachers;
+    }
 
+    public List<Degree> getDegrees() {
+        return degrees;
+    }
 }
