@@ -5,9 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -56,13 +53,10 @@ public class Main extends Application {
 
     }
 
+    // The Sisu main window now exists in class MainStage.
     @Override
     public void start(Stage stage) {
-
-        var label = new Label("SISU");
-        var scene = new Scene(new StackPane(label), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+        new StartStage();
     }
 
 
