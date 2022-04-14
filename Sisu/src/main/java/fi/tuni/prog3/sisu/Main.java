@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -95,7 +96,7 @@ public class Main extends Application {
 
             var creditMin = 0;
             for(var entry : creditEntries) {
-                if(entry.getKey() == "min") {
+                if(Objects.equals(entry.getKey(), "min")) {
                     creditMin = entry.getValue().getAsInt();
                 }
             }
