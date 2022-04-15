@@ -60,7 +60,7 @@ public class Main extends Application {
     // The Sisu main window now exists in class MainStage.
     @Override
     public void start(Stage stage) {
-        new StartStage();
+        new StartStage(getDegrees());
     }
 
 
