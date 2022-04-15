@@ -1,17 +1,20 @@
 package fi.tuni.prog3.sisu;
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class StartStage extends Stage {
 
@@ -25,31 +28,37 @@ public class StartStage extends Stage {
     TextField startingYearField = new TextField();
 
     // TODO: Scroll bar for degrees
-    Label degreeLabel = new Label("Tutkinto:");
+    Label degreeLabel = new Label("Valitse tutkinto:");
     TextField degreeField = new TextField();
+
 
     Button nextButton = new Button("Jatka: ");
 
-    StartStage(){
+    StartStage(List<Degree> degrees){
+        // Making the degree drop box.
+        List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
+        ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
+        final ComboBox<String> degreeComboBox = new ComboBox<>(degreeObsList);
+
         var grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new
 
-                Insets(10,10,10,10));
+                Insets(15,15,15,15));
 
         // node, columnIndex, rowIndex, columnSpan, rowSpan:
         grid.add(nameLabel,0,0);
-        grid.add(nameField,1,0);
+        grid.add(nameField,1,0, 3, 1);
         grid.add(studentNumberLabel,0,1);
         grid.add(studentNumberField,1,1);
-        grid.add(startingYearLabel,0,2);
-        grid.add(startingYearField,1,2);
-        grid.add(degreeLabel,0,3);
-        grid.add(degreeField,1,3);
-        grid.add(nextButton,0,4,2,1);
+        grid.add(startingYearLabel,2,1);
+        grid.add(startingYearField,3,1);
+        grid.add(degreeLabel,0,2);
+        grid.add(degreeComboBox,0,3, 4, 1);
+        grid.add(nextButton,2,4);
 
-        Scene scene = new Scene(grid, 400, 200);
+        Scene scene = new Scene(grid, 590, 200);
         this.setTitle("Starting window");
         this.setScene(scene);
         this.show();
@@ -99,19 +108,33 @@ public class StartStage extends Stage {
                     }
                 });
 
-        nextButton.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle (ActionEvent e){
-                if (isValueOK.get()) {
-                    String name = nameField.getText();
-                    String studentNumber = studentNumberField.getText();
-                    int startingYear = Integer.parseInt(startingYearField.getText());
+        degreeComboBox.valueProperty().
+                addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
 
-                    // TODO: Adding the new student and checking if it is a new one.
-                    new MainStage();
-                }
+                {
+                    // TODO: Make the degree box listener work.
+                    if (degreeComboBox.getPromptText() != null) {
+                        degreeComboBox.setStyle(null);
+                        isValueOK.set(true);
+                    } else {
+                        degreeComboBox.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+                        isValueOK.set(false);
+                    }
+                });
 
+        nextButton.setOnAction(e -> {
+            if (isValueOK.get()) {
+                String name = nameField.getText();
+                String studentNumber = studentNumberField.getText();
+                int startingYear = Integer.parseInt(startingYearField.getText());
+                var degreeString = degreeComboBox.getPromptText();
+                var degree = degrees.stream().filter(d -> degreeString.equals(d.getName()));
+
+                // TODO: Adding the new student and checking if it is a new one.
+                new MainStage();
+                this.close();
+            } else {
+                nextButton.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
             }
         });
     }
