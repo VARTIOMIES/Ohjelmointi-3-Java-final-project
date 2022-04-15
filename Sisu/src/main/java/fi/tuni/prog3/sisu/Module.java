@@ -1,5 +1,7 @@
 package fi.tuni.prog3.sisu;
 
+import com.google.gson.JsonArray;
+
 import java.util.List;
 
 public class Module {
@@ -11,19 +13,19 @@ public class Module {
         return moduleCode;
     }
 
-    public List<Course> getCourses() {
-        return courses;
+    public JsonArray getStudyModules() {
+        return studyModules;
     }
 
     private final String moduleName;
     private final String moduleCode;
-    private final List<Course> courses;
+    private final JsonArray studyModules;
 
 
-    public Module(String moduleName, String moduleCode, List<Course> courses) {
+    public Module(String moduleName, String moduleCode, JsonArray studyModules) {
         this.moduleName = moduleName;
         this.moduleCode = moduleCode;
-        this.courses = courses;
+        this.studyModules = studyModules;
     }
 
 

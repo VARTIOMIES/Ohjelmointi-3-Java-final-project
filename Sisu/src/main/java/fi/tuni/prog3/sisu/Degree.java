@@ -24,7 +24,10 @@ public class Degree {
     private final String groupId;
     private final String name;
     private final int creditsMin;
+
     private ArrayList<Course> courses;
+
+
 
     public Degree(String id, String code, String language, String groupId, String name, int creditsMin) {
         this.id = id;
@@ -33,6 +36,7 @@ public class Degree {
         this.groupId = groupId;
         this.name = name;
         this.creditsMin = creditsMin;
+
 
         courses = new ArrayList<>();
     }

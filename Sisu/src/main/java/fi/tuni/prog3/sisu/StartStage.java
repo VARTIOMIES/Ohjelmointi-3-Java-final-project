@@ -113,7 +113,7 @@ public class StartStage extends Stage {
 
                 {
                     // TODO: Make the degree box listener work.
-                    if (degreeComboBox.getPromptText() != null) {
+                    if (degreeComboBox.getPromptText() == null) {
                         degreeComboBox.setStyle(null);
                         isValueOK.set(true);
                     } else {

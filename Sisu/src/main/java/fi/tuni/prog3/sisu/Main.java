@@ -27,7 +27,10 @@ public class Main extends Application {
     private List<Teacher> teachers;
     private List<Degree> degrees;
     private List<Attainment> attainments;
-    private HashMap<String, List<Course>> courses;
+    private HashMap<Degree, JsonArray> modules;
+    private HashMap<Module, List<StudyModule>> studyModules;
+    private HashMap<StudyModule, List<Course>> courses;
+
 
     // Constructor
     public Main() throws IOException {
@@ -41,14 +44,10 @@ public class Main extends Application {
 
         // Initializing all containers
         students = new ArrayList<>();
-
         teachers = new ArrayList<>();
-
         degrees = new ArrayList<>();
-
         attainments = new ArrayList<>();
-
-
+        modules = new HashMap<>();
         courses = new HashMap<>();
 
         // TODO: Fill containers with the data from datafile.
@@ -91,6 +90,7 @@ public class Main extends Application {
             var name = degree.getAsJsonObject().get("name").getAsString();
             var creditEntries = degree.getAsJsonObject().get("credits").getAsJsonObject().entrySet();
 
+
             var creditMin = 0;
             for(var entry : creditEntries) {
                 if(Objects.equals(entry.getKey(), "min")) {
@@ -102,44 +102,87 @@ public class Main extends Application {
             degrees.add(newDegree);
 
         }
-        System.out.println("asd");
+
     }
 
     public void courseRead(List<Degree> degrees) throws IOException {
 
 
-        for(var degree : degrees) {
-            var moduleURL = "";
-            var substring = degree.getGroupId().substring(0,3);
-            if(substring.equals("otm")) {
-                moduleURL = "https://sis-tuni.funidata.fi/kori/api/modules/" + degree.getGroupId();
-            } else {
-                moduleURL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + degree.getGroupId() + "&universityId=tuni-university-root-id";
-            }
-            URL url = new URL(moduleURL);
-            URLConnection request = url.openConnection();
-            JsonElement element = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-            JsonObject elementObject = element.getAsJsonObject();
-            JsonObject moduleObjects = elementObject.get("rule").getAsJsonObject();
-            var moduleRules = moduleObjects.get("rules").getAsJsonArray();
+        for (var degree : degrees) {
 
-            for(var moduleRule :moduleRules) {
+            var isRule = true;
+
+
+            var degreeURL = "";
+            var substring = degree.getGroupId().substring(0, 3);
+            if (substring.equals("otm")) {
+                degreeURL = "https://sis-tuni.funidata.fi/kori/api/modules/" + degree.getGroupId();
+            } else {
+                degreeURL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + degree.getGroupId() + "&universityId=tuni-university-root-id";
+            }
+            /*
+            URL url = new URL(degreeURL);
+            URLConnection request = url.openConnection();
+            JsonElement degreeElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
+            var degreeObject = degreeElement.getAsJsonObject().get("metadata").getAsJsonArray();
+
+
+            if(degreeObject.get("type").getAsString().equals("CreditsRule")) {
+                var compositeRule = degreeObject.get("rule").getAsJsonObject();
+                if (compositeRule.get("type").equals("CompositeRule")) {
+                    var compositeArray = compositeRule.get("rules").getAsJsonArray();
+                    var compositeArrayType = compositeArray.get(0).getAsJsonObject().get("type");
+                    if(compositeArrayType.equals("CompositeRule")) {
+                        var moduleRules = compositeArray.get(0).getAsJsonObject().get("rules").getAsJsonArray();
+                } else {
+                        var moduleRules = compositeArray;
+                    }
+            } else {
+                    System.out.println("Invalid");
+
+            }
+            */
+            /*
+            try {
+                JsonObject elementObject = element.getAsJsonObject();
+                JsonObject moduleObjects = elementObject.get("rule").getAsJsonObject();
+                var moduleRules = moduleObjects.get("rules").getAsJsonArray();
+                modules.put(degree,moduleRules);
+            } catch (IllegalStateException e) {
+                JsonArray elementObject = element.getAsJsonArray();
+                JsonObject moduleObjects = elementObject.get(0).getAsJsonObject();
+                /*
+                var moduleRules = moduleObjects.get(0).getAsJsonArray();
+                v
+                ar moduleRules1 = moduleObjects.get(0).getAsJsonArray();
+                 */
+
+                //modules.put(degree,moduleRules1);
+
+            }
+
+
+
+            /*
+            for (var moduleRule : moduleRules) {
                 var moduleGroup = moduleRule.getAsJsonObject().get("moduleGroupId");
                 URL moduleRuleURL = new URL("https://sis-tuni.funidata.fi/kori/api/modules/" + moduleGroup.getAsString());
                 URLConnection modRequest = moduleRuleURL.openConnection();
+
                 JsonElement modElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-                JsonObject modElementObject = modElement.getAsJsonObject();
-                JsonObject moduleRuleObjects = elementObject.get("rule").getAsJsonObject();
-                var moduleRules1 = moduleRuleObjects.get("rules").getAsJsonArray();
+
+                var modElementObject = modElement.getAsJsonObject();
+                var moduleRuleObjects = elementObject.get("rule").getAsJsonObject();
+                var majorRules = moduleRuleObjects.get("rules").getAsJsonArray();
+
             }
 
-
-
+               */
         }
 
 
 
-    }
+
 
     public List<Student> getStudents() {
         return students;
