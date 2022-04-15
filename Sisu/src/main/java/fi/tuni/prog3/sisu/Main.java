@@ -53,7 +53,7 @@ public class Main extends Application {
         // TODO: Fill containers with the data from datafile.
 
         degreeRead(degrees);
-        courseRead(degrees);
+        moduleRead(degrees);
 
     }
 
@@ -105,13 +105,10 @@ public class Main extends Application {
 
     }
 
-    public void courseRead(List<Degree> degrees) throws IOException {
+    public void moduleRead(List<Degree> degrees) throws IOException {
 
 
         for (var degree : degrees) {
-
-            var isRule = true;
-
 
             var degreeURL = "";
             var substring = degree.getGroupId().substring(0, 3);
@@ -120,69 +117,39 @@ public class Main extends Application {
             } else {
                 degreeURL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + degree.getGroupId() + "&universityId=tuni-university-root-id";
             }
-            /*
+
+            JsonObject degreeObject;
+
             URL url = new URL(degreeURL);
             URLConnection request = url.openConnection();
             JsonElement degreeElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-            var degreeObject = degreeElement.getAsJsonObject().get("metadata").getAsJsonArray();
-
-
-            if(degreeObject.get("type").getAsString().equals("CreditsRule")) {
-                var compositeRule = degreeObject.get("rule").getAsJsonObject();
-                if (compositeRule.get("type").equals("CompositeRule")) {
-                    var compositeArray = compositeRule.get("rules").getAsJsonArray();
-                    var compositeArrayType = compositeArray.get(0).getAsJsonObject().get("type");
-                    if(compositeArrayType.equals("CompositeRule")) {
-                        var moduleRules = compositeArray.get(0).getAsJsonObject().get("rules").getAsJsonArray();
-                } else {
-                        var moduleRules = compositeArray;
-                    }
+            if (!degreeElement.isJsonObject()) {
+                degreeObject = degreeElement.getAsJsonArray().get(0).getAsJsonObject();
             } else {
-                    System.out.println("Invalid");
-
-            }
-            */
-            /*
-            try {
-                JsonObject elementObject = element.getAsJsonObject();
-                JsonObject moduleObjects = elementObject.get("rule").getAsJsonObject();
-                var moduleRules = moduleObjects.get("rules").getAsJsonArray();
-                modules.put(degree,moduleRules);
-            } catch (IllegalStateException e) {
-                JsonArray elementObject = element.getAsJsonArray();
-                JsonObject moduleObjects = elementObject.get(0).getAsJsonObject();
-                /*
-                var moduleRules = moduleObjects.get(0).getAsJsonArray();
-                v
-                ar moduleRules1 = moduleObjects.get(0).getAsJsonArray();
-                 */
-
-                //modules.put(degree,moduleRules1);
-
+                degreeObject = degreeElement.getAsJsonObject();
             }
 
+            JsonArray moduleRules;
 
-
-            /*
-            for (var moduleRule : moduleRules) {
-                var moduleGroup = moduleRule.getAsJsonObject().get("moduleGroupId");
-                URL moduleRuleURL = new URL("https://sis-tuni.funidata.fi/kori/api/modules/" + moduleGroup.getAsString());
-                URLConnection modRequest = moduleRuleURL.openConnection();
-
-                JsonElement modElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-
-                var modElementObject = modElement.getAsJsonObject();
-                var moduleRuleObjects = elementObject.get("rule").getAsJsonObject();
-                var majorRules = moduleRuleObjects.get("rules").getAsJsonArray();
-
+            if (degreeObject.get("type").getAsString().equals("DegreeProgramme")) {
+                var creditsRule = degreeObject.get("rule").getAsJsonObject();
+                if (creditsRule.get("type").getAsString().equals("CreditsRule")) {
+                    var creditsObject = creditsRule.get("rule").getAsJsonObject();
+                    var creditsObjectType = creditsObject.get("type");
+                    if (creditsObjectType.getAsString().equals("CompositeRule")) {
+                        moduleRules = creditsObject.get("rules").getAsJsonArray();
+                        modules.put(degree,moduleRules);
+                    } else {
+                        moduleRules = creditsObject.get("rules").getAsJsonArray();
+                        modules.put(degree,moduleRules);
+                    }
+                } else if(creditsRule.get("type").getAsString().equals("CompositeRule")) {
+                    moduleRules = creditsRule.get("rules").getAsJsonArray();
+                    modules.put(degree,moduleRules);
+                    }
+                }
             }
-
-               */
         }
-
-
-
-
 
     public List<Student> getStudents() {
         return students;
