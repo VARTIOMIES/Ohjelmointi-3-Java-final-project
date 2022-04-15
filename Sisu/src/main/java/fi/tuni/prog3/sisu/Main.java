@@ -10,9 +10,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +26,7 @@ public class Main extends Application {
     private List<Teacher> teachers;
     private List<Degree> degrees;
     private List<Attainment> attainments;
-    private List<Course> courses;
+    private HashMap<String, List<Course>> courses;
 
     // Constructor
     public Main() throws IOException {
@@ -45,11 +47,13 @@ public class Main extends Application {
 
         attainments = new ArrayList<>();
 
-        courses = new ArrayList<>();
+
+        courses = new HashMap<>();
 
         // TODO: Fill containers with the data from datafile.
 
         degreeRead(degrees);
+        courseRead(degrees);
 
     }
 
@@ -98,6 +102,43 @@ public class Main extends Application {
             degrees.add(newDegree);
 
         }
+        System.out.println("asd");
+    }
+
+    public void courseRead(List<Degree> degrees) throws IOException {
+
+
+        for(var degree : degrees) {
+            var moduleURL = "";
+            var substring = degree.getGroupId().substring(0,3);
+            if(substring.equals("otm")) {
+                moduleURL = "https://sis-tuni.funidata.fi/kori/api/modules/" + degree.getGroupId();
+            } else {
+                moduleURL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + degree.getGroupId() + "&universityId=tuni-university-root-id";
+            }
+            URL url = new URL(moduleURL);
+            URLConnection request = url.openConnection();
+            JsonElement element = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
+            JsonObject elementObject = element.getAsJsonObject();
+            JsonObject moduleObjects = elementObject.get("rule").getAsJsonObject();
+            var moduleRules = moduleObjects.get("rules").getAsJsonArray();
+
+            for(var moduleRule :moduleRules) {
+                var moduleGroup = moduleRule.getAsJsonObject().get("moduleGroupId");
+                URL moduleRuleURL = new URL("https://sis-tuni.funidata.fi/kori/api/modules/" + moduleGroup.getAsString());
+                URLConnection modRequest = moduleRuleURL.openConnection();
+                JsonElement modElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
+                JsonObject modElementObject = modElement.getAsJsonObject();
+                JsonObject moduleRuleObjects = elementObject.get("rule").getAsJsonObject();
+                var moduleRules1 = moduleRuleObjects.get("rules").getAsJsonArray();
+            }
+
+
+
+        }
+
+
+
     }
 
     public List<Student> getStudents() {
