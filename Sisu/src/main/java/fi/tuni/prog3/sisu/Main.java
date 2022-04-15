@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Main extends Application {
 
@@ -62,7 +63,6 @@ public class Main extends Application {
     public void start(Stage stage) {
         new StartStage(getDegrees());
     }
-
 
     public static void main(String[] args) throws IOException {
         launch();
@@ -156,5 +156,9 @@ public class Main extends Application {
 
     public List<Degree> getDegrees() {
         return degrees;
+    }
+
+    public List<String> getDegreeNames() {
+        return degrees.stream().map(Degree::getName).collect(Collectors.toList());
     }
 }
