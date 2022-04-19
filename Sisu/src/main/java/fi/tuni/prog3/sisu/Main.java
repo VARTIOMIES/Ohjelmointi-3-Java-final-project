@@ -61,7 +61,7 @@ public class Main extends Application {
     // The Sisu main window now exists in class MainStage.
     @Override
     public void start(Stage stage) {
-        new StartStage(getDegrees());
+        new LogInStage(degrees, students);
     }
 
     public static void main(String[] args) throws IOException {
@@ -236,8 +236,14 @@ public class Main extends Application {
     }
 
     public void addStudent(String name, String studentNumber, int startingYear, Degree degree) {
-        Student newStudent = new Student(name, studentNumber, startingYear, degree);
-        students.add(newStudent);
+        if(isStudent(studentNumber)) {
+            Student newStudent = new Student(name, studentNumber, startingYear, degree);
+            students.add(newStudent);
+        }
+    }
+
+    public boolean isStudent(String studentNumber) {
+        return students.stream().anyMatch(s -> studentNumber.equals(s.getStudentNumber()));
     }
 
     public List<Teacher> getTeachers() {

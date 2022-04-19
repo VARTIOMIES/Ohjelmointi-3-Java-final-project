@@ -1,11 +1,8 @@
 package fi.tuni.prog3.sisu;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public class StartStage extends Stage {
+public class NewStudentStage extends Stage {
 
     Label nameLabel = new Label("Koko nimi:");
     TextField nameField = new TextField();
@@ -27,14 +24,14 @@ public class StartStage extends Stage {
     Label startingYearLabel = new Label("Opintojen aloitusvuosi:");
     TextField startingYearField = new TextField();
 
-    // TODO: Scroll bar for degrees
+    // TODO: Add "voit vaihtaa myöhemmin" text
     Label degreeLabel = new Label("Valitse tutkinto:");
-    TextField degreeField = new TextField();
 
+    Button previousButton = new Button("Takaisin");
 
-    Button nextButton = new Button("Jatka: ");
+    Button nextButton = new Button("Jatka");
 
-    StartStage(List<Degree> degrees){
+    NewStudentStage(List<Degree> degrees, List<Student> students){
         // Making the degree drop box.
         List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
         ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
@@ -43,9 +40,7 @@ public class StartStage extends Stage {
         var grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new
-
-                Insets(15,15,15,15));
+        grid.setPadding(new Insets(15,15,15,15));
 
         // node, columnIndex, rowIndex, columnSpan, rowSpan:
         grid.add(nameLabel,0,0);
@@ -56,14 +51,16 @@ public class StartStage extends Stage {
         grid.add(startingYearField,3,1);
         grid.add(degreeLabel,0,2);
         grid.add(degreeComboBox,0,3, 4, 1);
+        grid.add(previousButton, 1, 4);
         grid.add(nextButton,2,4);
 
         Scene scene = new Scene(grid, 590, 200);
-        this.setTitle("Starting window");
+        this.setTitle("Uusi oppilas");
         this.setScene(scene);
         this.show();
 
         // Actions
+
         AtomicBoolean isValueOK = new AtomicBoolean(false);
         nameField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
@@ -82,7 +79,7 @@ public class StartStage extends Stage {
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
 
                 {
-                    var oldNumberRegex = "^([A-z][0-9]{6})$"; // X9999999
+                    var oldNumberRegex = "^([H][0-9]{6})$"; // H9999999
                     var newNumberRegex = "^[0-9]{8}$"; // 99999999
 
                     // TODO: Check if student is in the database
@@ -112,7 +109,6 @@ public class StartStage extends Stage {
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
 
                 {
-                    // TODO: Make the degree box listener work.
                     if (degreeComboBox.getPromptText() == null) {
                         degreeComboBox.setStyle(null);
                         isValueOK.set(true);
@@ -122,19 +118,33 @@ public class StartStage extends Stage {
                     }
                 });
 
-        nextButton.setOnAction(e -> {
-            if (isValueOK.get()) {
-                String name = nameField.getText();
-                String studentNumber = studentNumberField.getText();
-                int startingYear = Integer.parseInt(startingYearField.getText());
-                var degreeString = degreeComboBox.getPromptText();
-                var degree = degrees.stream().filter(d -> degreeString.equals(d.getName()));
+        previousButton.setOnAction(e -> {
+            new LogInStage(degrees, students);
+            this.close();
+        });
 
-                // TODO: Adding the new student and checking if it is a new one.
-                new MainStage();
-                this.close();
-            } else {
+        nextButton.setOnAction(e -> {
+            String studentNumber = studentNumberField.getText();
+
+            if(students.stream().anyMatch(s -> studentNumber.equals(s.getStudentNumber()))) {
+                grid.add(new Label("Opiskelijanumeroa on jo käytössä."), 1, 2);
+                studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+                isValueOK.set(false);
+            }
+            else if (!isValueOK.get()) {
                 nextButton.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+            } else {
+                String name = nameField.getText();
+                int startingYear = Integer.parseInt(startingYearField.getText());
+                var degreeString = degreeComboBox.getValue();
+                var degree = degrees.stream()
+                        .filter(d -> degreeString.equals(d.getName()))
+                        .collect(Collectors.toList()).get(0);
+
+                students.add(new Student(name, studentNumber, startingYear, degree));
+
+                new MainStage(degree);
+                this.close();
             }
         });
     }
