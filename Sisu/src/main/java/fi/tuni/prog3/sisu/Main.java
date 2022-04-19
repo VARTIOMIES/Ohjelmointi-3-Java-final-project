@@ -58,7 +58,7 @@ public class Main extends Application {
     // The Sisu main window now exists in class MainStage.
     @Override
     public void start(Stage stage) {
-        new LogInStage(degrees, students);
+        new LogInStage(stage, degrees, students);
     }
 
     public static void main(String[] args) throws IOException {
