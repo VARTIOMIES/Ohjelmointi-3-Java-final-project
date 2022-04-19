@@ -12,10 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main extends Application {
@@ -27,7 +24,7 @@ public class Main extends Application {
     private List<Degree> degrees;
     private List<Attainment> attainments;
     private HashMap<Degree, JsonArray> modules;
-    private HashMap<JsonObject, JsonArray> studyModules;
+    private HashMap<Degree, JsonArray> studyModules;
     private HashMap<StudyModule, List<Course>> courses;
 
 
@@ -83,7 +80,7 @@ public class Main extends Application {
         JsonArray degreePrograms = elementObject.get("searchResults").getAsJsonArray();
 
         // Initializing Degree objects
-        for(var degree : degreePrograms) {
+        for (var degree : degreePrograms) {
             var id = degree.getAsJsonObject().get("id").getAsString();
             var code = degree.getAsJsonObject().get("code").getAsString();
             var language = degree.getAsJsonObject().get("lang").getAsString();
@@ -93,13 +90,13 @@ public class Main extends Application {
 
 
             var creditMin = 0;
-            for(var entry : creditEntries) {
-                if(Objects.equals(entry.getKey(), "min")) {
+            for (var entry : creditEntries) {
+                if (Objects.equals(entry.getKey(), "min")) {
                     creditMin = entry.getValue().getAsInt();
                 }
             }
 
-            var newDegree = new Degree(id,code,language,groupId,name, creditMin);
+            var newDegree = new Degree(id, code, language, groupId, name, creditMin);
             degrees.add(newDegree);
 
         }
@@ -139,47 +136,33 @@ public class Main extends Application {
                     var creditsObjectType = creditsObject.get("type");
                     if (creditsObjectType.getAsString().equals("CompositeRule")) {
                         moduleRules = creditsObject.get("rules").getAsJsonArray();
-                        modules.put(degree,moduleRules);
+                        modules.put(degree, moduleRules);
                     } else {
                         moduleRules = creditsObject.get("rules").getAsJsonArray();
-                        modules.put(degree,moduleRules);
+                        modules.put(degree, moduleRules);
                     }
-                } else if(creditsRule.get("type").getAsString().equals("CompositeRule")) {
+                } else if (creditsRule.get("type").getAsString().equals("CompositeRule")) {
                     moduleRules = creditsRule.get("rules").getAsJsonArray();
-                    modules.put(degree,moduleRules);
-                    }
+                    modules.put(degree, moduleRules);
                 }
             }
         }
+    }
 
     public void studyModuleRead(HashMap<Degree, JsonArray> modules) throws IOException {
 
+
+
+
         for(var degree : modules.entrySet()) {
+            var tempModules = new JsonArray();
+            var modul = recursiveModules(degree.getValue(),tempModules);
+            JsonArray studyModuleRules = new JsonArray();
 
-            for(int i = 0; i < degree.getValue().size();i++) {
+            for(var moduleGruop : modul) {
 
-                var moduleGroup = degree.getValue().get(i);
                 var studyModuleURL = "";
-                if(!moduleGroup.isJsonObject()) {
-                    System.out.println("asd");
-                }
-
-                var moduleGroupId = "";
-
-                if (moduleGroup.getAsJsonObject().get("type").getAsString().equals("ModuleRule")) {
-                    moduleGroupId = moduleGroup.getAsJsonObject().get("moduleGroupId").getAsString();
-
-                } else {
-                    for(int j = 0; j < moduleGroup.getAsJsonObject().get("rules").getAsJsonArray().size();j++) {
-                        var currentRule = moduleGroup.getAsJsonObject().get("rules").getAsJsonArray().get(i).getAsJsonObject();
-                        if (currentRule.get("type").getAsString().equals("CompositeRule")) {
-                            // TODO: Implement method to store inlined modules
-
-
-                        }
-                    }
-
-                }
+                var moduleGroupId = moduleGruop.getAsJsonObject().get("moduleGroupId").getAsString();
 
                 var substring = moduleGroupId.substring(0, 3);
                 if (substring.equals("otm")) {
@@ -193,42 +176,43 @@ public class Main extends Application {
                 URL url = new URL(studyModuleURL);
                 URLConnection request = url.openConnection();
                 JsonElement studyElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-                if (!studyElement.isJsonObject()) {
+
+                if(!studyElement.isJsonObject()) {
                     studyModuleObject = studyElement.getAsJsonArray().get(0).getAsJsonObject();
                 } else {
                     studyModuleObject = studyElement.getAsJsonObject();
                 }
 
-                JsonArray studyModuleRules;
 
-
-                if (studyModuleObject.get("type").getAsString().equals("StudyModule")) {
-                    var creditsRule = studyModuleObject.get("rule").getAsJsonObject();
-                    if (creditsRule.get("type").getAsString().equals("CreditsRule")) {
-                        var creditsObject = creditsRule.get("rule").getAsJsonObject();
-                        var creditsObjectType = creditsObject.get("type");
-                        if (creditsObjectType.getAsString().equals("CompositeRule")) {
-                            studyModuleRules = creditsObject.get("rules").getAsJsonArray();
-                            studyModules.put(degree.getValue().get(i).getAsJsonObject(),studyModuleRules);
-                        } else {
-                            studyModuleRules = creditsObject.get("rules").getAsJsonArray();
-                            studyModules.put(degree.getValue().get(i).getAsJsonObject(),studyModuleRules);
-                        }
-                    } else if(creditsRule.get("type").getAsString().equals("CompositeRule")) {
-                        studyModuleRules = creditsRule.get("rules").getAsJsonArray();
-                        studyModules.put(degree.getValue().get(i).getAsJsonObject(),studyModuleRules);
-                    }
-                }
+                studyModuleRules.add(studyModuleObject.get("rule").getAsJsonObject());
 
 
             }
+            studyModules.put(degree.getKey(), studyModuleRules);
 
+        }
 
 
         }
-        System.out.println("asd");
 
-    }
+
+    public JsonArray recursiveModules(JsonArray modules, JsonArray tempModules) {
+
+
+        for(var subModule : modules) {
+            if (subModule.getAsJsonObject().get("type").getAsString().equals("ModuleRule")) {
+                tempModules.add(subModule.getAsJsonObject());
+            } else {
+                recursiveModules(subModule.getAsJsonObject().get("rules").getAsJsonArray(),tempModules);
+            }
+        }
+        return tempModules;
+        }
+
+
+
+
+
 
 
     public List<Student> getStudents() {
@@ -257,4 +241,8 @@ public class Main extends Application {
     public List<String> getDegreeNames() {
         return degrees.stream().map(Degree::getName).collect(Collectors.toList());
     }
+
+
+
 }
+
