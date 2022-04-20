@@ -1,0 +1,7 @@
+#studButton {
+    -fx-text-fill: BLUE;
+    -fx-background-color: transparent;
+}
+#gridPane, #gridPane2 {
+    -fx-background-image:url("pictures/logInBackground.jpg");
+    }

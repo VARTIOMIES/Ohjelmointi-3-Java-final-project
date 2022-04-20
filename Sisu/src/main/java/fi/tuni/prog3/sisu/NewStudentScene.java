@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -36,9 +37,11 @@ public class NewStudentScene {
         // Making the degree drop box.
         List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
         ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
-        final ComboBox<String> degreeComboBox = new ComboBox<>(degreeObsList);
+        final SearchableComboBox<String> degreeComboBox = new SearchableComboBox<>(degreeObsList);
+
 
         var grid = new GridPane();
+        grid.setId("gridPane2");
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(15,15,15,15));
@@ -62,17 +65,20 @@ public class NewStudentScene {
         stage.show();
 
         // Actions for text fields and buttons.
-        AtomicBoolean isValueOK = new AtomicBoolean(false);
+        AtomicBoolean isNameOK = new AtomicBoolean(false);
+        AtomicBoolean isStudentOK = new AtomicBoolean(false);
+        AtomicBoolean isYearOK = new AtomicBoolean(false);
+        AtomicBoolean isDegreeOK = new AtomicBoolean(false);
         nameField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
 
                 {
                     if (nameField.getText().matches("^[\\p{L} .'-]+$")) {
                         nameField.setStyle(null);
-                        isValueOK.set(true);
+                        isNameOK.set(true);
                     } else {
                         nameField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-                        isValueOK.set(false);
+                        isNameOK.set(false);
                     }
                 });
 
@@ -85,10 +91,10 @@ public class NewStudentScene {
 
                     if (studentNumberField.getText().matches(oldNumberRegex) || studentNumberField.getText().matches(newNumberRegex)) {
                         studentNumberField.setStyle(null);
-                        isValueOK.set(true);
+                        isStudentOK.set(true);
                     } else {
                         studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-                        isValueOK.set(false);
+                        isStudentOK.set(false);
                     }
                 });
 
@@ -98,10 +104,10 @@ public class NewStudentScene {
                 {
                     if (startingYearField.getText().matches("^[0-9]{4}$")) {
                         startingYearField.setStyle(null);
-                        isValueOK.set(true);
+                        isYearOK.set(true);
                     } else {
                         startingYearField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-                        isValueOK.set(false);
+                        isYearOK.set(false);
                     }
                 });
 
@@ -111,15 +117,15 @@ public class NewStudentScene {
                 {
                     if (degreeComboBox.getPromptText() == null) {
                         degreeComboBox.setStyle(null);
-                        isValueOK.set(true);
+                        isDegreeOK.set(true);
                     } else {
                         degreeComboBox.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-                        isValueOK.set(false);
+                        isDegreeOK.set(false);
                     }
                 });
 
         previousButton.setOnAction(e -> {
-            new LogInStage(stage, degrees, students);
+                new LogInStage(stage, degrees, students);
         });
 
         nextButton.setOnAction(e -> {
@@ -128,9 +134,9 @@ public class NewStudentScene {
             if(students.stream().anyMatch(s -> studentNumber.equals(s.getStudentNumber()))) {
                 grid.add(new Label("Opiskelijanumeroa on jo käytössä."), 1, 2);
                 studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-                isValueOK.set(false);
+                isStudentOK.set(false);
             }
-            else if (!isValueOK.get()) {
+            else if (!(isNameOK.get() && isStudentOK.get() && isYearOK.get() && isDegreeOK.get())) {
                 nextButton.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
             } else {
                 String name = nameField.getText();

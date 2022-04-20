@@ -18,7 +18,7 @@ public class MainStage {
         degreeLabel.setText(defaultDegree.getName());
 
         // Setting images.
-        FileInputStream inputStream = new FileInputStream("src/pictures/mainPic.png");
+        FileInputStream inputStream = new FileInputStream("src/main/resources/fi/tuni/prog3/sisu/pictures/mainPic.png");
         Image image = new Image(inputStream);
         ImageView imageView = new ImageView(image);
         imageView.setX(50);

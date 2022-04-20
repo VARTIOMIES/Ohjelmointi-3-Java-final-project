@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -50,8 +51,8 @@ public class Main extends Application {
         // TODO: Fill containers with the data from datafile.
 
         degreeRead(degrees);
-        moduleRead(degrees);
-        studyModuleRead(modules);
+//        moduleRead(degrees);
+//        studyModuleRead(modules);
 
     }
 
