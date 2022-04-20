@@ -25,7 +25,7 @@ public class Main extends Application {
     private List<Degree> degrees;
     private List<Attainment> attainments;
     private HashMap<Degree, JsonArray> modules;
-    private HashMap<Degree, JsonArray> studyModules;
+    private HashMap<JsonObject, JsonArray> studyModules;
     private HashMap<StudyModule, List<Course>> courses;
 
 
@@ -51,8 +51,9 @@ public class Main extends Application {
         // TODO: Fill containers with the data from datafile.
 
         degreeRead(degrees);
-//        moduleRead(degrees);
-//        studyModuleRead(modules);
+        moduleRead(degrees);
+        studyModuleRead(modules);
+        courseRead(studyModules);
 
     }
 
@@ -152,18 +153,16 @@ public class Main extends Application {
 
     public void studyModuleRead(HashMap<Degree, JsonArray> modules) throws IOException {
 
-
-
-
         for(var degree : modules.entrySet()) {
             var tempModules = new JsonArray();
             var modul = recursiveModules(degree.getValue(),tempModules);
             JsonArray studyModuleRules = new JsonArray();
+            JsonObject studyModuleObject = new JsonObject();
 
-            for(var moduleGruop : modul) {
+            for(var moduleGroup : modul) {
 
                 var studyModuleURL = "";
-                var moduleGroupId = moduleGruop.getAsJsonObject().get("moduleGroupId").getAsString();
+                var moduleGroupId = moduleGroup.getAsJsonObject().get("moduleGroupId").getAsString();
 
                 var substring = moduleGroupId.substring(0, 3);
                 if (substring.equals("otm")) {
@@ -172,7 +171,7 @@ public class Main extends Application {
                     studyModuleURL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + moduleGroupId + "&universityId=tuni-university-root-id";
                 }
 
-                JsonObject studyModuleObject;
+
 
                 URL url = new URL(studyModuleURL);
                 URLConnection request = url.openConnection();
@@ -189,12 +188,25 @@ public class Main extends Application {
 
 
             }
-            studyModules.put(degree.getKey(), studyModuleRules);
+            studyModules.put(studyModuleObject, studyModuleRules);
 
         }
 
 
         }
+
+    public void courseRead(HashMap<JsonObject, JsonArray> studyModules) {
+
+        for(var studyModule : studyModules.entrySet()) {
+
+            JsonArray tempModules = new JsonArray();
+            var courses = recursiveCourses(studyModule.getValue(),tempModules);
+            System.out.println("asd");
+
+
+        }
+
+    }
 
 
     public JsonArray recursiveModules(JsonArray modules, JsonArray tempModules) {
@@ -211,7 +223,22 @@ public class Main extends Application {
         }
 
 
+    public JsonArray recursiveCourses(JsonArray modules, JsonArray tempModules) {
 
+
+        for(var subCourse : modules) {
+            if (subCourse.getAsJsonObject().get("type").getAsString().equals("CourseUnitRule")) {
+                tempModules.add(subCourse.getAsJsonObject());
+            } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("CompositeRule")){
+                recursiveCourses(subCourse.getAsJsonObject().get("rules").getAsJsonArray(),tempModules);
+            } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("ModuleRule")){
+                
+            } else {
+                recursiveCourses(subCourse.getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(), tempModules);
+            }
+        }
+        return tempModules;
+    }
 
 
 
