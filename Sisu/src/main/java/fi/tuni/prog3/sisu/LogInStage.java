@@ -6,9 +6,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,7 +27,9 @@ public class LogInStage {
     Button newStudentButton = new Button("Uusi oppilas");
 
     LogInStage(Stage stage, List<Degree> degrees, List<Student> students) {
+
         var grid = new GridPane();
+        grid.setId("gridPane");
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(15,15,15,15));
@@ -39,11 +44,13 @@ public class LogInStage {
 
         Scene scene = new Scene(grid, 590, 200);
         stage.setTitle("Kirjaudu sisään");
+        final String style = getClass().getResource("stylesheet.css").toExternalForm();
+        scene.getStylesheets().add(style);
         stage.setScene(scene);
         stage.show();
 
         // Actions for text fields and buttons.
-        // newStudentButton.setStyle("-fx-text-fill: #0000ff; -fx-background-color: white");
+        newStudentButton.setId("studButton");
         AtomicBoolean isValueOK = new AtomicBoolean(false);
         studentNumberField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
