@@ -48,13 +48,13 @@ public class Main extends Application {
         /*
         TÄTÄ MUOKKAAMALLA LOKAALISTI SAA KÄÄNTYMÄÄN NOPEEMMIN KUN EI LUE APIA
          */
-        boolean API_READ = true;
+        boolean API_READ = false;
 
         if(API_READ){
             degreeRead(degrees);
             moduleRead(degrees);
             studyModuleRead(modules);
-            //courseRead(studyModules);
+            courseRead(studyModules);
         }
 
     }
@@ -65,7 +65,7 @@ public class Main extends Application {
         new LogInStage(stage, degrees, students);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         launch();
     }
 

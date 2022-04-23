@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -144,9 +145,18 @@ public class NewStudentScene {
                 studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
                 isStudentOK.set(false);
             }
+            // Too big or little year number.
+            else if(!Objects.equals(startingYearField.getText(), "")) {
+                if(Integer.parseInt(startingYearField.getText()) < 1960 || Integer.parseInt(startingYearField.getText()) > 2022) {
+                    startingYearField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ; -fx-text-fill: RED");
+                    isYearOK.set(false);
+                    startingYearField.setText("Virheellinen vuosiluku!");
+                }
+            }
             // Every parameter is not ok.
             else if (!(isNameOK.get() && isStudentOK.get() && isYearOK.get() && isDegreeOK.get())) {
                 nextButton.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+                grid.add(new Label("Täytäthän jokaisen kohdan!"), 1, 7, 2, 1);
             // Everything ok, opens the main scene.
             } else {
                 String name = nameField.getText();

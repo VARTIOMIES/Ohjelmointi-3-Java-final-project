@@ -5,25 +5,21 @@
 }
 
 .nextButton {
-    -fx-background-color:
-            linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),
-            linear-gradient(#020b02, #3a3a3a),
-            linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),
-            linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),
-            linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);
-        -fx-background-insets: 0,1,4,5,6;
-        -fx-background-radius: 9,8,5,4,3;
-        -fx-padding: 7 150 7 150;
-        -fx-font-family: "Adamina";
-        -fx-font-size: 10px;
-        -fx-text-fill: white;
-        -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+    -fx-background-color: #202020;
+    -fx-border-color: BLACK ;
+    -fx-border-width: 2px ;
+    -fx-font-family: "Adamina";
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-pref-width: 300px;
 }
 
 .linkButton {
-    -fx-text-fill: BLUE;
+    -fx-text-fill: BLACK;
     -fx-background-color: transparent;
+    -fx-underline: true;
 }
+
 .firstBackground {
     -fx-background-image:url("pictures/logInBackground.jpg");
     -fx-background-size: cover;
@@ -32,3 +28,9 @@
 .secBackground {
      -fx-background-image:url("pictures/mainPic.png");
      }
+
+.homeIcon {
+    -fx-background-color: transparent;
+    -fx-shape:null;
+    -fx-background-image: url("pictures/mainPic.png");
+}

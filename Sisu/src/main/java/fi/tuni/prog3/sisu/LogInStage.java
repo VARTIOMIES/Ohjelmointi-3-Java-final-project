@@ -2,6 +2,7 @@ package fi.tuni.prog3.sisu;
 
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -39,9 +40,10 @@ public class LogInStage {
         grid.setPadding(new Insets(15,15,15,15));
         gap.minHeightProperty().set(30);
 
+        // TODO: Center.
         // Setting the elements.
         // node, columnIndex, rowIndex, columnSpan, rowSpan:
-        grid.add(logInLabel,1,0,2 ,1);
+        grid.add(logInLabel,1,0,3 ,1);
         grid.add(studentNumberLabel,1,1);
         grid.add(studentNumberField,1,2, 2, 1);
         grid.add(gap, 0, 3);
@@ -84,7 +86,7 @@ public class LogInStage {
             String studentNumber = studentNumberField.getText();
 
             if(students.stream().noneMatch(s -> studentNumber.equals(s.getStudentNumber()))) {
-                grid.add(new Label("Opiskelijanumeroa ei löydy."), 1, 2);
+                grid.add(new Label("Opiskelijanumeroa ei löydy."), 1, 3);
                 studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
                 isValueOK.set(false);
             }
