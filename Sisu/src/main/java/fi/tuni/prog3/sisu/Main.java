@@ -53,7 +53,7 @@ public class Main extends Application {
         degreeRead(degrees);
         moduleRead(degrees);
         studyModuleRead(modules);
-        courseRead(studyModules);
+        //courseRead(studyModules);
 
     }
 
