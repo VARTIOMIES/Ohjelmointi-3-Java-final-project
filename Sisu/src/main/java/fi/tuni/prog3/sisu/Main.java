@@ -31,11 +31,6 @@ public class Main extends Application {
 
     // Constructor
     public Main() throws IOException {
-        // First read datafile.
-        // Then get everything from datafile and create objects.
-        // Then add those objects to the lists.
-        // ...
-        // profit.
 
         // TODO: Datafile reading
 
@@ -50,10 +45,17 @@ public class Main extends Application {
 
         // TODO: Fill containers with the data from datafile.
 
-        degreeRead(degrees);
-        moduleRead(degrees);
-        studyModuleRead(modules);
-        courseRead(studyModules);
+        /*
+        TÄTÄ MUOKKAAMALLA LOKAALISTI SAA KÄÄNTYMÄÄN NOPEEMMIN KUN EI LUE APIA
+         */
+        boolean API_READ = false;
+
+        if(API_READ){
+            degreeRead(degrees);
+            moduleRead(degrees);
+            studyModuleRead(modules);
+            courseRead(studyModules);
+        }
 
     }
 
