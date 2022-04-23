@@ -48,13 +48,13 @@ public class Main extends Application {
         /*
         TÄTÄ MUOKKAAMALLA LOKAALISTI SAA KÄÄNTYMÄÄN NOPEEMMIN KUN EI LUE APIA
          */
-        boolean API_READ = false;
+        boolean API_READ = true;
 
         if(API_READ){
             degreeRead(degrees);
             moduleRead(degrees);
             studyModuleRead(modules);
-            courseRead(studyModules);
+            //courseRead(studyModules);
         }
 
     }
@@ -264,9 +264,6 @@ public class Main extends Application {
         return teachers;
     }
 
-    public List<Degree> getDegrees() {
-        return degrees;
-    }
 
     public List<String> getDegreeNames() {
         return degrees.stream().map(Degree::getName).collect(Collectors.toList());
