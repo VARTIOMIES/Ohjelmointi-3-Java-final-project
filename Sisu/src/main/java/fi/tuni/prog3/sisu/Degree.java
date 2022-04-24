@@ -1,4 +1,7 @@
 package fi.tuni.prog3.sisu;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +13,7 @@ public class Degree {
     private final String name;
     private final int creditsMin;
 
-    private List<Module> modules;
+    private JsonArray modules;
     private ArrayList<Course> courses;
 
 
@@ -23,7 +26,7 @@ public class Degree {
         this.creditsMin = creditsMin;
 
 
-        modules = new ArrayList<Module>();
+        modules = new JsonArray();
         courses = new ArrayList<>();
     }
 
@@ -51,11 +54,11 @@ public class Degree {
         return code;
     }
 
-    public void setModules(List<Module> modules) {
+    public void setModules(JsonArray modules) {
         this.modules = modules;
     }
 
-    public List<Module> getModules() {
+    public JsonArray getModules() {
         return modules;
     }
 

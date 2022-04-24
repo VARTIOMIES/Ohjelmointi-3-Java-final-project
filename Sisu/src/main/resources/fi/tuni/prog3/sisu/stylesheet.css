@@ -23,14 +23,19 @@
 .firstBackground {
     -fx-background-image:url("pictures/logInBackground.jpg");
     -fx-background-size: cover;
-    }
+}
 
 .secBackground {
-     -fx-background-image:url("pictures/mainPic.png");
-     }
+     -fx-background-image: url("pictures/mainPic.png");
+     -fx-background-repeat: no-repeat;
+}
 
 .homeIcon {
-    -fx-background-color: transparent;
-    -fx-shape:null;
-    -fx-background-image: url("pictures/mainPic.png");
+    -fx-background-image:url("pictures/homeIcon.png");
+    -fx-background-size: 15px;
+    -fx-background-image-max-width: 100%;
+    -fx-background-image-max-height: 100%;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-pref-width: 20px;
 }
