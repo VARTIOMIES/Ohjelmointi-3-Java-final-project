@@ -42,13 +42,20 @@ public class Student {
         return degree;
     }
 
+    public String getFirstName() {
+        return name.split(" ")[0];
+    }
+
+    public String getLastName() {
+        return name.substring(name.lastIndexOf(" ")+1);
+    }
+
     public void changeDegree(Degree newDegree) {
         if(degree != newDegree) {
             degree = newDegree;
         } else {
             throw new IllegalArgumentException("Uusi tutkinto ei saa olla sama kuin vanha tutkinto!");
         }
-
     }
 
     public ArrayList<Attainment> getAttainments() {
@@ -65,5 +72,20 @@ public class Student {
 
     public ArrayList<Course> getSelectedCourses() {
         return selectedCourses;
+    }
+
+    public String getEmailAddress() {
+        if(getLastName().contains("'") && !getFirstName().contains("'")) {
+            return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase(), getLastName().toLowerCase().replace("'", ""));
+        }
+        if(getFirstName().contains("'") && !getLastName().contains("'")) {
+            return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase().replace("'", "")
+                    , getLastName().toLowerCase());
+        }
+        if(getFirstName().contains("'") && getLastName().contains("'")) {
+            return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase().replace("'", "")
+                    , getLastName().toLowerCase().replace("'", ""));
+        }
+        return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase(), getLastName().toLowerCase());
     }
 }

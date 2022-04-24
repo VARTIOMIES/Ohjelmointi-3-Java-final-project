@@ -48,13 +48,13 @@ public class Main extends Application {
         /*
         TÄTÄ MUOKKAAMALLA LOKAALISTI SAA KÄÄNTYMÄÄN NOPEEMMIN KUN EI LUE APIA
          */
-        boolean API_READ = false;
+        boolean API_READ = true;
 
         if(API_READ){
             degreeRead(degrees);
-            moduleRead(degrees);
-            studyModuleRead(modules);
-            courseRead(studyModules);
+//            moduleRead(degrees);
+//            studyModuleRead(modules);
+//            courseRead(studyModules);
         }
 
     }
@@ -108,10 +108,7 @@ public class Main extends Application {
     }
 
     public void moduleRead(List<Degree> degrees) throws IOException {
-
-
         for (var degree : degrees) {
-
             var moduleGroupId = degree.getGroupId();
             var degreeURL = createModuleURL(moduleGroupId);
 
@@ -121,11 +118,8 @@ public class Main extends Application {
             var moduleArray = new JsonArray();
             JsonArray moduleRules = recursiveDegreeModule(degreeObject, moduleArray);
             modules.put(degree,moduleRules);
-
-
-
+            degree.setModules(moduleRules);
         }
-
     }
 
     public void studyModuleRead(HashMap<Degree, JsonArray> modules) throws IOException {

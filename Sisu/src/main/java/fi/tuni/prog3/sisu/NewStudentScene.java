@@ -64,6 +64,7 @@ public class NewStudentScene {
         newStudentLabel.getStyleClass().add("heading");
         grid.getStyleClass().add("firstBackground");
         nextButton.getStyleClass().add("nextButton");
+        previousButton.getStyleClass().add("linkButton");
 
         Scene scene = new Scene(grid, 350, 400);
         stage.setTitle("Uusi oppilas");
@@ -164,9 +165,10 @@ public class NewStudentScene {
                                 .filter(d -> degreeString.equals(d.getName()))
                                 .collect(Collectors.toList()).get(0);
 
-                        students.add(new Student(name, studentNumber, startingYear, degree));
+                        Student newStudent = new Student(name, studentNumber, startingYear, degree);
+                        students.add(newStudent);
 
-                        new MainStage(stage, degree);
+                        new MainStage(stage, newStudent);
                     }
                 }
             }
