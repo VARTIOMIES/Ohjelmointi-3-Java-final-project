@@ -1,20 +1,4 @@
 package fi.tuni.prog3.sisu;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +12,6 @@ public class Degree {
 
     private List<Module> modules;
     private ArrayList<Course> courses;
-
 
 
     public Degree(String id, String code, String language, String groupId, String name, int creditsMin) {

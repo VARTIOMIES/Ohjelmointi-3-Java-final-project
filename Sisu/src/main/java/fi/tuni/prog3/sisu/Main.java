@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,6 +30,11 @@ public class Main extends Application {
 
     // Constructor
     public Main() throws IOException {
+        // First read datafile.
+        // Then get everything from datafile and create objects.
+        // Then add those objects to the lists.
+        // ...
+        // profit.
 
         // TODO: Datafile reading
 
@@ -45,17 +49,10 @@ public class Main extends Application {
 
         // TODO: Fill containers with the data from datafile.
 
-        /*
-        TÄTÄ MUOKKAAMALLA LOKAALISTI SAA KÄÄNTYMÄÄN NOPEEMMIN KUN EI LUE APIA
-         */
-        boolean API_READ = false;
-
-        if(API_READ){
-            degreeRead(degrees);
-            moduleRead(degrees);
-            studyModuleRead(modules);
-            courseRead(studyModules);
-        }
+        degreeRead(degrees);
+//        moduleRead(degrees);
+//        studyModuleRead(modules);
+//        courseRead(studyModules);
 
     }
 
@@ -65,7 +62,7 @@ public class Main extends Application {
         new LogInStage(stage, degrees, students);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         launch();
     }
 
@@ -112,13 +109,8 @@ public class Main extends Application {
 
         for (var degree : degrees) {
 
-            var degreeURL = "";
-            var substring = degree.getGroupId().substring(0, 3);
-            if (substring.equals("otm")) {
-                degreeURL = "https://sis-tuni.funidata.fi/kori/api/modules/" + degree.getGroupId();
-            } else {
-                degreeURL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + degree.getGroupId() + "&universityId=tuni-university-root-id";
-            }
+            var moduleGroupId = degree.getGroupId();
+            var degreeURL = createModuleURL(moduleGroupId);
 
             JsonObject degreeObject;
 
@@ -163,17 +155,9 @@ public class Main extends Application {
 
             for(var moduleGroup : modul) {
 
-                var studyModuleURL = "";
+
                 var moduleGroupId = moduleGroup.getAsJsonObject().get("moduleGroupId").getAsString();
-
-                var substring = moduleGroupId.substring(0, 3);
-                if (substring.equals("otm")) {
-                    studyModuleURL = "https://sis-tuni.funidata.fi/kori/api/modules/" + moduleGroupId;
-                } else {
-                    studyModuleURL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + moduleGroupId + "&universityId=tuni-university-root-id";
-                }
-
-
+                var studyModuleURL = createModuleURL(moduleGroupId);
 
                 URL url = new URL(studyModuleURL);
                 URLConnection request = url.openConnection();
@@ -195,7 +179,7 @@ public class Main extends Application {
         }
 
 
-        }
+    }
 
     public void courseRead(HashMap<JsonObject, JsonArray> studyModules) {
 
@@ -210,6 +194,35 @@ public class Main extends Application {
 
     }
 
+    private String createModuleURL(String moduleGroupId) {
+
+        var URL = "";
+        var substring = moduleGroupId.substring(0, 3);
+        if (substring.equals("otm")) {
+            URL = "https://sis-tuni.funidata.fi/kori/api/modules/" + moduleGroupId;
+        } else {
+            URL = "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" + moduleGroupId + "&universityId=tuni-university-root-id";
+        }
+
+        return URL;
+    }
+
+
+    private JsonObject createModuleObject(URL url) throws IOException {
+
+        var moduleObject = new JsonObject();
+        URLConnection request = url.openConnection();
+        JsonElement element = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
+
+        if(!element.isJsonObject()) {
+            moduleObject = element.getAsJsonArray().get(0).getAsJsonObject();
+        } else {
+            moduleObject = element.getAsJsonObject();
+        }
+
+        return moduleObject;
+    }
+
 
     public JsonArray recursiveModules(JsonArray modules, JsonArray tempModules) {
 
@@ -222,7 +235,7 @@ public class Main extends Application {
             }
         }
         return tempModules;
-        }
+    }
 
 
     public JsonArray recursiveCourses(JsonArray modules, JsonArray tempModules) {
@@ -234,7 +247,7 @@ public class Main extends Application {
             } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("CompositeRule")){
                 recursiveCourses(subCourse.getAsJsonObject().get("rules").getAsJsonArray(),tempModules);
             } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("ModuleRule")){
-                
+
             } else {
                 recursiveCourses(subCourse.getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(), tempModules);
             }
@@ -264,6 +277,9 @@ public class Main extends Application {
         return teachers;
     }
 
+    public List<Degree> getDegrees() {
+        return degrees;
+    }
 
     public List<String> getDegreeNames() {
         return degrees.stream().map(Degree::getName).collect(Collectors.toList());
@@ -272,4 +288,3 @@ public class Main extends Application {
 
 
 }
-

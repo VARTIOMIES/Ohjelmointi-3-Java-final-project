@@ -29,13 +29,13 @@ public class MainStage {
         rootNode.setExpanded(true);
 
         // TODO: Make different grids for tabs. Also make treeview work.
-//        for (Module m : defaultDegree.getModules()) {
-//            TreeItem<String> empLeaf = new TreeItem<>(m.getModuleName());
-//            for (TreeItem<String> depNode : rootNode.getChildren()) {
-//                depNode.getChildren().add(empLeaf);
-//                break;
-//            }
-//        }
+        for (Module m : defaultDegree.getModules()) {
+            TreeItem<String> empLeaf = new TreeItem<>(m.getModuleName());
+            for (TreeItem<String> depNode : rootNode.getChildren()) {
+                depNode.getChildren().add(empLeaf);
+                break;
+            }
+        }
 
         var homeGrid = new GridPane();
         homeGrid.setId("gridPane3");
