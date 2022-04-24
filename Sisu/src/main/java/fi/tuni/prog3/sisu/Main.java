@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,11 +31,6 @@ public class Main extends Application {
 
     // Constructor
     public Main() throws IOException {
-        // First read datafile.
-        // Then get everything from datafile and create objects.
-        // Then add those objects to the lists.
-        // ...
-        // profit.
 
         // TODO: Datafile reading
 
@@ -49,10 +45,17 @@ public class Main extends Application {
 
         // TODO: Fill containers with the data from datafile.
 
-        degreeRead(degrees);
-//        moduleRead(degrees);
-//        studyModuleRead(modules);
-//        courseRead(studyModules);
+        /*
+        TÄTÄ MUOKKAAMALLA LOKAALISTI SAA KÄÄNTYMÄÄN NOPEEMMIN KUN EI LUE APIA
+         */
+        boolean API_READ = false;
+
+        if(API_READ){
+            degreeRead(degrees);
+            moduleRead(degrees);
+            studyModuleRead(modules);
+            courseRead(studyModules);
+        }
 
     }
 
@@ -112,37 +115,17 @@ public class Main extends Application {
             var moduleGroupId = degree.getGroupId();
             var degreeURL = createModuleURL(moduleGroupId);
 
-            JsonObject degreeObject;
-
             URL url = new URL(degreeURL);
-            URLConnection request = url.openConnection();
-            JsonElement degreeElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-            if (!degreeElement.isJsonObject()) {
-                degreeObject = degreeElement.getAsJsonArray().get(0).getAsJsonObject();
-            } else {
-                degreeObject = degreeElement.getAsJsonObject();
-            }
+            JsonObject degreeObject = createModuleObject(url);
 
-            JsonArray moduleRules;
+            var moduleArray = new JsonArray();
+            JsonArray moduleRules = recursiveDegreeModule(degreeObject, moduleArray);
+            modules.put(degree,moduleRules);
 
-            if (degreeObject.get("type").getAsString().equals("DegreeProgramme")) {
-                var creditsRule = degreeObject.get("rule").getAsJsonObject();
-                if (creditsRule.get("type").getAsString().equals("CreditsRule")) {
-                    var creditsObject = creditsRule.get("rule").getAsJsonObject();
-                    var creditsObjectType = creditsObject.get("type");
-                    if (creditsObjectType.getAsString().equals("CompositeRule")) {
-                        moduleRules = creditsObject.get("rules").getAsJsonArray();
-                        modules.put(degree, moduleRules);
-                    } else {
-                        moduleRules = creditsObject.get("rules").getAsJsonArray();
-                        modules.put(degree, moduleRules);
-                    }
-                } else if (creditsRule.get("type").getAsString().equals("CompositeRule")) {
-                    moduleRules = creditsRule.get("rules").getAsJsonArray();
-                    modules.put(degree, moduleRules);
-                }
-            }
+
+
         }
+
     }
 
     public void studyModuleRead(HashMap<Degree, JsonArray> modules) throws IOException {
@@ -155,23 +138,12 @@ public class Main extends Application {
 
             for(var moduleGroup : modul) {
 
-
                 var moduleGroupId = moduleGroup.getAsJsonObject().get("moduleGroupId").getAsString();
                 var studyModuleURL = createModuleURL(moduleGroupId);
 
                 URL url = new URL(studyModuleURL);
-                URLConnection request = url.openConnection();
-                JsonElement studyElement = JsonParser.parseReader(new InputStreamReader((InputStream) request.getContent()));
-
-                if(!studyElement.isJsonObject()) {
-                    studyModuleObject = studyElement.getAsJsonArray().get(0).getAsJsonObject();
-                } else {
-                    studyModuleObject = studyElement.getAsJsonObject();
-                }
-
-
+                studyModuleObject = createModuleObject(url);
                 studyModuleRules.add(studyModuleObject.get("rule").getAsJsonObject());
-
 
             }
             studyModules.put(studyModuleObject, studyModuleRules);
@@ -179,9 +151,9 @@ public class Main extends Application {
         }
 
 
-    }
+        }
 
-    public void courseRead(HashMap<JsonObject, JsonArray> studyModules) {
+    public void courseRead(HashMap<JsonObject, JsonArray> studyModules) throws IOException {
 
         for(var studyModule : studyModules.entrySet()) {
 
@@ -230,33 +202,81 @@ public class Main extends Application {
         for(var subModule : modules) {
             if (subModule.getAsJsonObject().get("type").getAsString().equals("ModuleRule")) {
                 tempModules.add(subModule.getAsJsonObject());
-            } else {
+            } else if(subModule.getAsJsonObject().get("type").getAsString().equals("CompositeRule")){
                 recursiveModules(subModule.getAsJsonObject().get("rules").getAsJsonArray(),tempModules);
+            } else {
+                recursiveModules(subModule.getAsJsonObject().get("rule").getAsJsonArray(),tempModules);
             }
         }
         return tempModules;
-    }
+        }
 
 
-    public JsonArray recursiveCourses(JsonArray modules, JsonArray tempModules) {
+    public JsonArray recursiveCourses(JsonArray modules, JsonArray tempModules) throws IOException {
 
 
         for(var subCourse : modules) {
             if (subCourse.getAsJsonObject().get("type").getAsString().equals("CourseUnitRule")) {
-                tempModules.add(subCourse.getAsJsonObject());
-            } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("CompositeRule")){
-                recursiveCourses(subCourse.getAsJsonObject().get("rules").getAsJsonArray(),tempModules);
-            } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("ModuleRule")){
+                if(!tempModules.contains(subCourse.getAsJsonObject())) {
+                    tempModules.add(subCourse.getAsJsonObject());
+                }
 
-            } else {
-                recursiveCourses(subCourse.getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(), tempModules);
+            } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("CompositeRule")){
+                tempModules = recursiveCourses(subCourse.getAsJsonObject().get("rules").getAsJsonArray(),tempModules);
+            } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("ModuleRule")){
+                var moduleUrl = createModuleURL(subCourse.getAsJsonObject().get("moduleGroupId").getAsString());
+                URL url = new URL(moduleUrl);
+                var moduleObject = createModuleObject(url);
+
+                if(moduleObject.get("type").getAsString().equals("ModuleRule")) {
+                    tempModules = recursiveCourses(moduleObject.getAsJsonObject().getAsJsonArray(),tempModules);
+                } else if(moduleObject.get("type").getAsString().equals("CompositeRule")){
+                    tempModules = recursiveCourses(moduleObject.get("rules").getAsJsonArray(),tempModules);
+                } else if(moduleObject.get("type").getAsString().equals("StudyModule")){
+
+                    tempModules = recursiveCourses(checkModuleObject(moduleObject),tempModules);
+
+                } else {
+                    tempModules = recursiveCourses(checkModuleObject(moduleObject),tempModules);
+                }
+
+            } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("AnyCourseUnitRule")){
+                System.out.println("asd");
+            }else {
+                if(subCourse.getAsJsonObject().get("type").getAsString().equals("AnyModuleRule")) {
+                    System.out.println("asff");
+                } else {
+                    tempModules = recursiveCourses(subCourse.getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(), tempModules);
+                }
+
+
             }
+
         }
         return tempModules;
     }
 
+    public JsonArray checkModuleObject(JsonObject moduleObject) {
+
+        if(moduleObject.get("rule").getAsJsonObject().get("type").getAsString().equals("CompositeRule")) {
+            return moduleObject.get("rule").getAsJsonObject().get("rules").getAsJsonArray();
+        } else {
+            return moduleObject.get("rule").getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray();
+        }
+    }
 
 
+    public JsonArray recursiveDegreeModule(JsonObject degreeObject, JsonArray moduleArray) {
+
+
+        if (degreeObject.getAsJsonObject().get("type").getAsString().equals("CompositeRule")) {
+            moduleArray = degreeObject.getAsJsonObject().get("rules").getAsJsonArray();
+            return moduleArray;
+        } else {
+            moduleArray = recursiveDegreeModule(degreeObject.getAsJsonObject().get("rule").getAsJsonObject(), moduleArray);
+        }
+        return moduleArray;
+    }
 
     public List<Student> getStudents() {
         return students;
@@ -288,3 +308,4 @@ public class Main extends Application {
 
 
 }
+
