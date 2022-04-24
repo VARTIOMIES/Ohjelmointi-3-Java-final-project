@@ -2,6 +2,7 @@ package fi.tuni.prog3.sisu;
 
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,6 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -21,28 +24,39 @@ public class LogInStage {
 
     // Creating all the elements.
     Label logInLabel = new Label("Kirjaudu sisään");
-    Label studentNumberLabel = new Label("Opiskelijanumero:");
+    Label studentNumberLabel = new Label("Opiskelijanumero");
     TextField studentNumberField = new TextField();
+    Pane gap = new Pane();
     Button nextButton = new Button("Jatka");
     Button newStudentButton = new Button("Uusi oppilas");
 
     LogInStage(Stage stage, List<Degree> degrees, List<Student> students) {
 
+        // Grid prepping.
+        stage.setResizable(false);
         var grid = new GridPane();
-        grid.setId("gridPane");
-        grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setHgap(15);
+        grid.setVgap(15);
         grid.setPadding(new Insets(15,15,15,15));
+        gap.minHeightProperty().set(30);
 
+        // TODO: Center.
         // Setting the elements.
         // node, columnIndex, rowIndex, columnSpan, rowSpan:
-        grid.add(logInLabel,0,0);
-        grid.add(studentNumberLabel,0,1);
-        grid.add(studentNumberField,1,1);
-        grid.add(nextButton,1,3);
-        grid.add(newStudentButton, 1, 4);
+        grid.add(logInLabel,1,0,3 ,1);
+        grid.add(studentNumberLabel,1,1);
+        grid.add(studentNumberField,1,2, 2, 1);
+        grid.add(gap, 0, 3);
+        grid.add(nextButton,0,4, 3, 1);
+        grid.add(newStudentButton, 1, 5, 2, 1);
 
-        Scene scene = new Scene(grid, 590, 200);
+        // Setting css id:s.
+        logInLabel.getStyleClass().add("heading");
+        grid.getStyleClass().add("firstBackground");
+        newStudentButton.getStyleClass().add("linkButton");
+        nextButton.getStyleClass().add("nextButton");
+
+        Scene scene = new Scene(grid, 350, 400);
         stage.setTitle("Kirjaudu sisään");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
@@ -50,7 +64,7 @@ public class LogInStage {
         stage.show();
 
         // Actions for text fields and buttons.
-        newStudentButton.setId("studButton");
+
         AtomicBoolean isValueOK = new AtomicBoolean(false);
         studentNumberField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
@@ -72,7 +86,7 @@ public class LogInStage {
             String studentNumber = studentNumberField.getText();
 
             if(students.stream().noneMatch(s -> studentNumber.equals(s.getStudentNumber()))) {
-                grid.add(new Label("Opiskelijanumeroa ei löydy."), 1, 2);
+                grid.add(new Label("Opiskelijanumeroa ei löydy."), 1, 3);
                 studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
                 isValueOK.set(false);
             }
@@ -83,12 +97,7 @@ public class LogInStage {
                         .filter(s -> studentNumber.equals(s.getStudentNumber()))
                         .collect(Collectors.toList()).get(0);
 
-                try {
-                    new MainStage(stage, student.getDegree());
-                } catch (FileNotFoundException ex) {
-                    ex.printStackTrace();
-                }
-                stage.close();
+                new MainStage(stage, student.getDegree());
             }
         });
 

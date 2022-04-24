@@ -1,7 +1,36 @@
-#studButton {
-    -fx-text-fill: BLUE;
-    -fx-background-color: transparent;
+.heading {
+    -fx-font-family: "Adamina";
+    -fx-font-size: 22px;
+    -fx-color: BLACK;
 }
-#gridPane, #gridPane2 {
+
+.nextButton {
+    -fx-background-color: #202020;
+    -fx-border-color: BLACK ;
+    -fx-border-width: 2px ;
+    -fx-font-family: "Adamina";
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-pref-width: 300px;
+}
+
+.linkButton {
+    -fx-text-fill: BLACK;
+    -fx-background-color: transparent;
+    -fx-underline: true;
+}
+
+.firstBackground {
     -fx-background-image:url("pictures/logInBackground.jpg");
+    -fx-background-size: cover;
     }
+
+.secBackground {
+     -fx-background-image:url("pictures/mainPic.png");
+     }
+
+.homeIcon {
+    -fx-background-color: transparent;
+    -fx-shape:null;
+    -fx-background-image: url("pictures/mainPic.png");
+}
