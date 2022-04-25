@@ -14,6 +14,12 @@
     -fx-pref-width: 300px;
 }
 
+.comboBox {
+    -fx-background-color: #202020;
+    -fx-border-color: BLACK ;
+    -fx-border-width: 2px ;
+}
+
 .linkButton {
     -fx-text-fill: BLACK;
     -fx-background-color: transparent;
@@ -28,6 +34,9 @@
 .secBackground {
      -fx-background-image: url("pictures/mainPic.png");
      -fx-background-repeat: no-repeat;
+     -fx-background-size: cover;
+     -fx-background-image-max-width: 100%;
+     -fx-background-image-max-height: 100%;
 }
 
 .homeIcon {
@@ -38,4 +47,12 @@
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
     -fx-pref-width: 20px;
+}
+
+.tabPane.tab-header-area .tab-header-background {
+    -fx-background-color: #202020;
+    -fx-border-color: BLACK ;
+    -fx-border-width: 2px ;
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
 }

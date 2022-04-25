@@ -97,7 +97,7 @@ public class LogInStage {
                         .filter(s -> studentNumber.equals(s.getStudentNumber()))
                         .collect(Collectors.toList()).get(0);
 
-                new MainStage(stage, student);
+                new MainStage(stage, student, degrees);
             }
         });
 
