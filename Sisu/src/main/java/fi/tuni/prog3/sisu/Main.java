@@ -56,7 +56,7 @@ public class Main extends Application {
 //            studyModuleRead(modules);
 //            courseRead(studyModules);
         }
-
+        addTestStudents();
     }
 
     // The Sisu main window now exists in class MainStage.
@@ -71,7 +71,6 @@ public class Main extends Application {
 
     public static void degreeRead(List<Degree> degrees) throws IOException {
         String stringURL = "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000";
-
 
         URL url = new URL(stringURL);
 
@@ -92,19 +91,15 @@ public class Main extends Application {
             var name = degree.getAsJsonObject().get("name").getAsString();
             var creditEntries = degree.getAsJsonObject().get("credits").getAsJsonObject().entrySet();
 
-
             var creditMin = 0;
             for (var entry : creditEntries) {
                 if (Objects.equals(entry.getKey(), "min")) {
                     creditMin = entry.getValue().getAsInt();
                 }
             }
-
             var newDegree = new Degree(id, code, language, groupId, name, creditMin);
             degrees.add(newDegree);
-
         }
-
     }
 
     public void moduleRead(List<Degree> degrees) throws IOException {
@@ -143,8 +138,6 @@ public class Main extends Application {
             studyModules.put(studyModuleObject, studyModuleRules);
 
         }
-
-
         }
 
     public void courseRead(HashMap<JsonObject, JsonArray> studyModules) throws IOException {
@@ -154,7 +147,6 @@ public class Main extends Application {
             JsonArray tempModules = new JsonArray();
             var courses = recursiveCourses(studyModule.getValue(),tempModules);
             System.out.println("asd");
-
 
         }
 
@@ -192,7 +184,6 @@ public class Main extends Application {
 
     public JsonArray recursiveModules(JsonArray modules, JsonArray tempModules) {
 
-
         for(var subModule : modules) {
             if (subModule.getAsJsonObject().get("type").getAsString().equals("ModuleRule")) {
                 tempModules.add(subModule.getAsJsonObject());
@@ -207,7 +198,6 @@ public class Main extends Application {
 
 
     public JsonArray recursiveCourses(JsonArray modules, JsonArray tempModules) throws IOException {
-
 
         for(var subCourse : modules) {
             if (subCourse.getAsJsonObject().get("type").getAsString().equals("CourseUnitRule")) {
@@ -251,7 +241,6 @@ public class Main extends Application {
     }
 
     public JsonArray checkModuleObject(JsonObject moduleObject) {
-
         if(moduleObject.get("rule").getAsJsonObject().get("type").getAsString().equals("CompositeRule")) {
             return moduleObject.get("rule").getAsJsonObject().get("rules").getAsJsonArray();
         } else {
@@ -259,10 +248,7 @@ public class Main extends Application {
         }
     }
 
-
     public JsonArray recursiveDegreeModule(JsonObject degreeObject, JsonArray moduleArray) {
-
-
         if (degreeObject.getAsJsonObject().get("type").getAsString().equals("CompositeRule")) {
             moduleArray = degreeObject.getAsJsonObject().get("rules").getAsJsonArray();
             return moduleArray;
@@ -272,34 +258,11 @@ public class Main extends Application {
         return moduleArray;
     }
 
-    public List<Student> getStudents() {
-        return students;
+    public void addTestStudents() {
+        students.add(new Student("Heikki Paasonen", "12345678", 2001, degrees.get(0)));
+        students.add(new Student("Kimmo Koodari", "12345679", 2002, degrees.get(2)));
+        students.add(new Student("Kimmo Koodari", "15344444", 2020, degrees.get(20)));
+        students.add(new Student("Ronja Lipsonen", "50121133", 2020, degrees.get(3)));
     }
-
-    public void addStudent(String name, String studentNumber, int startingYear, Degree degree) {
-        if(isStudent(studentNumber)) {
-            Student newStudent = new Student(name, studentNumber, startingYear, degree);
-            students.add(newStudent);
-        }
-    }
-
-    public boolean isStudent(String studentNumber) {
-        return students.stream().anyMatch(s -> studentNumber.equals(s.getStudentNumber()));
-    }
-
-    public List<Teacher> getTeachers() {
-        return teachers;
-    }
-
-    public List<Degree> getDegrees() {
-        return degrees;
-    }
-
-    public List<String> getDegreeNames() {
-        return degrees.stream().map(Degree::getName).collect(Collectors.toList());
-    }
-
-
-
 }
 

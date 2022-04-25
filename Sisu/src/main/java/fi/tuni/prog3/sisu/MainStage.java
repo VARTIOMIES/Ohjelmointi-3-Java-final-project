@@ -1,18 +1,25 @@
 package fi.tuni.prog3.sisu;
 
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.controlsfx.control.SearchableComboBox;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class MainStage {
+    private Degree degree;
+
     //Home page.
     Label greetingLabel = new Label();
     Label degreeLabel = new Label();
@@ -27,9 +34,15 @@ public class MainStage {
     Label emailInfoLabel = new Label("Sähköpostiosoite");
     Label emailLabel = new Label();
 
-    MainStage(Stage stage, Student student) {
+    MainStage(Stage stage, Student student, List<Degree> degrees) {
+        degree = student.getDegree();
+        // Making the degree drop box.
+        List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
+        ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
+        final SearchableComboBox<String> degreeComboBox = new SearchableComboBox<>(degreeObsList);
+
         greetingLabel.setText(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
-        degreeLabel.setText(student.getDegree().getName());
+        degreeLabel.setText(degree.getName());
         nameLabel.setText(student.getName());
         studentNumberLabel.setText(student.getStudentNumber());
         emailLabel.setText(student.getEmailAddress());
@@ -53,7 +66,7 @@ public class MainStage {
         testTreeItems.put("Joku StudyModule1", testList);
         testTreeItems.put("Joku StudyModule2", testList);
 
-        TreeItem<String> rootNode = new TreeItem<>(student.getDegree().getName());
+        TreeItem<String> rootNode = new TreeItem<>(degree.getName());
         // TODO: StudyModule = TreeItem.
         for(var treeItem : testTreeItems.entrySet()) {
             TreeItem<String> webItem = new TreeItem<>(treeItem.getKey());
@@ -96,7 +109,8 @@ public class MainStage {
         homeGrid.add(greetingLabel, 0, 0);
         homeGrid.add(degreeLabel,0,1);
 
-        courseGrid.add(treeView, 0, 2, 2, 1);
+        courseGrid.add(degreeComboBox, 0, 0, 3, 1);
+        courseGrid.add(treeView, 0, 2, 3, 3);
 
         personalGrid.add(nameInfoLabel, 0, 0);
         personalGrid.add(nameLabel, 0, 1);
@@ -108,6 +122,8 @@ public class MainStage {
         // Setting css id:s.
         homeGrid.getStyleClass().add("secBackground");
         homeTab.getStyleClass().add("homeIcon");
+        tabPane.getStyleClass().add("tabPane");
+        degreeComboBox.getStyleClass().add("comboBox");
 
         var scene = new Scene(homeBox, 900, 650);
         stage.setScene(scene);
@@ -115,5 +131,10 @@ public class MainStage {
         scene.getStylesheets().add(style);
         stage.setTitle("SISU");
         stage.show();
+
+        // TODO: Change degree
+        degreeComboBox.valueProperty().
+                addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
+                {});
     }
 }

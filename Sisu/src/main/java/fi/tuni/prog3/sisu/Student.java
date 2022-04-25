@@ -8,6 +8,9 @@ public class Student {
     private final int startingYear;
     private final int expectedEndYear;
     private Degree degree;
+    private final String firstName;
+    private final String lastName;
+    private int sameNamed;
     private ArrayList<Attainment> attainments;
     private ArrayList<Course> selectedCourses;
 
@@ -18,6 +21,8 @@ public class Student {
         this.expectedEndYear = startingYear + 3;
         this.degree = degree;
 
+        firstName = name.split(" ")[0];
+        lastName = name.substring(name.lastIndexOf(" ")+1);
         attainments = new ArrayList<Attainment>();
         selectedCourses = new ArrayList<>();
     }
@@ -43,11 +48,11 @@ public class Student {
     }
 
     public String getFirstName() {
-        return name.split(" ")[0];
+        return firstName;
     }
 
     public String getLastName() {
-        return name.substring(name.lastIndexOf(" ")+1);
+        return lastName;
     }
 
     public void changeDegree(Degree newDegree) {
@@ -74,18 +79,33 @@ public class Student {
         return selectedCourses;
     }
 
+    public void setSameNamed(int howMany) {
+        this.sameNamed = howMany;
+    }
+
     public String getEmailAddress() {
-        if(getLastName().contains("'") && !getFirstName().contains("'")) {
-            return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase(), getLastName().toLowerCase().replace("'", ""));
+        String emailAddress = "";
+
+        // Checking for char "'".
+        if(firstName.contains("'") || lastName.contains("'")) {
+            if(lastName.contains("'")) {
+                emailAddress = String.format("%s.%s", firstName.toLowerCase(), lastName.toLowerCase().replace("'", ""));
+            } else {
+                emailAddress = String.format("%s.%s", firstName.toLowerCase().replace("'", "")
+                        , lastName.toLowerCase());
+            }
         }
-        if(getFirstName().contains("'") && !getLastName().contains("'")) {
-            return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase().replace("'", "")
-                    , getLastName().toLowerCase());
+        else if(firstName.contains("'") && lastName.contains("'")) {
+            emailAddress = String.format("%s.%s", firstName.toLowerCase().replace("'", "")
+                    , lastName.toLowerCase().replace("'", ""));
+        } else {
+            emailAddress = String.format("%s.%s", firstName.toLowerCase(), lastName.toLowerCase());
         }
-        if(getFirstName().contains("'") && getLastName().contains("'")) {
-            return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase().replace("'", "")
-                    , getLastName().toLowerCase().replace("'", ""));
+
+        if(sameNamed >= 2) {
+            emailAddress += sameNamed;
         }
-        return String.format("%s.%s@tuni.fi", getFirstName().toLowerCase(), getLastName().toLowerCase());
+
+        return emailAddress + "@tuni.fi";
     }
 }
