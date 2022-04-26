@@ -161,6 +161,10 @@
     -fx-background-color: #202020;
 }
 
+.vbox {
+    -fx-background-color: #efe2d6 ;
+}
+
 .grid-pane {
     -fx-background-color: #efe2d6 ;
 }

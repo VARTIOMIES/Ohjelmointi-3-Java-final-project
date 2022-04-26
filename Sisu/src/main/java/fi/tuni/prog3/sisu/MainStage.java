@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.SearchableComboBox;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -21,13 +22,15 @@ public class MainStage {
     private TabPane tabPane;
     private MenuBar menuBar;
     private Label logOutLabel;
+    private List<Course> courses;
 
     HashMap<String, List<String>> testTreeItems = new HashMap<>();
     List<String> testList = Arrays.asList("Kurssi1", "Kurssi2", "Kurssi3", "Kurssi4");
 
 
-    MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) {
+    MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
         // Initializing stuff
+        courses = student.getDegree().getCourses();
         this.student = student;
         this.degrees = degrees;
         this.logOutLabel = new Label("Kirjaudu ulos");
@@ -41,6 +44,7 @@ public class MainStage {
 
         // Creating containers.
         VBox layout = new VBox();
+        layout.getStyleClass().add("hbox");
         var scene = new Scene(layout, 900, 650);
 
         // Preparing tabs.
@@ -83,7 +87,7 @@ public class MainStage {
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,0,15));
+            grid.setPadding(new Insets(15,15,15,15));
 
             this.setContent(grid);
 
@@ -116,13 +120,17 @@ public class MainStage {
             // TODO: TreeView change.
             rootNode = new TreeItem<>("Suoritetut kurssit");
             treeView = new TreeView<>();
+            for(var treeItem : courses) {
+                TreeItem<String> webItem = new TreeItem<>(treeItem.getCourseName());
+                rootNode.getChildren().add(webItem);
+            }
             treeView.setRoot(rootNode);
             treeView.setShowRoot(true);
 
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,0,15));
+            grid.setPadding(new Insets(15,15,15,15));
 
             grid.add(infoLabel, 0, 0);
             grid.add(courseComboBox, 0, 1);
@@ -147,11 +155,8 @@ public class MainStage {
 
         private void makeTreeView(Degree degree){
             rootNode = new TreeItem<>(degree.getName());
-            for(var treeItem : testTreeItems.entrySet()) {
-                TreeItem<String> webItem = new TreeItem<>(treeItem.getKey());
-                for(var item : treeItem.getValue()) {
-                    webItem.getChildren().add(new TreeItem<>(item));
-                }
+            for(var treeItem : courses) {
+                TreeItem<String> webItem = new TreeItem<>(treeItem.getCourseName());
                 rootNode.getChildren().add(webItem);
             }
             treeView.setRoot(rootNode);
@@ -176,7 +181,7 @@ public class MainStage {
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,0,15));
+            grid.setPadding(new Insets(15,15,15,15));
             this.setContent(grid);
 
             changeDegreeButton = new Button("Vaihda");
@@ -224,7 +229,7 @@ public class MainStage {
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,0,15));
+            grid.setPadding(new Insets(15,15,15,15));
 
             nameInfoLabel = new Label("Koko nimi");
             nameLabel = new Label();
