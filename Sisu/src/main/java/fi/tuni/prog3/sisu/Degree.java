@@ -13,7 +13,7 @@ public class Degree {
     private final String name;
     private final int creditsMin;
 
-    private JsonArray modules;
+    private ArrayList<Module> modules;
     private ArrayList<StudyModule> studyModules;
     private ArrayList<Course> courses;
 
@@ -27,7 +27,7 @@ public class Degree {
         this.creditsMin = creditsMin;
 
 
-        modules = new JsonArray();
+        modules = new ArrayList<>();
         studyModules = new ArrayList<>();
         courses = new ArrayList<>();
     }
@@ -56,15 +56,22 @@ public class Degree {
         return code;
     }
 
-    public void setModules(JsonObject module) {
+    public void setModules(Module module) {
         this.modules.add(module);
     }
     public void setStudyModules(StudyModule studyModule) {
         this.studyModules.add(studyModule);
     }
+    public ArrayList<StudyModule> getStudyModules() {
+        return this.studyModules;
+    }
 
-    public JsonArray getModules() {
+    public ArrayList<Module> getModules() {
         return this.modules;
+    }
+
+    public void setCourses(Course course) {
+        this.courses.add(course);
     }
 
     public ArrayList<Course> getCourses() {
