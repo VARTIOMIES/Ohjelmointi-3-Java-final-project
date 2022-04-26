@@ -1,6 +1,7 @@
 package fi.tuni.prog3.sisu;
 
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -26,7 +28,8 @@ public class LogInStage {
     Label logInLabel = new Label("Kirjaudu sisään");
     Label studentNumberLabel = new Label("Opiskelijanumero");
     TextField studentNumberField = new TextField();
-    Pane gap = new Pane();
+    Pane smallGap = new Pane();
+    Pane bigGap = new Pane();
     Button nextButton = new Button("Jatka");
     Button newStudentButton = new Button("Uusi oppilas");
 
@@ -34,29 +37,33 @@ public class LogInStage {
 
         // Grid prepping.
         stage.setResizable(false);
-        var grid = new GridPane();
+        VBox vbox = new VBox(15);
+        GridPane grid = new GridPane();
         grid.setHgap(15);
-        grid.setVgap(15);
-        grid.setPadding(new Insets(15,15,15,15));
-        gap.minHeightProperty().set(30);
+        grid.setAlignment(Pos.CENTER);
+        vbox.setAlignment(Pos.BASELINE_CENTER);
+        smallGap.minHeightProperty().set(5);
+        bigGap.minHeightProperty().set(30);
 
         // TODO: Center.
         // Setting the elements.
-        // node, columnIndex, rowIndex, columnSpan, rowSpan:
-        grid.add(logInLabel,1,0,3 ,1);
-        grid.add(studentNumberLabel,1,1);
-        grid.add(studentNumberField,1,2, 2, 1);
-        grid.add(gap, 0, 3);
-        grid.add(nextButton,0,4, 3, 1);
-        grid.add(newStudentButton, 1, 5, 2, 1);
+        vbox.getChildren().add(logInLabel);
+        vbox.getChildren().add(smallGap);
+        vbox.getChildren().add(studentNumberLabel);
+        vbox.getChildren().add(grid);
+        grid.add(studentNumberField, 0, 0, 2, 1);
+        vbox.getChildren().add(bigGap);
+        vbox.getChildren().add(nextButton);
+        vbox.getChildren().add(newStudentButton);
 
         // Setting css id:s.
         logInLabel.getStyleClass().add("heading");
-        grid.getStyleClass().add("firstBackground");
+        studentNumberLabel.getStyleClass().add("basicText");
+        vbox.getStyleClass().add("firstBackground");
         newStudentButton.getStyleClass().add("linkButton");
         nextButton.getStyleClass().add("nextButton");
 
-        Scene scene = new Scene(grid, 350, 400);
+        Scene scene = new Scene(vbox, 350, 400);
         stage.setTitle("Kirjaudu sisään");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
@@ -86,7 +93,7 @@ public class LogInStage {
             String studentNumber = studentNumberField.getText();
 
             if(students.stream().noneMatch(s -> studentNumber.equals(s.getStudentNumber()))) {
-                grid.add(new Label("Opiskelijanumeroa ei löydy."), 1, 3);
+               grid.add(new Label("Opiskelijanumeroa ei löydy."), 0, 1);
                 studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
                 isValueOK.set(false);
             }

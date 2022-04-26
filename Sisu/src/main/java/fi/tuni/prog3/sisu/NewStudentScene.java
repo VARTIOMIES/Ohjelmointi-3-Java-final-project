@@ -47,7 +47,7 @@ public class NewStudentScene {
 
         // Setting the elements.
         // node, columnIndex, rowIndex, columnSpan, rowSpan:
-        grid.add(newStudentLabel, 0, 0, 2, 1);
+        grid.add(newStudentLabel, 1, 0, 2, 1);
         grid.add(nameLabel, 0, 1);
         grid.add(nameField, 0, 2, 3, 1);
         grid.add(studentNumberLabel, 0, 3);
@@ -58,7 +58,7 @@ public class NewStudentScene {
         grid.add(degreeComboBox, 0, 6, 3, 1);
         grid.add(gap, 0, 7);
         grid.add(nextButton,0,8, 3, 1);
-        grid.add(previousButton, 1, 9, 2, 1);
+        grid.add(previousButton, 0, 9, 2, 1);
 
         // Setting css id:s.
         newStudentLabel.getStyleClass().add("heading");
@@ -66,7 +66,7 @@ public class NewStudentScene {
         nextButton.getStyleClass().add("nextButton");
         previousButton.getStyleClass().add("linkButton");
 
-        Scene scene = new Scene(grid, 350, 400);
+        Scene scene = new Scene(grid, 350, 420);
         stage.setTitle("Uusi oppilas");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
