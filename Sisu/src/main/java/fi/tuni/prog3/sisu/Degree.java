@@ -22,8 +22,7 @@ public class Degree {
     private final int creditsMin;
 
     private ArrayList<Module> modules;
-    private ArrayList<StudyModule> studyModules;
-    private ArrayList<Course> courses;
+
 
 
     public Degree(String id, String code, String language, String groupId, String name, int creditsMin) {
@@ -36,8 +35,7 @@ public class Degree {
 
 
         modules = new ArrayList<>();
-        studyModules = new ArrayList<>();
-        courses = new ArrayList<>();
+
     }
 
     public String getId() {
@@ -67,32 +65,18 @@ public class Degree {
     public void setModules(Module module) {
         this.modules.add(module);
     }
-    public void setStudyModules(StudyModule studyModule) {
-        this.studyModules.add(studyModule);
-    }
-    public ArrayList<StudyModule> getStudyModules() {
-        return this.studyModules;
-    }
+
 
     public ArrayList<Module> getModules() {
         return this.modules;
     }
 
-    public void setCourses(Course course) {
-        this.courses.add(course);
-    }
 
     public void readAPI() throws IOException {
         moduleRead(this);
         studyModuleRead();
         courseRead(this);
     }
-
-
-    public ArrayList<Course> getCourses() {
-        return courses;
-    }
-
 
     private void moduleRead(Degree degree) throws IOException {
 
