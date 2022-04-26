@@ -37,7 +37,6 @@ public class MainStage {
             }
         }
 
-
         this.student = student;
         this.degrees = degrees;
         this.logOutLabel = new Label("Kirjaudu ulos");
@@ -112,7 +111,7 @@ public class MainStage {
     }
     private class DesignTab extends Tab{
         //Buttons and other elements
-        private final Label infoLabel = new Label("Hae kursseja");
+        private final Label infoLabel = new Label("Merkitse kursseja");
         private final SearchableComboBox<String> courseComboBox;
         private TreeView<String> treeView;
         private TreeItem<String> rootNode;
@@ -127,9 +126,15 @@ public class MainStage {
             // TODO: TreeView change.
             rootNode = new TreeItem<>("Suoritetut kurssit");
             treeView = new TreeView<>();
-            for(var treeItem : courses) {
-                TreeItem<String> webItem = new TreeItem<>(treeItem.getCourseName());
-                rootNode.getChildren().add(webItem);
+            for(var treeItem : student.getDegree().getModules()) {
+                TreeItem<String> moduleItem = new TreeItem<>(treeItem.getModuleName());
+                for(var courseItem : treeItem.getStudyModules()) {
+                    for(var course : courseItem.getCourses()) {
+                        TreeItem<String> kakki = new TreeItem<>(course.getCourseName());
+                        moduleItem.getChildren().add(kakki);
+                    }
+                }
+                rootNode.getChildren().add(moduleItem);
             }
             treeView.setRoot(rootNode);
             treeView.setShowRoot(true);
@@ -140,7 +145,7 @@ public class MainStage {
             grid.setPadding(new Insets(15,15,15,15));
 
             grid.add(infoLabel, 0, 0);
-            grid.add(courseComboBox, 0, 1);
+            grid.add(courseComboBox, 0, 1, 2, 1);
             grid.add(treeView, 0, 2, 2, 1);
 
             this.setContent(grid);
