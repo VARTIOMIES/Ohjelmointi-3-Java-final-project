@@ -67,19 +67,11 @@
 .secBackground {
      -fx-background-image: url("pictures/mainPic.png");
      -fx-background-repeat: no-repeat;
-     -fx-background-size: cover;
-     -fx-background-image-max-width: 900;
-}
-
-.homeIcon {
-    -fx-background-image:url("pictures/homeIcon.png");
-    -fx-background-image-max-height: 25;
-    -fx-background-position: center;
-    -fx-background-repeat: no-repeat;
+     -fx-background-size: 900px 230px;
 }
 
 .tab-pane *.tab-header-area *.tab-header-background {
-    -fx-background-color: transparent;
+    -fx-background-color: #101010;
 }
 
 .tab-pane {
@@ -94,8 +86,10 @@
   -fx-text-base-color: white;
   -fx-font-size: 12;
   -fx-background-color: #202020 ;
+  -fx-border-color: BLACK ;
+  -fx-border-width: 1px ;
 }
 
 .tab:selected {
-    -fx-background-color:#181818 ;
+    -fx-background-color:#101010 ;
 }

@@ -1,6 +1,5 @@
 package fi.tuni.prog3.sisu;
 
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -18,7 +17,24 @@ import java.util.stream.Collectors;
 
 
 public class MainStage {
+
+
+    TreeView<String> treeView;
+    HashMap<String, List<String>> testTreeItems = new HashMap<>();
+    List<String> testList = Arrays.asList("Kurssi1", "Kurssi2", "Kurssi3", "Kurssi4");
     private TreeItem<String> rootNode;
+
+    private void makeTreeView(Degree degree){
+        rootNode = new TreeItem<>(degree.getName());
+        for(var treeItem : testTreeItems.entrySet()) {
+            TreeItem<String> webItem = new TreeItem<>(treeItem.getKey());
+            for(var item : treeItem.getValue()) {
+                webItem.getChildren().add(new TreeItem<>(item));
+            }
+            rootNode.getChildren().add(webItem);
+        }
+        treeView.setRoot(rootNode);
+    }
 
     //Home page.
     Label greetingLabel = new Label();
@@ -50,31 +66,20 @@ public class MainStage {
         // Preparing tabs.
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        Tab homeTab = new Tab();
-        Tab courseTab = new Tab("Kurssit");
+        Tab homeTab = new Tab("Etusivu");
+        Tab designTab = new Tab("Omat suoritukset");
+        Tab courseTab = new Tab("Kurssinäkymä");
         Tab personalTab = new Tab("Omat tiedot");
         tabPane.getTabs().add(homeTab);
+        tabPane.getTabs().add(designTab);
         tabPane.getTabs().add(courseTab);
         tabPane.getTabs().add(personalTab);
 
-
-        // TODO: Make different grids for tabs. Also make treeView work.
-        HashMap<String, List<String>> testTreeItems = new HashMap<>();
-        List<String> testList = Arrays.asList("Kurssi1", "Kurssi2", "Kurssi3", "Kurssi4");
+        // TODO: Make treeView work.
         testTreeItems.put("Joku StudyModule1", testList);
         testTreeItems.put("Joku StudyModule2", testList);
-
-        rootNode = new TreeItem<>(student.getDegree().getName());
-        // TODO: (Study)Module = TreeItem.
-        for(var treeItem : testTreeItems.entrySet()) {
-            TreeItem<String> webItem = new TreeItem<>(treeItem.getKey());
-            for(var item : treeItem.getValue()) {
-                webItem.getChildren().add(new TreeItem<>(item));
-            }
-            rootNode.getChildren().add(webItem);
-        }
-        TreeView<String> treeView = new TreeView<>();
-        treeView.setRoot(rootNode);
+        treeView = new TreeView<>();
+        makeTreeView(student.getDegree());
         treeView.setShowRoot(true);
 
         // Creating all containers.
@@ -90,6 +95,11 @@ public class MainStage {
         courseGrid.setVgap(15);
         courseGrid.setPadding(new Insets(15,15,15,15));
 
+        GridPane designGrid = new GridPane();
+        designGrid.setHgap(15);
+        designGrid.setVgap(15);
+        designGrid.setPadding(new Insets(15,15,15,15));
+
         GridPane personalGrid = new GridPane();
         personalGrid.setHgap(15);
         personalGrid.setVgap(15);
@@ -100,6 +110,7 @@ public class MainStage {
         homeBox.getChildren().add(tabPane);
         homeTab.setContent(homeGrid);
         courseTab.setContent(courseGrid);
+        designTab.setContent(designGrid);
         personalTab.setContent(personalGrid);
 
         homeGrid.add(greetingLabel, 0, 0);
@@ -125,6 +136,7 @@ public class MainStage {
         studentNumberInfoLabel.getStyleClass().add("smallHeading");
         emailInfoLabel.getStyleClass().add("smallHeading");
 
+        // Setting scene and stage.
         var scene = new Scene(homeBox, 900, 650);
         stage.setScene(scene);
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
@@ -132,7 +144,7 @@ public class MainStage {
         stage.setTitle("SISU");
         stage.show();
 
-        // TODO: Change degree
+        // Actions.
         changeDegreeButton.setOnAction(e -> {
             if(degreeComboBox.getValue() != null) {
                 var degreeString = degreeComboBox.getValue();
@@ -140,9 +152,17 @@ public class MainStage {
                         .filter(d -> degreeString.equals(d.getName()))
                         .collect(Collectors.toList()).get(0);
                 student.changeDegree(degree);
-                rootNode = new TreeItem<>(student.getDegree().getName());
-                treeView.setRoot(rootNode);
+
+                makeTreeView(degree);
             }
         });
+    }
+    private class HomeTab {
+        HomeTab() {
+            GridPane homeGrid = new GridPane();
+            homeGrid.setHgap(15);
+            homeGrid.setVgap(15);
+            homeGrid.setPadding(new Insets(15,15,15,15));
+        }
     }
 }
