@@ -52,11 +52,11 @@ public class Main extends Application {
 
         if(API_READ){
             degreeRead(degrees);
-//            moduleRead(degrees);
-//            studyModuleRead(modules);
-//            courseRead(degrees);
+            moduleRead(degrees);
+            studyModuleRead(modules);
+            courseRead(degrees);
         }
-        addTestStudents();
+        //addTestStudents();
     }
 
     // The Sisu main window now exists in class MainStage.
@@ -112,48 +112,103 @@ public class Main extends Application {
 
             var moduleArray = new JsonArray();
             JsonArray moduleRules = recursiveDegreeModule(degreeObject, moduleArray);
-            modules.put(degree,moduleRules);
-            //degree.setModules(moduleRules);
-        }
-    }
 
-    public void studyModuleRead(HashMap<Degree, JsonArray> modules) throws IOException {
 
-        for(var degree : modules.entrySet()) {
             var tempModules = new JsonArray();
-            var modul = recursiveModules(degree.getValue(),tempModules);
-            JsonArray studyModuleRules = new JsonArray();
-            JsonObject studyModuleObject = new JsonObject();
+            var modRules = recursiveModules(moduleRules,tempModules);
+            for(var module : modRules) {
 
-            for(var moduleGroup : modul) {
 
-                var moduleGroupId = moduleGroup.getAsJsonObject().get("moduleGroupId").getAsString();
-                var studyModuleURL = createModuleURL(moduleGroupId);
+                Module mod = null;
+                var studyModules = new ArrayList<StudyModule>();
+                var moduleString = module.getAsJsonObject().get("moduleGroupId").getAsString();
+                String moduleURLString = createModuleURL(moduleString);
+                URL moduleURL = new URL(moduleURLString);
+                var moduleObject = createModuleObject(moduleURL);
 
-                URL url = new URL(studyModuleURL);
-                studyModuleObject = createModuleObject(url);
-                studyModuleRules.add(studyModuleObject.get("rule").getAsJsonObject());
-                degree.getKey().setModules(studyModuleObject);
+                if(moduleObject.get("name").getAsJsonObject().get("fi") == null) {
+                    mod = new Module(moduleObject.get("name").getAsJsonObject().get("en").getAsString(),moduleObject.get("id").getAsString(), studyModules);
+                } else {
+                    mod = new Module(moduleObject.get("name").getAsJsonObject().get("fi").getAsString(),moduleObject.get("id").getAsString(), studyModules);
+                }
+                degree.setModules(mod);
 
             }
-            studyModules.put(studyModuleObject, studyModuleRules);
+            modules.put(degree,modRules);
+
 
 
         }
+        System.out.println("asd");
+    }
+
+    public void studyModuleRead(HashMap<Degree,JsonArray> modules) throws IOException {
+
+        for(var rule : modules.entrySet()) {
+          for(var module : rule.getKey().getModules()) {
+                var tempModules = new JsonArray();
+
+                JsonArray studyModuleRules = new JsonArray();
+                JsonObject studyModuleObject = new JsonObject();
+                var courseArray = new ArrayList<Course>();
+
+
+                    var moduleGroupId = module.getModuleCode();
+                    var studyModuleURL = createModuleURL(moduleGroupId);
+                    StudyModule studyModule = null;
+                    URL url = new URL(studyModuleURL);
+                    studyModuleObject = createModuleObject(url);
+                    studyModuleRules.add(studyModuleObject);
+
+                    if (studyModuleObject.get("name").getAsJsonObject().get("fi") == null) {
+                        studyModule = new StudyModule(studyModuleObject.get("name").getAsJsonObject().get("en").getAsString(), studyModuleRules, courseArray);
+                    } else {
+                        studyModule = new StudyModule(studyModuleObject.get("name").getAsJsonObject().get("fi").getAsString(), studyModuleRules, courseArray);
+                    }
+
+                    module.setStudyModules(studyModule);
+
+
+            }
+
+            //studyModules.put(studyModuleObject, studyModuleRules);
+
+        }
+    System.out.println("asd");
+
+
         }
 
     public void courseRead(List<Degree> degrees) throws IOException {
 
-        for(var degree : degrees) {
-
-            JsonArray tempModules = new JsonArray();
-            var courses = recursiveCourses(degree.getModules(),tempModules);
-            System.out.println("asd");
+        for (var degree : degrees) {
 
 
+            for (var module : degree.getModules()) {
+                for(var studyModule : module.getStudyModules()) {
+                    JsonArray tempCourses = new JsonArray();
+                    var courses = recursiveCourses(studyModule.getModuleRules(), tempCourses);
 
+                    for (var course : courses) {
+
+                        var courseURL = createCourseURL(course.getAsJsonObject().get("courseUnitGroupId").getAsString());
+                        URL url = new URL(courseURL);
+                        var courseObject = createModuleObject(url);
+                        var courseName = "";
+                        if (courseObject.getAsJsonObject().get("name").getAsJsonObject().get("fi") == null) {
+                            courseName = courseObject.get("name").getAsJsonObject().get("en").getAsString();
+                        } else {
+                            courseName = courseObject.get("name").getAsJsonObject().get("fi").getAsString();
+                        }
+
+                        var createCourse = new Course(courseName, courseObject.getAsJsonObject().get("id").getAsString(), courseObject.getAsJsonObject().get("credits").getAsJsonObject().get("min").getAsInt());
+                        studyModule.setCourses(createCourse);
+                }
+
+                }
+            }
         }
-
+    System.out.println("asd");
     }
 
 
@@ -169,6 +224,20 @@ public class Main extends Application {
 
         return URL;
     }
+
+    private String createCourseURL(String courseUnitId) {
+
+        var URL = "";
+        var substring = courseUnitId.substring(0, 3);
+        if (substring.equals("otm")) {
+            URL = "https://sis-tuni.funidata.fi/kori/api/course-units/" + courseUnitId;
+        } else {
+            URL = "https://sis-tuni.funidata.fi/kori/api/course-units/by-group-id?groupId=" + courseUnitId + "&universityId=tuni-university-root-id";
+        }
+
+        return URL;
+    }
+
 
 
     private JsonObject createModuleObject(URL url) throws IOException {
@@ -202,15 +271,55 @@ public class Main extends Application {
         }
 
 
-    public JsonArray recursiveCourses(JsonArray modules, JsonArray tempModules) throws IOException {
+    public JsonArray recursiveCourses(JsonArray rules, JsonArray tempCourses) throws IOException {
 
 
+        for(var rule : rules) {
+            if (rule.getAsJsonObject().get("type").getAsString().equals("CourseUnitRule")) {
+                if (!tempCourses.contains(rule.getAsJsonObject())) {
+                    tempCourses.add(rule.getAsJsonObject());
 
+                }
+
+            }else if(rule.getAsJsonObject().get("type").getAsString().equals("CompositeRule")) {
+                tempCourses = recursiveCourses(rule.getAsJsonObject().get("rules").getAsJsonArray(),tempCourses);
+
+            } else if(rule.getAsJsonObject().get("type").getAsString().equals("ModuleRule")) {
+                var moduleUrl = createModuleURL(rule.getAsJsonObject().get("moduleGroupId").getAsString());
+                URL url = new URL(moduleUrl);
+                var moduleObject = createModuleObject(url);
+                if(moduleObject.get("type").getAsString().equals("ModuleRule")) {
+                    tempCourses = recursiveCourses(moduleObject.getAsJsonObject().getAsJsonArray(),tempCourses);
+                } else if(moduleObject.get("type").getAsString().equals("CompositeRule")){
+                    tempCourses = recursiveCourses(moduleObject.get("rules").getAsJsonArray(),tempCourses);
+                } else if(moduleObject.get("type").getAsString().equals("StudyModule")){
+
+                    tempCourses = recursiveCourses(checkModuleObject(moduleObject),tempCourses);
+
+                } else {
+                    tempCourses = recursiveCourses(checkModuleObject(moduleObject),tempCourses);
+                }
+
+            } else if(rule.getAsJsonObject().get("type").getAsString().equals("AnyModuleRule")) {
+                    System.out.println("asd");
+            } else if(rule.getAsJsonObject().get("type").getAsString().equals("AnyCourseUnitRule")){
+                    System.out.println("asd");
+            } else {
+
+                if (rule.getAsJsonObject().get("rule").getAsJsonObject().get("type").getAsString().equals("CompositeRule")) {
+                    tempCourses = recursiveCourses(rule.getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(), tempCourses);
+                } else {
+                    tempCourses = recursiveCourses(rule.getAsJsonObject().get("rule").getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(),tempCourses);
+                }
+            }
+        }
+
+        /*
         for(var subCourse : modules) {
-
             if (subCourse.getAsJsonObject().get("type").getAsString().equals("CourseUnitRule")) {
                 if(!tempModules.contains(subCourse.getAsJsonObject())) {
                     tempModules.add(subCourse.getAsJsonObject());
+
 
                 }
 
@@ -238,15 +347,19 @@ public class Main extends Application {
             }else {
                 if(subCourse.getAsJsonObject().get("type").getAsString().equals("AnyModuleRule")) {
                     System.out.println("asff");
-                } else {
+                } else if(subCourse.getAsJsonObject().get("rule").getAsJsonObject().get("type").getAsString().equals("CompositeRule")){
                     tempModules = recursiveCourses(subCourse.getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(), tempModules);
+                } else {
+                    tempModules = recursiveCourses(subCourse.getAsJsonObject().get("rule").getAsJsonObject().get("rule").getAsJsonObject().get("rules").getAsJsonArray(), tempModules);
                 }
 
 
             }
 
         }
-        return tempModules;
+
+         */
+        return tempCourses;
 
 
     }
