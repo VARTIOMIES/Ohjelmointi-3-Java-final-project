@@ -3,7 +3,6 @@ package fi.tuni.prog3.sisu;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -21,28 +20,33 @@ public class MainStage {
     private List<Degree> degrees;
     private TabPane tabPane;
     private MenuBar menuBar;
+    private Label logOutLabel;
 
     HashMap<String, List<String>> testTreeItems = new HashMap<>();
     List<String> testList = Arrays.asList("Kurssi1", "Kurssi2", "Kurssi3", "Kurssi4");
 
 
-    MainStage(Stage stage, Student student, List<Degree> degrees) {
+    MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) {
         // Initializing stuff
         this.student = student;
         this.degrees = degrees;
+        this.logOutLabel = new Label("Kirjaudu ulos");
+        logOutLabel.setOnMouseClicked(e -> {
+            new LogInStage(stage, degrees, students);
+        });
+
         // TODO: Make treeView work.
         testTreeItems.put("Joku StudyModule1", testList);
         testTreeItems.put("Joku StudyModule2", testList);
 
         // Creating containers.
-        VBox layout = new VBox(15);
+        VBox layout = new VBox();
         var scene = new Scene(layout, 900, 650);
 
         // Preparing tabs.
         tabPane = new TabPane();
         menuBar = new MenuBar();
-        Menu menu = new Menu(student.getName());
-        menu.getItems().add(new MenuItem("Kirjaudu ulos"));
+        Menu menu = new Menu("", logOutLabel);
         menuBar.getMenus().add(menu);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -53,6 +57,12 @@ public class MainStage {
         tabPane.getTabs().add(new CourseTab("Kurssinäkymä"));
         tabPane.getTabs().add(new PersonalTab("Omat tiedot"));
 
+
+        Region spacer = new Region();
+        spacer.getStyleClass().add("spacer");
+        HBox menuBox = new HBox(spacer, menuBar);
+        menuBox.getStyleClass().add("hbox");
+        layout.getChildren().add(menuBox);
         layout.getChildren().add(tabPane);
 
         // Setting scene and stage.
@@ -73,28 +83,28 @@ public class MainStage {
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
+            grid.setPadding(new Insets(15,15,0,15));
 
             this.setContent(grid);
 
             greetingLabel = new Label();
             grid.add(greetingLabel,0,0);
 
-            grid.getStyleClass().add("secBackground");
-            greetingLabel.getStyleClass().add("bigHeading");
             greetingLabel.setText(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
 
+            // Setting css id:s.
+            grid.getStyleClass().add("grid-pane");
             grid.getStyleClass().add("secBackground");
             greetingLabel.getStyleClass().add("bigHeading");
             this.getStyleClass().add("homeIcon");
-
-
         }
     }
     private class DesignTab extends Tab{
         //Buttons and other elements
         private final Label infoLabel = new Label("Hae kursseja");
         private final SearchableComboBox<String> courseComboBox;
+        private TreeView<String> treeView;
+        private TreeItem<String> rootNode;
 
         // Constructor
         DesignTab(String label){
@@ -103,17 +113,25 @@ public class MainStage {
             // TODO: Course list here.
             courseComboBox = new SearchableComboBox<>();
 
+            // TODO: TreeView change.
+            rootNode = new TreeItem<>("Suoritetut kurssit");
+            treeView = new TreeView<>();
+            treeView.setRoot(rootNode);
+            treeView.setShowRoot(true);
+
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
+            grid.setPadding(new Insets(15,15,0,15));
 
             grid.add(infoLabel, 0, 0);
             grid.add(courseComboBox, 0, 1);
+            grid.add(treeView, 0, 2, 2, 1);
 
             this.setContent(grid);
 
             // Setting css id:s.
+            grid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
         }
     }
@@ -158,7 +176,7 @@ public class MainStage {
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
+            grid.setPadding(new Insets(15,15,0,15));
             this.setContent(grid);
 
             changeDegreeButton = new Button("Vaihda");
@@ -169,6 +187,7 @@ public class MainStage {
             grid.add(treeView,0,3,3,3);
 
             // Setting css id:s.
+            grid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
             courseInfoLabel.getStyleClass().add("infoLabel");
 
@@ -205,7 +224,7 @@ public class MainStage {
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
+            grid.setPadding(new Insets(15,15,0,15));
 
             nameInfoLabel = new Label("Koko nimi");
             nameLabel = new Label();
@@ -230,6 +249,7 @@ public class MainStage {
             this.setContent(grid);
 
             // Setting css id:s.
+            grid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
             nameInfoLabel.getStyleClass().add("smallHeading");
             studentNumberInfoLabel.getStyleClass().add("smallHeading");

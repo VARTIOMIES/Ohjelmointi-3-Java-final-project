@@ -1,3 +1,7 @@
+.spacer {
+    -fx-min-width: 790px;
+}
+
 .basicText {
     -fx-font-family: "Adamina";
     -fx-font-size: 14px;
@@ -148,23 +152,15 @@
 }
 
 .menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
-    -fx-background: black ;
+    -fx-background: #101010 ;
     -fx-opacity: 0.5;
-    -fx-text-fill: WHITE;
+    -fx-text-fill: white;
 }
 
-.menu-item {
-    -fx-padding: 0.0em 0.0em 0.0em 0.0em;
-    -fx-text-fill: black;
-    -fx-background: #202020 ;
+.hbox {
+    -fx-background-color: #202020;
 }
-.menu-item .label{
-    -fx-font-size: 12;
-    -fx-background-color: #202020 ;
-    -fx-text-fill: WHITE;
-}
-.menu-item .label:hover{
-    -fx-font-size: 12;
-    -fx-background: black ;
-    -fx-text-fill: white;
+
+.grid-pane {
+    -fx-background-color: #efe2d6 ;
 }

@@ -110,7 +110,7 @@ public class LogInStage {
                         .filter(s -> studentNumber.equals(s.getStudentNumber()))
                         .collect(Collectors.toList()).get(0);
 
-                new MainStage(stage, student, degrees);
+                new MainStage(stage, student, degrees, students);
             }
         });
 
