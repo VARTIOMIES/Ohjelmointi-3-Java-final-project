@@ -3,10 +3,10 @@ package fi.tuni.prog3.sisu;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.SearchableComboBox;
 
@@ -17,11 +17,10 @@ import java.util.stream.Collectors;
 
 
 public class MainStage {
-
     private Student student;
     private List<Degree> degrees;
     private TabPane tabPane;
-
+    private MenuBar menuBar;
 
     HashMap<String, List<String>> testTreeItems = new HashMap<>();
     List<String> testList = Arrays.asList("Kurssi1", "Kurssi2", "Kurssi3", "Kurssi4");
@@ -31,12 +30,21 @@ public class MainStage {
         // Initializing stuff
         this.student = student;
         this.degrees = degrees;
+        // TODO: Make treeView work.
+        testTreeItems.put("Joku StudyModule1", testList);
+        testTreeItems.put("Joku StudyModule2", testList);
 
-        // Creating container.
+        // Creating containers.
         VBox layout = new VBox(15);
+        var scene = new Scene(layout, 900, 650);
 
         // Preparing tabs.
         tabPane = new TabPane();
+        menuBar = new MenuBar();
+        Menu menu = new Menu(student.getName());
+        menu.getItems().add(new MenuItem("Kirjaudu ulos"));
+        menuBar.getMenus().add(menu);
+
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         // Creating tabs and adding them to tabPane
@@ -45,18 +53,9 @@ public class MainStage {
         tabPane.getTabs().add(new CourseTab("Kurssinäkymä"));
         tabPane.getTabs().add(new PersonalTab("Omat tiedot"));
 
-        // TODO: Make treeView work.
-        testTreeItems.put("Joku StudyModule1", testList);
-        testTreeItems.put("Joku StudyModule2", testList);
-
-        // Adding the tabpane to the
         layout.getChildren().add(tabPane);
 
-        // Setting css id for tabPane.
-        tabPane.getStyleClass().add("tabPane");
-
         // Setting scene and stage.
-        var scene = new Scene(layout, 900, 650);
         stage.setScene(scene);
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
@@ -94,69 +93,39 @@ public class MainStage {
     }
     private class DesignTab extends Tab{
         //Buttons and other elements
+        private final Label infoLabel = new Label("Hae kursseja");
+        private final SearchableComboBox<String> courseComboBox;
 
         // Constructor
         DesignTab(String label){
             super(label);
+
+            // TODO: Course list here.
+            courseComboBox = new SearchableComboBox<>();
+
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
             grid.setPadding(new Insets(15,15,15,15));
 
+            grid.add(infoLabel, 0, 0);
+            grid.add(courseComboBox, 0, 1);
+
             this.setContent(grid);
 
+            // Setting css id:s.
+            infoLabel.getStyleClass().add("bigHeading");
         }
-
     }
 
     private class CourseTab extends Tab{
         //Buttons and other elements
+        private final Label infoLabel = new Label("Tutkintorakenne");
         private final Button changeDegreeButton;
         private TreeView<String> treeView;
         private TreeItem<String> rootNode;
         private final SearchableComboBox<String> degreeComboBox;
-
-        // Constructor
-        CourseTab(String label){
-            super(label);
-            List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
-            ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
-            degreeComboBox = new SearchableComboBox<>(degreeObsList);
-            degreeComboBox.setPromptText("Voit vaihtaa tästä tutkinnon");
-
-            GridPane grid = new GridPane();
-            grid.setHgap(15);
-            grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
-
-            this.setContent(grid);
-
-            treeView = new TreeView<>();
-            makeTreeView(student.getDegree());
-            treeView.setShowRoot(true);
-
-            changeDegreeButton = new Button("Vaihda");
-            grid.add(degreeComboBox,0,0,3,1);
-            grid.add(changeDegreeButton,4,0);
-            grid.add(treeView,0,2,3,3);
-
-            changeDegreeButton.getStyleClass().add("basicButton");
-            changeDegreeButton.setOnAction(e -> {
-                if(degreeComboBox.getValue() != null) {
-                    var degreeString = degreeComboBox.getValue();
-                    var degree = degrees.stream()
-                            .filter(d -> degreeString.equals(d.getName()))
-                            .collect(Collectors.toList()).get(0);
-                    student.changeDegree(degree);
-
-                    makeTreeView(degree);
-                }
-            });
-
-
-
-
-        }
+        private final Label courseInfoLabel = new Label();
 
         private void makeTreeView(Degree degree){
             rootNode = new TreeItem<>(degree.getName());
@@ -170,17 +139,63 @@ public class MainStage {
             treeView.setRoot(rootNode);
         }
 
+        // Constructor
+        CourseTab(String label){
+            super(label);
+            // Setting the degreeBox.
+            List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
+            ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
+            degreeComboBox = new SearchableComboBox<>(degreeObsList);
+            degreeComboBox.setPromptText("Voit vaihtaa tästä tutkinnon");
 
+            courseInfoLabel.setText("Kurssi-info tähän.");
 
+            // TODO: TreeView change.
+            treeView = new TreeView<>();
+            makeTreeView(student.getDegree());
+            treeView.setShowRoot(true);
+
+            GridPane grid = new GridPane();
+            grid.setHgap(15);
+            grid.setVgap(15);
+            grid.setPadding(new Insets(15,15,15,15));
+            this.setContent(grid);
+
+            changeDegreeButton = new Button("Vaihda");
+            grid.add(infoLabel, 0, 0);
+            grid.add(degreeComboBox,0,1,3,1);
+            grid.add(courseInfoLabel, 4, 3, 2, 3);
+            grid.add(changeDegreeButton,4,1);
+            grid.add(treeView,0,3,3,3);
+
+            // Setting css id:s.
+            infoLabel.getStyleClass().add("bigHeading");
+            courseInfoLabel.getStyleClass().add("infoLabel");
+
+            // Actions.
+            changeDegreeButton.getStyleClass().add("basicButton");
+            changeDegreeButton.setOnAction(e -> {
+                if(degreeComboBox.getValue() != null) {
+                    var degreeString = degreeComboBox.getValue();
+                    var degree = degrees.stream()
+                            .filter(d -> degreeString.equals(d.getName()))
+                            .collect(Collectors.toList()).get(0);
+                    student.changeDegree(degree);
+
+                    makeTreeView(degree);
+                }
+            });
+        }
     }
 
     private class PersonalTab extends Tab{
         //Buttons and other elements
-        private Label nameInfoLabel;
+        private final Label infoLabel = new Label("Henkilötiedot");
+        private final Label nameInfoLabel;
         private Label nameLabel;
-        private Label studentNumberInfoLabel;
+        private final Label studentNumberInfoLabel;
         private Label studentNumberLabel;
-        private Label emailInfoLabel;
+        private final Label emailInfoLabel;
         private Label emailLabel;
 
 
@@ -200,12 +215,13 @@ public class MainStage {
             emailLabel = new Label();
 
 
-            grid.add(nameInfoLabel, 0, 0);
-            grid.add(nameLabel, 0, 1);
-            grid.add(studentNumberInfoLabel, 1, 0);
-            grid.add(studentNumberLabel, 1, 1);
-            grid.add(emailInfoLabel, 0, 2);
-            grid.add(emailLabel, 0, 3);
+            grid.add(infoLabel, 0, 0);
+            grid.add(nameInfoLabel, 0, 1);
+            grid.add(nameLabel, 0, 2);
+            grid.add(studentNumberInfoLabel, 1, 1);
+            grid.add(studentNumberLabel, 1, 2);
+            grid.add(emailInfoLabel, 0, 3);
+            grid.add(emailLabel, 0, 4);
 
             nameLabel.setText(student.getName());
             studentNumberLabel.setText(student.getStudentNumber());
@@ -213,12 +229,11 @@ public class MainStage {
 
             this.setContent(grid);
 
+            // Setting css id:s.
+            infoLabel.getStyleClass().add("bigHeading");
             nameInfoLabel.getStyleClass().add("smallHeading");
             studentNumberInfoLabel.getStyleClass().add("smallHeading");
             emailInfoLabel.getStyleClass().add("smallHeading");
-
-
         }
-
     }
 }
