@@ -82,11 +82,14 @@ public class Degree {
         this.courses.add(course);
     }
 
-    public ArrayList<Course> getCourses() throws IOException {
-
+    public void readAPI() throws IOException {
         moduleRead(this);
         studyModuleRead();
         courseRead(this);
+    }
+
+
+    public ArrayList<Course> getCourses() {
         return courses;
     }
 
