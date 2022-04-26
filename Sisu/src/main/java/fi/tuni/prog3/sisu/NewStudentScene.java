@@ -65,7 +65,6 @@ public class NewStudentScene {
         grid.getStyleClass().add("firstBackground");
         nextButton.getStyleClass().add("nextButton");
         previousButton.getStyleClass().add("linkButton");
-        degreeComboBox.getStyleClass().add("comboBox");
 
         Scene scene = new Scene(grid, 350, 400);
         stage.setTitle("Uusi oppilas");

@@ -1,7 +1,28 @@
+.smallHeading {
+    -fx-font-family: "Adamina";
+    -fx-font-size: 16px;
+    -fx-color: BLACK;
+}
+
 .heading {
     -fx-font-family: "Adamina";
     -fx-font-size: 22px;
     -fx-color: BLACK;
+}
+
+.bigHeading {
+    -fx-font-family: "Adamina";
+    -fx-font-size: 28px;
+    -fx-color: BLACK;
+}
+
+.basicButton {
+    -fx-background-color: #202020;
+    -fx-border-color: BLACK ;
+    -fx-border-width: 2px ;
+    -fx-font-family: "Adamina";
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
 }
 
 .nextButton {
@@ -11,13 +32,25 @@
     -fx-font-family: "Adamina";
     -fx-font-size: 14px;
     -fx-text-fill: white;
-    -fx-pref-width: 300px;
+    -fx-min-width: 300px;
 }
 
-.comboBox {
+.combo-box {
     -fx-background-color: #202020;
     -fx-border-color: BLACK ;
     -fx-border-width: 2px ;
+}
+
+.combo-box-popup .list-view .list-cell {
+-fx-background-color: #202020;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover{
+-fx-background-color: #282828;
+}
+
+.combo-box-base .text{
+    -fx-fill: WHITE;
 }
 
 .linkButton {
@@ -35,24 +68,34 @@
      -fx-background-image: url("pictures/mainPic.png");
      -fx-background-repeat: no-repeat;
      -fx-background-size: cover;
-     -fx-background-image-max-width: 100%;
-     -fx-background-image-max-height: 100%;
+     -fx-background-image-max-width: 900;
 }
 
 .homeIcon {
     -fx-background-image:url("pictures/homeIcon.png");
-    -fx-background-size: 15px;
-    -fx-background-image-max-width: 100%;
-    -fx-background-image-max-height: 100%;
+    -fx-background-image-max-height: 25;
     -fx-background-position: center;
     -fx-background-repeat: no-repeat;
-    -fx-pref-width: 20px;
 }
 
-.tabPane.tab-header-area .tab-header-background {
-    -fx-background-color: #202020;
-    -fx-border-color: BLACK ;
-    -fx-border-width: 2px ;
-    -fx-font-size: 14px;
-    -fx-text-fill: white;
+.tab-pane *.tab-header-area *.tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane {
+  -fx-tab-min-width:120px;
+  -fx-tab-max-width:120px;
+  -fx-tab-min-height:30px;
+  -fx-tab-max-height:30px;
+}
+
+.tab {
+  -fx-font-family: Adamina;
+  -fx-text-base-color: white;
+  -fx-font-size: 12;
+  -fx-background-color: #202020 ;
+}
+
+.tab:selected {
+    -fx-background-color:#181818 ;
 }

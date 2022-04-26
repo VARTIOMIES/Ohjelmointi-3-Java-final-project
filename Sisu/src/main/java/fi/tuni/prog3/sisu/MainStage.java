@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 
 
 public class MainStage {
-    private Degree degree;
+    private TreeItem<String> rootNode;
 
     //Home page.
     Label greetingLabel = new Label();
-    Label degreeLabel = new Label();
 
     // Course page.
+    Button changeDegreeButton = new Button("Vaihda");
 
     // Personal page.
     Label nameInfoLabel = new Label("Koko nimi");
@@ -35,26 +35,24 @@ public class MainStage {
     Label emailLabel = new Label();
 
     MainStage(Stage stage, Student student, List<Degree> degrees) {
-        degree = student.getDegree();
         // Making the degree drop box.
         List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
         ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
         final SearchableComboBox<String> degreeComboBox = new SearchableComboBox<>(degreeObsList);
 
+        // Setting personal texts.
         greetingLabel.setText(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
-        degreeLabel.setText(degree.getName());
         nameLabel.setText(student.getName());
         studentNumberLabel.setText(student.getStudentNumber());
         emailLabel.setText(student.getEmailAddress());
+        degreeComboBox.setPromptText("Voit vaihtaa tästä tutkinnon");
 
         // Preparing tabs.
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-
         Tab homeTab = new Tab();
         Tab courseTab = new Tab("Kurssit");
         Tab personalTab = new Tab("Omat tiedot");
-
         tabPane.getTabs().add(homeTab);
         tabPane.getTabs().add(courseTab);
         tabPane.getTabs().add(personalTab);
@@ -66,8 +64,8 @@ public class MainStage {
         testTreeItems.put("Joku StudyModule1", testList);
         testTreeItems.put("Joku StudyModule2", testList);
 
-        TreeItem<String> rootNode = new TreeItem<>(degree.getName());
-        // TODO: StudyModule = TreeItem.
+        rootNode = new TreeItem<>(student.getDegree().getName());
+        // TODO: (Study)Module = TreeItem.
         for(var treeItem : testTreeItems.entrySet()) {
             TreeItem<String> webItem = new TreeItem<>(treeItem.getKey());
             for(var item : treeItem.getValue()) {
@@ -75,10 +73,8 @@ public class MainStage {
             }
             rootNode.getChildren().add(webItem);
         }
-
         TreeView<String> treeView = new TreeView<>();
         treeView.setRoot(rootNode);
-
         treeView.setShowRoot(true);
 
         // Creating all containers.
@@ -107,9 +103,9 @@ public class MainStage {
         personalTab.setContent(personalGrid);
 
         homeGrid.add(greetingLabel, 0, 0);
-        homeGrid.add(degreeLabel,0,1);
 
         courseGrid.add(degreeComboBox, 0, 0, 3, 1);
+        courseGrid.add(changeDegreeButton, 4, 0);
         courseGrid.add(treeView, 0, 2, 3, 3);
 
         personalGrid.add(nameInfoLabel, 0, 0);
@@ -121,9 +117,13 @@ public class MainStage {
 
         // Setting css id:s.
         homeGrid.getStyleClass().add("secBackground");
+        greetingLabel.getStyleClass().add("bigHeading");
         homeTab.getStyleClass().add("homeIcon");
         tabPane.getStyleClass().add("tabPane");
-        degreeComboBox.getStyleClass().add("comboBox");
+        changeDegreeButton.getStyleClass().add("basicButton");
+        nameInfoLabel.getStyleClass().add("smallHeading");
+        studentNumberInfoLabel.getStyleClass().add("smallHeading");
+        emailInfoLabel.getStyleClass().add("smallHeading");
 
         var scene = new Scene(homeBox, 900, 650);
         stage.setScene(scene);
@@ -133,8 +133,16 @@ public class MainStage {
         stage.show();
 
         // TODO: Change degree
-        degreeComboBox.valueProperty().
-                addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-                {});
+        changeDegreeButton.setOnAction(e -> {
+            if(degreeComboBox.getValue() != null) {
+                var degreeString = degreeComboBox.getValue();
+                var degree = degrees.stream()
+                        .filter(d -> degreeString.equals(d.getName()))
+                        .collect(Collectors.toList()).get(0);
+                student.changeDegree(degree);
+                rootNode = new TreeItem<>(student.getDegree().getName());
+                treeView.setRoot(rootNode);
+            }
+        });
     }
 }

@@ -52,9 +52,9 @@ public class Main extends Application {
 
         if(API_READ){
             degreeRead(degrees);
-            moduleRead(degrees);
-            studyModuleRead(modules);
-            courseRead(degrees);
+//            moduleRead(degrees);
+//            studyModuleRead(modules);
+//            courseRead(degrees);
         }
         addTestStudents();
     }
