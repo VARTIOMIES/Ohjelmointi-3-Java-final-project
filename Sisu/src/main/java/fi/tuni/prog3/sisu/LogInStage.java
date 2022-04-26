@@ -52,6 +52,7 @@ public class LogInStage {
         vbox.getChildren().add(studentNumberLabel);
         vbox.getChildren().add(grid);
         grid.add(studentNumberField, 0, 0, 2, 1);
+        studentNumberField.setPrefWidth(200);
         vbox.getChildren().add(bigGap);
         vbox.getChildren().add(nextButton);
         vbox.getChildren().add(newStudentButton);
@@ -62,6 +63,11 @@ public class LogInStage {
         vbox.getStyleClass().add("firstBackground");
         newStudentButton.getStyleClass().add("linkButton");
         nextButton.getStyleClass().add("nextButton");
+
+        // Set ids for every important item
+        setIds();
+
+
 
         Scene scene = new Scene(vbox, 350, 400);
         stage.setTitle("Kirjaudu sisään");
@@ -93,7 +99,7 @@ public class LogInStage {
             String studentNumber = studentNumberField.getText();
 
             if(students.stream().noneMatch(s -> studentNumber.equals(s.getStudentNumber()))) {
-               grid.add(new Label("Opiskelijanumeroa ei löydy."), 0, 1);
+                studentNumberField.setText("Opiskelijanumeroa ei löydy.");
                 studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
                 isValueOK.set(false);
             }
@@ -111,5 +117,13 @@ public class LogInStage {
         newStudentButton.setOnAction(e -> {
              new NewStudentScene(stage, degrees, students);
         });
+    }
+
+    private void setIds(){
+        logInLabel.setId("logInLabel");
+        studentNumberLabel.setId("studentNumberLabel");
+        studentNumberField.setId("studentNumberField");
+        nextButton.setId("nextButton");
+        newStudentButton.setId("newStudentButton");
     }
 }
