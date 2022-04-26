@@ -1,5 +1,6 @@
 package fi.tuni.prog3.sisu;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Student {
@@ -71,7 +72,7 @@ public class Student {
         attainments.add(attainment);
     }
 
-    public ArrayList<Course> getRecommendedCourses() {
+    public ArrayList<Course> getRecommendedCourses() throws IOException {
         return degree.getCourses();
     }
 

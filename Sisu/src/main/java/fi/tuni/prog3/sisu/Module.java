@@ -2,6 +2,7 @@ package fi.tuni.prog3.sisu;
 
 import com.google.gson.JsonArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Module {
@@ -13,20 +14,27 @@ public class Module {
         return moduleCode;
     }
 
-    public JsonArray getStudyModules() {
+    public ArrayList<StudyModule> getStudyModules() {
         return studyModules;
     }
 
     private final String moduleName;
     private final String moduleCode;
-    private final JsonArray studyModules;
+
+    public void setStudyModules(StudyModule studyModule) {
+        this.studyModules.add(studyModule);
+    }
+
+    private ArrayList<StudyModule> studyModules;
 
 
-    public Module(String moduleName, String moduleCode, JsonArray studyModules) {
+    public Module(String moduleName, String moduleCode, ArrayList<StudyModule> studyModules) {
         this.moduleName = moduleName;
         this.moduleCode = moduleCode;
         this.studyModules = studyModules;
     }
+
+
 
 
 }

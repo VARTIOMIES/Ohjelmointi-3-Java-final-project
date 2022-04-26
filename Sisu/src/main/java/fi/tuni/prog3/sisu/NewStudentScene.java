@@ -178,7 +178,7 @@ public class NewStudentScene {
                         }
                         newStudent.setSameNamed(howMany);
 
-                        new MainStage(stage, newStudent, degrees);
+                        new MainStage(stage, newStudent, degrees, students);
                     }
                 }
             }
