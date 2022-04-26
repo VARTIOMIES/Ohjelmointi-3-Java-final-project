@@ -1,19 +1,25 @@
+.basicText {
+    -fx-font-family: "Adamina";
+    -fx-font-size: 14px;
+    -fx-text-fill: BLACK;
+}
+
 .smallHeading {
     -fx-font-family: "Adamina";
     -fx-font-size: 16px;
-    -fx-color: BLACK;
+    -fx-text-fill: BLACK;
 }
 
 .heading {
     -fx-font-family: "Adamina";
     -fx-font-size: 22px;
-    -fx-color: BLACK;
+    -fx-text-fill: BLACK;
 }
 
 .bigHeading {
     -fx-font-family: "Adamina";
     -fx-font-size: 28px;
-    -fx-color: BLACK;
+    -fx-text-fill: BLACK;
 }
 
 .basicButton {
@@ -35,6 +41,15 @@
     -fx-min-width: 300px;
 }
 
+.linkButton {
+    -fx-text-fill: BLACK;
+    -fx-background-color: transparent;
+    -fx-underline: true;
+    -fx-text-fill: BLACK;
+    -fx-font-size: 14px;
+    -fx-min-width: 300px;
+}
+
 .combo-box {
     -fx-background-color: #202020;
     -fx-border-color: BLACK ;
@@ -51,12 +66,6 @@
 
 .combo-box-base .text{
     -fx-fill: WHITE;
-}
-
-.linkButton {
-    -fx-text-fill: BLACK;
-    -fx-background-color: transparent;
-    -fx-underline: true;
 }
 
 .firstBackground {
