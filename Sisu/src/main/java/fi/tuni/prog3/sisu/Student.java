@@ -72,9 +72,6 @@ public class Student {
         attainments.add(attainment);
     }
 
-    public ArrayList<Course> getRecommendedCourses() throws IOException {
-        return degree.getCourses();
-    }
 
     public ArrayList<Course> getSelectedCourses() {
         return selectedCourses;

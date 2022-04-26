@@ -30,7 +30,14 @@ public class MainStage {
 
     MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
         // Initializing stuff
-        courses = student.getDegree().getCourses();
+        student.getDegree().readAPI();
+        for(var module : student.getDegree().getModules()) {
+            for(var studyModule : module.getStudyModules()) {
+                courses = studyModule.getCourses();
+            }
+        }
+
+
         this.student = student;
         this.degrees = degrees;
         this.logOutLabel = new Label("Kirjaudu ulos");
