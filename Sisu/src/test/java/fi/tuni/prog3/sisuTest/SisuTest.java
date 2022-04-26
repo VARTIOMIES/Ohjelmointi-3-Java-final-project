@@ -5,6 +5,7 @@ package fi.tuni.prog3.sisuTest;
 
 import fi.tuni.prog3.sisu.Main;
 import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
 
@@ -23,6 +24,17 @@ public class SisuTest extends ApplicationTest {
     //TODO: Klikkeritestit
 
     //TODO: Tiedustelutestit
+    @Test
+    public void testLogInStageElements(){
+
+    }
+
+    @Test
+    public void testSignInStageElements(){
+
+    }
+
+
 
     //TODO: Robottitestit
 
