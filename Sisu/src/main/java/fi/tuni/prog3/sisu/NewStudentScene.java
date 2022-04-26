@@ -66,6 +66,8 @@ public class NewStudentScene {
         nextButton.getStyleClass().add("nextButton");
         previousButton.getStyleClass().add("linkButton");
 
+        this.setIds();
+
         Scene scene = new Scene(grid, 350, 420);
         stage.setTitle("Uusi oppilas");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
@@ -181,5 +183,27 @@ public class NewStudentScene {
                 }
             }
         });
+
+    }
+
+    private void setIds(){
+
+        newStudentLabel.setId("newStudentLabel");
+
+        nameLabel.setId("nameLabel");
+
+        nameField.setId("nameField");
+
+        studentNumberLabel.setId("studentNumberLabel");
+
+        studentNumberField.setId("studentNumberField");
+
+        startingYearLabel.setId("startingYearLabel");
+
+        startingYearField.setId("startingYearField");
+        degreeLabel.setId("degreeLabel");
+
+        previousButton.setId("previousButton");
+        nextButton.setId("nextButton");
     }
 }
