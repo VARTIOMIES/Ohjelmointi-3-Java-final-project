@@ -54,7 +54,7 @@ public class Main extends Application {
             degreeRead(degrees);
 
         }
-        //addTestStudents();
+        addTestStudents();
     }
 
     // The Sisu main window now exists in class MainStage.

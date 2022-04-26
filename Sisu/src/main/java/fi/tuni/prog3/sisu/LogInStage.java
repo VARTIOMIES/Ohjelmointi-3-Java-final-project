@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -110,7 +111,11 @@ public class LogInStage {
                         .filter(s -> studentNumber.equals(s.getStudentNumber()))
                         .collect(Collectors.toList()).get(0);
 
-                new MainStage(stage, student, degrees, students);
+                try {
+                    new MainStage(stage, student, degrees, students);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
