@@ -52,9 +52,9 @@ public class Main extends Application {
 
         if(API_READ){
             degreeRead(degrees);
-//            moduleRead(degrees);
-//            studyModuleRead(modules);
-//            courseRead(studyModules);
+            moduleRead(degrees);
+            studyModuleRead(modules);
+            courseRead(degrees);
         }
         addTestStudents();
     }
@@ -113,7 +113,7 @@ public class Main extends Application {
             var moduleArray = new JsonArray();
             JsonArray moduleRules = recursiveDegreeModule(degreeObject, moduleArray);
             modules.put(degree,moduleRules);
-            degree.setModules(moduleRules);
+            //degree.setModules(moduleRules);
         }
     }
 
@@ -133,24 +133,29 @@ public class Main extends Application {
                 URL url = new URL(studyModuleURL);
                 studyModuleObject = createModuleObject(url);
                 studyModuleRules.add(studyModuleObject.get("rule").getAsJsonObject());
+                degree.getKey().setModules(studyModuleObject);
 
             }
             studyModules.put(studyModuleObject, studyModuleRules);
 
+
         }
         }
 
-    public void courseRead(HashMap<JsonObject, JsonArray> studyModules) throws IOException {
+    public void courseRead(List<Degree> degrees) throws IOException {
 
-        for(var studyModule : studyModules.entrySet()) {
+        for(var degree : degrees) {
 
             JsonArray tempModules = new JsonArray();
-            var courses = recursiveCourses(studyModule.getValue(),tempModules);
+            var courses = recursiveCourses(degree.getModules(),tempModules);
             System.out.println("asd");
+
+
 
         }
 
     }
+
 
     private String createModuleURL(String moduleGroupId) {
 
@@ -199,10 +204,14 @@ public class Main extends Application {
 
     public JsonArray recursiveCourses(JsonArray modules, JsonArray tempModules) throws IOException {
 
+
+
         for(var subCourse : modules) {
+
             if (subCourse.getAsJsonObject().get("type").getAsString().equals("CourseUnitRule")) {
                 if(!tempModules.contains(subCourse.getAsJsonObject())) {
                     tempModules.add(subCourse.getAsJsonObject());
+
                 }
 
             } else if(subCourse.getAsJsonObject().get("type").getAsString().equals("CompositeRule")){
@@ -238,6 +247,8 @@ public class Main extends Application {
 
         }
         return tempModules;
+
+
     }
 
     public JsonArray checkModuleObject(JsonObject moduleObject) {
