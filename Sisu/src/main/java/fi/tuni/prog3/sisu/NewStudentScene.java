@@ -143,15 +143,35 @@ public class NewStudentScene {
             String studentNumber = studentNumberField.getText();
 
             // Student number is already being used.
-            if(students.stream().anyMatch(s -> studentNumber.equals(s.getStudentNumber()))) {
-                grid.add(new Label("Opiskelijanumeroa on jo käytössä."), 1, 2);
-                studentNumberField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+            if(students.stream().anyMatch(s ->
+                    studentNumber.equals(s.getStudentNumber()))) {
+
+                // This checks that if there is not already a label with this id
+                // then creates new label and sets that id. !!This is made to
+                // prevent creating a new label everytime the button is clicked.
+                if (stage.getScene().lookup("#alreadyUsedInfoLabel")==null){
+                    Label alreadyUsedInfoLabel =
+                            new Label("Opiskelijanumeroa on jo käytössä.");
+                    alreadyUsedInfoLabel.setId("alreadyUsedInfoLabel");
+                    grid.add(alreadyUsedInfoLabel, 1, 2);
+                }
+                studentNumberField.setStyle("-fx-border-color: red ;" +
+                        " -fx-border-width: 1px ;");
                 isStudentOK.set(false);
             }
             // Every parameter is not ok.
             else if (!(isNameOK.get() && isStudentOK.get() && isYearOK.get() && isDegreeOK.get())) {
                 nextButton.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-                grid.add(new Label("Täytäthän jokaisen kohdan!"), 1, 7, 2, 1);
+
+                // Same as before. Made to prevent creating UNLIMITED POWe..
+                // labels
+                if (stage.getScene().lookup("#notFilledAllInfoLabel")==null){
+                    Label notFilledAllInfoLabel =
+                            new Label("Täytäthän jokaisen kohdan!");
+                    notFilledAllInfoLabel.setId("notFilledAllInfoLabel");
+                    grid.add(notFilledAllInfoLabel,1, 7, 2, 1);
+                }
+
             // Everything ok, opens the main scene.
             } else {
                 if(!Objects.equals(startingYearField.getText(), "")) {
