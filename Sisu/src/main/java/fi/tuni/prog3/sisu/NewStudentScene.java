@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.controlsfx.control.SearchableComboBox;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -198,7 +199,11 @@ public class NewStudentScene {
                         }
                         newStudent.setSameNamed(howMany);
 
-                        new MainStage(stage, newStudent, degrees, students);
+                        try {
+                            new MainStage(stage, newStudent, degrees, students);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             }
