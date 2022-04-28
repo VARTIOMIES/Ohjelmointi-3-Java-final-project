@@ -5,18 +5,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
 import org.controlsfx.control.SearchableComboBox;
-import org.controlsfx.control.spreadsheet.Grid;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class MainStage {
@@ -25,8 +28,9 @@ public class MainStage {
     private TabPane tabPane;
     private MenuBar menuBar;
     private Label logOutLabel;
-    private List<Course> courses;
+    private List<Course> courses = new ArrayList<>();
     private SearchableComboBox<String> courseComboBox;
+    private Label meanNumberLabel;
 
     MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
         // Initializing stuff
@@ -34,7 +38,8 @@ public class MainStage {
         student.getDegree().readAPI();
         for(var module : student.getDegree().getModules()) {
             for(var studyModule : module.getStudyModules()) {
-                courses = studyModule.getCourses();
+                courses = Stream.concat(courses.stream(), studyModule.getCourses().stream())
+                        .collect(Collectors.toList());
             }
         }
 
@@ -87,7 +92,8 @@ public class MainStage {
 
     private ObservableList<String> courseObsList() {
         List<String> courseNames = courses.stream().map(Course::getCourseName).collect(Collectors.toList());
-        ObservableList<String> ret = FXCollections.observableArrayList(courseNames);
+        List<String> listWithoutDuplicates = Lists.newArrayList(Sets.newHashSet(courseNames));
+        ObservableList<String> ret = FXCollections.observableArrayList(listWithoutDuplicates);
         FXCollections.sort(ret);
         return ret;
     }
@@ -97,7 +103,6 @@ public class MainStage {
         private final Label greetingLabel;
         private final Pane gap = new Pane();
         private final Label meanLabel = new Label("Opintojen keskiarvo");
-        private Label meanNumberLabel;
 
         // Constructor
         HomeTab(String label) {
@@ -112,16 +117,19 @@ public class MainStage {
             this.setId("homeTab");
 
             greetingLabel = new Label(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
+            meanNumberLabel = new Label(student.getMean());
+
             grid.add(greetingLabel,0,0);
             grid.add(gap, 0, 3);
             grid.add(meanLabel, 0, 4);
-            // TODO: Mean number.
+            grid.add(meanNumberLabel, 0, 5);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
             grid.getStyleClass().add("secBackground");
             greetingLabel.getStyleClass().add("bigHeading");
             meanLabel.getStyleClass().add("heading");
+            meanNumberLabel.getStyleClass().add("heading");
             this.getStyleClass().add("homeIcon");
         }
     }
@@ -139,9 +147,9 @@ public class MainStage {
         private final Button addCourseButton = new Button("Lisää");
 
         private void makeAttainmentTreeView() {
-            rootNode = new TreeItem<>("Suoritetut kurssit");
+            rootNode = new TreeItem<>("Suoritetut kurssit\n (Arvosana - Nimi)");
             for(var treeItem : student.getAttainments()) {
-                TreeItem<String> moduleItem = new TreeItem<>(String.format("%d %s", treeItem.getGrade(), treeItem.getCourse().getCourseName()));
+                TreeItem<String> moduleItem = new TreeItem<>(String.format("%d - %s", treeItem.getGrade(), treeItem.getCourse().getCourseName()));
                 rootNode.getChildren().add(moduleItem);
             }
             treeView.setRoot(rootNode);
@@ -155,6 +163,7 @@ public class MainStage {
             courseComboBox.setPromptText("Hae kursseja");
             treeView = new TreeView<>();
             gradeField.setMaxWidth(25);
+            treeView.setMinWidth(400);
 
             // Initializing attainment TreeView.
             makeAttainmentTreeView();
@@ -193,9 +202,10 @@ public class MainStage {
             selectedCourseLabel.getStyleClass().add("basicText");
             addCourseButton.getStyleClass().add("basicButton");
 
-            // TODO: Unable button.
             chooseCourseButton.setOnAction(e -> {
                 gradeField.setText("");
+                gradeField.setStyle(null);
+                grid.getChildren().removeIf(n -> n instanceof VBox);
                 if(courseComboBox.getValue() != null) {
                     var courseString = courseComboBox.getValue();
                     selectedCourse = courses.stream()
@@ -226,7 +236,9 @@ public class MainStage {
                             student.addAttainment(new Attainment(selectedCourse, student, grade));
                             treeView.setRoot(null);
                             makeAttainmentTreeView();
+                            meanNumberLabel.setText(student.getMean());
                             grid.getChildren().removeIf(n -> n instanceof VBox);
+                            courseComboBox.getItems().remove(selectedCourse.getCourseName());
                         }
                     });
             }
@@ -240,6 +252,12 @@ public class MainStage {
         private TreeItem<String> rootNode;
         private final SearchableComboBox<String> degreeComboBox;
         private final Label courseInfoLabel = new Label();
+        private final Label courseNameInfoLabel = new Label();
+        private Label courseNameLabel = new Label();
+        private final Label codeInfoLabel = new Label();
+        private Label codeLabel = new Label();
+        private Label creditsLabel = new Label();
+        private Label creditsInfoLabel = new Label();
 
         private void makeTreeView(Degree degree){
             rootNode = new TreeItem<>(degree.getName());
@@ -265,8 +283,6 @@ public class MainStage {
             degreeComboBox = new SearchableComboBox<>(degreeObsList);
             degreeComboBox.setPromptText("Voit vaihtaa tästä tutkinnon");
 
-            courseInfoLabel.setText("Kurssi-info tähän.");
-
             treeView = new TreeView<>();
             makeTreeView(student.getDegree());
             treeView.setShowRoot(true);
@@ -278,52 +294,81 @@ public class MainStage {
             this.setContent(grid);
             this.setId("courseTab");
 
+            // Inner vbox.
+            VBox vbox = new VBox(15);
+
+            vbox.getChildren().add(courseNameInfoLabel);
+            vbox.getChildren().add(courseNameLabel);
+            vbox.getChildren().add(codeInfoLabel);
+            vbox.getChildren().add(codeLabel);
+            vbox.getChildren().add(creditsInfoLabel);
+            vbox.getChildren().add(creditsLabel);
+
+            // Outer grid.
             grid.add(infoLabel, 0, 0);
             grid.add(degreeComboBox,0,1,3,1);
-            grid.add(courseInfoLabel, 4, 3, 2, 3);
             grid.add(changeDegreeButton,4,1);
             grid.add(treeView,0,3,3,3);
+            grid.add(vbox, 4, 3, 2, 3);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
-            courseInfoLabel.getStyleClass().add("infoLabel");
+            courseNameInfoLabel.getStyleClass().add("smallHeading");
+            codeInfoLabel.getStyleClass().add("smallHeading");
+            creditsInfoLabel.getStyleClass().add("smallHeading");
 
             // Actions.
-            // TODO : Unable button.
-            // Updates courses up to the degree and initializes nodes that use courses or degree.
+
+            // Update courses up to the degree and initializes nodes that use courses or degree.
             changeDegreeButton.getStyleClass().add("basicButton");
             changeDegreeButton.setOnAction(e -> {
                 changeDegreeButton.setDisable(true);
                 if(degreeComboBox.getValue() != null) {
                     var degreeString = degreeComboBox.getValue();
-                    var degree = degrees.stream()
-                            .filter(d -> degreeString.equals(d.getName()))
-                            .collect(Collectors.toList()).get(0);
-                    student.changeDegree(degree);
-                    try {
-                        student.getDegree().readAPI();
-                        for(var module : student.getDegree().getModules()) {
-                            for(var studyModule : module.getStudyModules()) {
-                                courses = studyModule.getCourses();
+                    if(!Objects.equals(degreeString, student.getDegree().getName())) {
+                        var degree = degrees.stream()
+                                .filter(d -> degreeString.equals(d.getName()))
+                                .collect(Collectors.toList()).get(0);
+                        student.changeDegree(degree);
+                        courses.clear();
+                        try {
+                            student.getDegree().readAPI();
+                            for(var module : student.getDegree().getModules()) {
+                                for(var studyModule : module.getStudyModules()) {
+                                    courses = Stream.concat(courses.stream(), studyModule.getCourses().stream())
+                                            .collect(Collectors.toList());
+                                }
                             }
                         }
+                        catch(Exception ignored) {
+                        }
+                        courseComboBox.getItems().clear();
+                        courseComboBox.getItems().addAll(courseObsList());
+                        makeTreeView(degree);
                     }
-                    catch(Exception ignored) {
-                    }
-
-                    courseComboBox.getItems().clear();
-                    courseComboBox.getItems().addAll(courseObsList());
-                    makeTreeView(degree);
                 }
+                changeDegreeButton.setDisable(false);
             });
 
-            // TODO: Choosing box. Calculate mean.
+            // TODO: Calculate mean.
             treeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-                var course = treeView.getSelectionModel().getSelectedItem().getValue();
-                if(courses.stream().anyMatch(c -> course.equals(c.getCourseName()))) {
-                    grid.add(new Label(course), 4, 3);
+                try {
+                    var courseName = treeView.getSelectionModel().getSelectedItem().getValue();
+                    var course = courses.stream()
+                            .filter(c -> courseName.equals(c.getCourseName()))
+                            .collect(Collectors.toList()).get(0);
+                    if(courses.stream().anyMatch(c -> courseName.equals(c.getCourseName()))) {
+                        courseNameInfoLabel.setText("Kurssin nimi");
+                        courseNameLabel.setText(courseName);
+                        codeInfoLabel.setText("Kurssin koodi");
+                        codeLabel.setText(course.getCourseCode());
+                        creditsInfoLabel.setText("Laajuus");
+                        creditsLabel.setText(String.format("%d op", course.getCredits()));
+                    }
+                } catch (Exception ignored) {
                 }
+
             });
         }
     }

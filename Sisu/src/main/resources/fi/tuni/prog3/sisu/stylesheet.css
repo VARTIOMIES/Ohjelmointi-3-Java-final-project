@@ -26,15 +26,6 @@
     -fx-text-fill: #202020;
 }
 
-.infoLabel {
-    -fx-background-color: #202020;
-    -fx-font-family: "Adamina";
-    -fx-font-size: 14px;
-    -fx-text-fill: WHITE;
-    -fx-min-width: 200px;
-    -fx-min-height: 400px;
-}
-
 .basicButton {
     -fx-background-color: #202020;
     -fx-border-color: BLACK ;

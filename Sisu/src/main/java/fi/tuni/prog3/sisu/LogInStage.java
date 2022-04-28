@@ -47,14 +47,13 @@ public class LogInStage {
         smallGap.minHeightProperty().set(5);
         bigGap.minHeightProperty().set(30);
 
-        // TODO: Center.
         // Setting the elements.
         vbox.getChildren().add(logInLabel);
         vbox.getChildren().add(smallGap);
         vbox.getChildren().add(studentNumberLabel);
         vbox.getChildren().add(grid);
         grid.add(studentNumberField, 0, 0, 2, 1);
-        studentNumberField.setPrefWidth(200);
+        studentNumberField.setMaxWidth(100);
         vbox.getChildren().add(bigGap);
         vbox.getChildren().add(nextButton);
         vbox.getChildren().add(newStudentButton);

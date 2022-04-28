@@ -13,7 +13,6 @@ public class Student {
     private final String lastName;
     private int sameNamed;
     private ArrayList<Attainment> attainments;
-    private ArrayList<Course> selectedCourses;
 
     public Student(String name, String studentNumber, int startingYear, Degree degree) {
         this.name = name;
@@ -24,8 +23,7 @@ public class Student {
 
         firstName = name.split(" ")[0];
         lastName = name.substring(name.lastIndexOf(" ")+1);
-        attainments = new ArrayList<Attainment>();
-        selectedCourses = new ArrayList<>();
+        attainments = new ArrayList<>();
     }
 
     public String getName() {
@@ -72,12 +70,19 @@ public class Student {
         attainments.add(attainment);
     }
 
-    public ArrayList<Course> getSelectedCourses() {
-        return selectedCourses;
-    }
-
     public void setSameNamed(int howMany) {
         this.sameNamed = howMany;
+    }
+
+    public String getMean() {
+        if(attainments.size() > 0) {
+            float a = 0;
+            for(var att : attainments) {
+                a += att.getGrade();
+            }
+            return String.format("   %.2f", a/attainments.size());
+        }
+        return "   -";
     }
 
     public String getEmailAddress() {
