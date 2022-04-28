@@ -104,13 +104,12 @@ public class Main extends Application {
 
 
 
-
-
     public void addTestStudents() {
         students.add(new Student("Heikki Paasonen", "12345678", 2001, degrees.get(0)));
         students.add(new Student("Kimmo Koodari", "12345679", 2002, degrees.get(2)));
         students.add(new Student("Kimmo Koodari", "15344444", 2020, degrees.get(20)));
-        students.add(new Student("Ronja Lipsonen", "50121133", 2020, degrees.get(3)));
+        Student courseTestStudent = new Student("Ronja Lipsonen", "50121133", 2020, degrees.get(3));
+        students.add(courseTestStudent);
     }
 }
 

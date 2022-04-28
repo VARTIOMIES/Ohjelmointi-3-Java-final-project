@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 import org.controlsfx.control.SearchableComboBox;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +21,6 @@ public class MainStage {
     private MenuBar menuBar;
     private Label logOutLabel;
     private List<Course> courses;
-
-    HashMap<String, List<String>> testTreeItems = new HashMap<>();
-    List<String> testList = Arrays.asList("Kurssi1", "Kurssi2", "Kurssi3", "Kurssi4");
-
 
     MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
         // Initializing stuff
@@ -44,10 +38,6 @@ public class MainStage {
         logOutLabel.setOnMouseClicked(e -> {
             new LogInStage(stage, degrees, students);
         });
-
-        // TODO: Make treeView work.
-        testTreeItems.put("Joku StudyModule1", testList);
-        testTreeItems.put("Joku StudyModule2", testList);
 
         // Creating containers.
         VBox layout = new VBox();
@@ -90,6 +80,9 @@ public class MainStage {
     private class HomeTab extends Tab{
         //Buttons and other elements
         private final Label greetingLabel;
+        private final Pane gap = new Pane();
+        private final Label meanLabel = new Label("Opintojen keskiarvo");
+        private Label meanNumberLabel;
 
         // Constructor
         HomeTab(String label) {
@@ -98,47 +91,47 @@ public class MainStage {
             grid.setHgap(15);
             grid.setVgap(15);
             grid.setPadding(new Insets(15,15,15,15));
+            gap.minHeightProperty().set(160);
 
             this.setContent(grid);
             this.setId("homeTab");
 
-            greetingLabel = new Label();
+            greetingLabel = new Label(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
             grid.add(greetingLabel,0,0);
-
-            greetingLabel.setText(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
+            grid.add(gap, 0, 3);
+            grid.add(meanLabel, 0, 4);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
             grid.getStyleClass().add("secBackground");
             greetingLabel.getStyleClass().add("bigHeading");
+            meanLabel.getStyleClass().add("heading");
             this.getStyleClass().add("homeIcon");
         }
     }
     private class DesignTab extends Tab{
         //Buttons and other elements
+        private Course selectedCourse;
         private final Label infoLabel = new Label("Merkitse kursseja");
         private final SearchableComboBox<String> courseComboBox;
         private TreeView<String> treeView;
         private TreeItem<String> rootNode;
+        private final Button chooseCourseButton = new Button("Valitse");
 
         // Constructor
         DesignTab(String label){
             super(label);
 
-            // TODO: Course list here.
-            courseComboBox = new SearchableComboBox<>();
+            List<String> courseNames = courses.stream().map(Course::getCourseName).collect(Collectors.toList());
+            ObservableList<String> courseObsList = FXCollections.observableArrayList(courseNames);
+            courseComboBox = new SearchableComboBox<>(courseObsList);
+            courseComboBox.setPromptText("Hae kursseja");
 
-            // TODO: TreeView change.
-            rootNode = new TreeItem<>("Suoritetut kurssit");
             treeView = new TreeView<>();
-            for(var treeItem : student.getDegree().getModules()) {
-                TreeItem<String> moduleItem = new TreeItem<>(treeItem.getModuleName());
-                for(var courseItem : treeItem.getStudyModules()) {
-                    for(var course : courseItem.getCourses()) {
-                        TreeItem<String> kakki = new TreeItem<>(course.getCourseName());
-                        moduleItem.getChildren().add(kakki);
-                    }
-                }
+            rootNode = new TreeItem<>("Suoritetut kurssit");
+
+            for(var treeItem : student.getAttainments()) {
+                TreeItem<String> moduleItem = new TreeItem<>(String.format("%d %s", treeItem.getGrade(), treeItem.getCourse().getCourseName()));
                 rootNode.getChildren().add(moduleItem);
             }
             treeView.setRoot(rootNode);
@@ -150,8 +143,9 @@ public class MainStage {
             grid.setPadding(new Insets(15,15,15,15));
 
             grid.add(infoLabel, 0, 0);
-            grid.add(courseComboBox, 0, 1, 2, 1);
-            grid.add(treeView, 0, 2, 2, 1);
+            grid.add(courseComboBox, 0, 1, 3, 1);
+            grid.add(chooseCourseButton, 4, 1);
+            grid.add(treeView, 0, 2, 3, 1);
 
             this.setContent(grid);
             this.setId("designTab");
@@ -159,13 +153,23 @@ public class MainStage {
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
+            chooseCourseButton.getStyleClass().add("basicButton");
+
+            chooseCourseButton.setOnAction(e -> {
+                if(courseComboBox.getValue() != null) {
+                    var courseString = courseComboBox.getValue();
+                    selectedCourse = courses.stream()
+                            .filter(c -> courseString.equals(c.getCourseName()))
+                            .collect(Collectors.toList()).get(0);
+                }
+            });
         }
     }
 
     private class CourseTab extends Tab{
         //Buttons and other elements
         private final Label infoLabel = new Label("Tutkintorakenne");
-        private final Button changeDegreeButton;
+        private final Button changeDegreeButton = new Button("Vaihda");
         private TreeView<String> treeView;
         private TreeItem<String> rootNode;
         private final SearchableComboBox<String> degreeComboBox;
@@ -173,9 +177,15 @@ public class MainStage {
 
         private void makeTreeView(Degree degree){
             rootNode = new TreeItem<>(degree.getName());
-            for(var treeItem : courses) {
-                TreeItem<String> webItem = new TreeItem<>(treeItem.getCourseName());
-                rootNode.getChildren().add(webItem);
+            for(var treeItem : student.getDegree().getModules()) {
+                TreeItem<String> moduleItem = new TreeItem<>(treeItem.getModuleName());
+                for(var studyModuleItem : treeItem.getStudyModules()) {
+                    for(var courseItem : studyModuleItem.getCourses()) {
+                        TreeItem<String> course = new TreeItem<>(courseItem.getCourseName());
+                        moduleItem.getChildren().add(course);
+                    }
+                }
+                rootNode.getChildren().add(moduleItem);
             }
             treeView.setRoot(rootNode);
         }
@@ -191,7 +201,6 @@ public class MainStage {
 
             courseInfoLabel.setText("Kurssi-info tähän.");
 
-            // TODO: TreeView change.
             treeView = new TreeView<>();
             makeTreeView(student.getDegree());
             treeView.setShowRoot(true);
@@ -203,7 +212,6 @@ public class MainStage {
             this.setContent(grid);
             this.setId("courseTab");
 
-            changeDegreeButton = new Button("Vaihda");
             grid.add(infoLabel, 0, 0);
             grid.add(degreeComboBox,0,1,3,1);
             grid.add(courseInfoLabel, 4, 3, 2, 3);
@@ -226,6 +234,13 @@ public class MainStage {
                     student.changeDegree(degree);
 
                     makeTreeView(degree);
+                }
+            });
+
+            treeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+                var course = treeView.getSelectionModel().getSelectedItem().getValue();
+                if(courses.stream().anyMatch(c -> course.equals(c.getCourseName()))) {
+                    grid.add(new Label(course), 4, 3);
                 }
             });
         }
