@@ -26,7 +26,6 @@ public class MainStage {
     private Student student;
     private List<Degree> degrees;
     private TabPane tabPane;
-    private MenuBar menuBar;
     private Label logOutLabel;
     private List<Course> courses = new ArrayList<>();
     private SearchableComboBox<String> courseComboBox;
@@ -34,7 +33,6 @@ public class MainStage {
 
     MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
         // Initializing stuff
-        // TODO: Change courses after degree change.
         student.getDegree().readAPI();
         for(var module : student.getDegree().getModules()) {
             for(var studyModule : module.getStudyModules()) {
@@ -58,9 +56,6 @@ public class MainStage {
 
         // Preparing tabs.
         tabPane = new TabPane();
-        menuBar = new MenuBar();
-        Menu menu = new Menu("", logOutLabel);
-        menuBar.getMenus().add(menu);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
@@ -71,15 +66,7 @@ public class MainStage {
         tabPane.getTabs().add(new DesignTab("Omat suoritukset"));
         tabPane.getTabs().add(new CourseTab("Kurssinäkymä"));
         tabPane.getTabs().add(new PersonalTab("Omat tiedot"));
-
-
-        Region spacer = new Region();
-        spacer.getStyleClass().add("spacer");
-        HBox menuBox = new HBox(spacer, menuBar);
-        menuBox.getStyleClass().add("hbox");
-        layout.getChildren().add(menuBox);
         layout.getChildren().add(tabPane);
-        menuBox.setId("menuBox");
 
         // Setting scene and stage.
         stage.setScene(scene);
@@ -320,6 +307,7 @@ public class MainStage {
 
             // Actions.
 
+            // TODO: Index out of bounds.
             // Update courses up to the degree and initializes nodes that use courses or degree.
             changeDegreeButton.getStyleClass().add("basicButton");
             changeDegreeButton.setOnAction(e -> {
@@ -343,7 +331,7 @@ public class MainStage {
                         }
                         catch(Exception ignored) {
                         }
-                        courseComboBox.getItems().clear();
+                        // TODO: Empty old courses.
                         courseComboBox.getItems().addAll(courseObsList());
                         makeTreeView(degree);
                     }
@@ -351,7 +339,6 @@ public class MainStage {
                 changeDegreeButton.setDisable(false);
             });
 
-            // TODO: Calculate mean.
             treeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
                 try {
                     var courseName = treeView.getSelectionModel().getSelectedItem().getValue();
@@ -413,6 +400,7 @@ public class MainStage {
             grid.add(studentNumberLabel, 1, 2);
             grid.add(emailInfoLabel, 0, 3);
             grid.add(emailLabel, 0, 4);
+            grid.add(logOutLabel, 2, 5);
 
             nameLabel.setText(student.getName());
             studentNumberLabel.setText(student.getStudentNumber());
@@ -427,6 +415,7 @@ public class MainStage {
             nameInfoLabel.getStyleClass().add("smallHeading");
             studentNumberInfoLabel.getStyleClass().add("smallHeading");
             emailInfoLabel.getStyleClass().add("smallHeading");
+            logOutLabel.getStyleClass().add("basicButton");
         }
     }
 }
