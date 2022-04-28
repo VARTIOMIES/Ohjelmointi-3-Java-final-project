@@ -72,7 +72,6 @@ public class Student {
         attainments.add(attainment);
     }
 
-
     public ArrayList<Course> getSelectedCourses() {
         return selectedCourses;
     }
