@@ -37,6 +37,7 @@ public class NewStudentScene {
         List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
         ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
         final SearchableComboBox<String> degreeComboBox = new SearchableComboBox<>(degreeObsList);
+        degreeComboBox.setId("degreeComboBox");
 
         // Grid prepping.
         var grid = new GridPane();
