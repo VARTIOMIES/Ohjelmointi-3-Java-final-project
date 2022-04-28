@@ -41,6 +41,7 @@ public class MainStage {
         this.student = student;
         this.degrees = degrees;
         this.logOutLabel = new Label("Kirjaudu ulos");
+        this.logOutLabel.setId("logOutLabel");
         logOutLabel.setOnMouseClicked(e -> {
             new LogInStage(stage, degrees, students);
         });
@@ -61,6 +62,8 @@ public class MainStage {
         menuBar.getMenus().add(menu);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+        tabPane.setId("tabPane");
 
         // Creating tabs and adding them to tabPane
         tabPane.getTabs().add(new HomeTab("Etusivu"));
@@ -98,6 +101,7 @@ public class MainStage {
             grid.setPadding(new Insets(15,15,15,15));
 
             this.setContent(grid);
+            this.setId("homeTab");
 
             greetingLabel = new Label();
             grid.add(greetingLabel,0,0);
@@ -145,6 +149,7 @@ public class MainStage {
             grid.add(treeView, 0, 2, 2, 1);
 
             this.setContent(grid);
+            this.setId("designTab");
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
@@ -191,6 +196,7 @@ public class MainStage {
             grid.setVgap(15);
             grid.setPadding(new Insets(15,15,15,15));
             this.setContent(grid);
+            this.setId("courseTab");
 
             changeDegreeButton = new Button("Vaihda");
             grid.add(infoLabel, 0, 0);
@@ -240,11 +246,17 @@ public class MainStage {
             grid.setPadding(new Insets(15,15,15,15));
 
             nameInfoLabel = new Label("Koko nimi");
+            nameInfoLabel.setId("nameInfoLabel");
             nameLabel = new Label();
+            nameLabel.setId("nameLabel");
             studentNumberInfoLabel = new Label("Opiskelijanumero");
+            studentNumberInfoLabel.setId("studentNumberInfoLabel");
             studentNumberLabel = new Label();
+            studentNumberLabel.setId("studentNumberLabel");
             emailInfoLabel = new Label("Sähköpostiosoite");
+            emailInfoLabel.setId("emailInfoLabel");
             emailLabel = new Label();
+            emailLabel.setId("emailLabel");
 
 
             grid.add(infoLabel, 0, 0);
@@ -260,6 +272,7 @@ public class MainStage {
             emailLabel.setText(student.getEmailAddress());
 
             this.setContent(grid);
+            this.setId("personalTab");
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
