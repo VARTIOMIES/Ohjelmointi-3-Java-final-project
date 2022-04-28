@@ -75,6 +75,7 @@ public class MainStage {
         menuBox.getStyleClass().add("hbox");
         layout.getChildren().add(menuBox);
         layout.getChildren().add(tabPane);
+        menuBox.setId("menuBox");
 
         // Setting scene and stage.
         stage.setScene(scene);
