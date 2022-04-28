@@ -39,10 +39,11 @@ public class LogInStage {
         // Grid prepping.
         stage.setResizable(false);
         VBox vbox = new VBox(15);
+        vbox.setAlignment(Pos.BASELINE_CENTER);
+
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setAlignment(Pos.CENTER);
-        vbox.setAlignment(Pos.BASELINE_CENTER);
         smallGap.minHeightProperty().set(5);
         bigGap.minHeightProperty().set(30);
 
