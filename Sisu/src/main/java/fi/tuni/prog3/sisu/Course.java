@@ -1,7 +1,5 @@
 package fi.tuni.prog3.sisu;
 
-import com.google.gson.JsonElement;
-
 public class Course {
     private final String courseName;
     private final String courseCode;
