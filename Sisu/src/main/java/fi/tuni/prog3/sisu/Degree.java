@@ -164,7 +164,7 @@ public class Degree {
                             courseName = courseObject.get("name").getAsJsonObject().get("fi").getAsString();
                         }
 
-                        var createCourse = new Course(courseName, courseObject.getAsJsonObject().get("id").getAsString(), courseObject.getAsJsonObject().get("credits").getAsJsonObject().get("min").getAsInt());
+                        var createCourse = new Course(courseName, courseObject.getAsJsonObject().get("code").getAsString(), courseObject.getAsJsonObject().get("credits").getAsJsonObject().get("min").getAsInt());
                         studyModule.setCourses(createCourse);
                     }
 
