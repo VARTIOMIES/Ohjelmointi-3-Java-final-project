@@ -79,7 +79,13 @@ public class MainStage {
     }
 
     private ObservableList<String> courseObsList() {
+        List<String> attCourses = new ArrayList<>();
+        for(var a : student.getAttainments()) {
+            attCourses.add(a.getCourse().getCourseName());
+        }
+
         List<String> courseNames = courses.stream().map(Course::getCourseName).collect(Collectors.toList());
+        courseNames.removeIf(attCourses::contains);
         List<String> listWithoutDuplicates = Lists.newArrayList(Sets.newHashSet(courseNames));
         ObservableList<String> ret = FXCollections.observableArrayList(listWithoutDuplicates);
         FXCollections.sort(ret);
@@ -220,6 +226,7 @@ public class MainStage {
 
             addCourseButton.setOnAction(e -> {
                         if(isValueOK.get()) {
+                            courseComboBox.getSelectionModel().clearSelection();
                             int grade = Integer.parseInt(gradeField.getText());
                             student.addAttainment(new Attainment(selectedCourse, student, grade));
                             treeView.setRoot(null);
