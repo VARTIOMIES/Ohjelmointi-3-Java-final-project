@@ -5,7 +5,7 @@ package fi.tuni.prog3.sisuTest;
 
 import fi.tuni.prog3.sisu.Main;
 import fi.tuni.prog3.sisu.MainStage;
-import fi.tuni.prog3.sisu.NewStudentScene;
+import fi.tuni.prog3.sisu.NewStudentGui;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
 import javafx.scene.control.*;

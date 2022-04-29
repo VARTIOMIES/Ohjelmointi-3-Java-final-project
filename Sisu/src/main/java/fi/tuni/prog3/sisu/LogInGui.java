@@ -4,7 +4,6 @@
  * @since 1.0
  */
 
-
 package fi.tuni.prog3.sisu;
 
 import javafx.beans.value.ObservableValue;
@@ -31,13 +30,16 @@ import java.util.stream.Collectors;
 public class LogInGui {
 
     // Creating all the elements.
-    private final Label logInLabel = new Label("Kirjaudu sisään");
-    private final Label studentNumberLabel = new Label("Opiskelijanumero");
-    private TextField studentNumberField = new TextField();
-    private Pane smallGap = new Pane();
-    private Pane bigGap = new Pane();
-    private final Button nextButton = new Button("Jatka");
-    private final Button newStudentButton = new Button("Uusi oppilas");
+    private final Label logInLabel;
+    private final Label studentNumberLabel;
+    private final TextField studentNumberField;
+    private final Pane smallGap;
+    private final Pane bigGap;
+    private final Button nextButton;
+    private final Button newStudentButton;
+    private final VBox vbox;
+    private final GridPane grid;
+    private final Scene scene;
 
     /**
      * Constructs the whole log in page.
@@ -47,13 +49,22 @@ public class LogInGui {
      */
 
     LogInGui(Stage stage, List<Degree> degrees, List<Student> students) {
+        // Declaring all elements.
+        logInLabel = new Label("Kirjaudu sisään");
+        studentNumberLabel = new Label("Opiskelijanumero");
+        studentNumberField = new TextField();
+        smallGap = new Pane();
+        bigGap = new Pane();
+        nextButton = new Button("Jatka");
+        newStudentButton = new Button("Uusi oppilas");
+        vbox = new VBox(15);
+        grid = new GridPane();
+        scene = new Scene(vbox, 350, 400);
 
         // Element prepping.
         stage.setResizable(false);
-        VBox vbox = new VBox(15);
         vbox.setAlignment(Pos.BASELINE_CENTER);
 
-        GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setAlignment(Pos.CENTER);
         smallGap.minHeightProperty().set(5);
@@ -81,7 +92,6 @@ public class LogInGui {
         setIds();
 
         // Stage prepping.
-        Scene scene = new Scene(vbox, 350, 400);
         stage.setTitle("Kirjaudu sisään");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
@@ -132,7 +142,7 @@ public class LogInGui {
         });
 
         newStudentButton.setOnAction(e -> {
-             new NewStudentScene(stage, degrees, students);
+             new NewStudentGui(stage, degrees, students);
         });
     }
 
