@@ -21,13 +21,7 @@ public class Main extends Application {
     /* Lists containing references to every object used in the program. Just to
     make sure that every object can be accessed at least somehow. */
     private List<Student> students;
-    private List<Teacher> teachers;
     private List<Degree> degrees;
-    private List<Attainment> attainments;
-    private HashMap<Degree, JsonArray> modules;
-    private HashMap<JsonObject, JsonArray> studyModules;
-    private HashMap<StudyModule, List<Course>> courses;
-
 
     // Constructor
     public Main() throws IOException {
@@ -36,12 +30,8 @@ public class Main extends Application {
 
         // Initializing all containers
         students = new ArrayList<>();
-        teachers = new ArrayList<>();
         degrees = new ArrayList<>();
-        attainments = new ArrayList<>();
-        modules = new HashMap<>();
-        courses = new HashMap<>();
-        studyModules = new HashMap<>();
+
 
         // TODO: Fill containers with the data from datafile.
 
