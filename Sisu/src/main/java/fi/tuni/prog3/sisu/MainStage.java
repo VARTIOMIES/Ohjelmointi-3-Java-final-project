@@ -26,15 +26,14 @@ public class MainStage {
     private Student student;
     private List<Degree> degrees;
     private TabPane tabPane;
-    private MenuBar menuBar;
     private Label logOutLabel;
     private List<Course> courses;
     private SearchableComboBox<String> courseComboBox;
+    GridPane cGrid = new GridPane();
     private Label meanNumberLabel;
 
     MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
         // Initializing stuff
-        // TODO: Change courses after degree change.
         student.getDegree().readAPI();
         for(var module : student.getDegree().getModules()) {
             for(var studyModule : module.getStudyModules()) {
@@ -59,9 +58,6 @@ public class MainStage {
 
         // Preparing tabs.
         tabPane = new TabPane();
-        menuBar = new MenuBar();
-        Menu menu = new Menu("", logOutLabel);
-        menuBar.getMenus().add(menu);
 
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
@@ -72,15 +68,7 @@ public class MainStage {
         tabPane.getTabs().add(new DesignTab("Omat suoritukset"));
         tabPane.getTabs().add(new CourseTab("Kurssinäkymä"));
         tabPane.getTabs().add(new PersonalTab("Omat tiedot"));
-
-
-        Region spacer = new Region();
-        spacer.getStyleClass().add("spacer");
-        HBox menuBox = new HBox(spacer, menuBar);
-        menuBox.getStyleClass().add("hbox");
-        layout.getChildren().add(menuBox);
         layout.getChildren().add(tabPane);
-        menuBox.setId("menuBox");
 
         // Setting scene and stage.
         stage.setScene(scene);
@@ -181,22 +169,22 @@ public class MainStage {
             vbox.getChildren().add(addCourseButton);
 
             // Outer grid.
-            GridPane grid = new GridPane();
-            grid.setHgap(15);
-            grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
+            //GridPane grid = new GridPane();
+            cGrid.setHgap(15);
+            cGrid.setVgap(15);
+            cGrid.setPadding(new Insets(15,15,15,15));
 
             // node, columnIndex, rowIndex, columnSpan, rowSpan:
-            grid.add(infoLabel, 0, 0);
-            grid.add(courseComboBox, 0, 1, 3, 1);
-            grid.add(chooseCourseButton, 4, 1);
-            grid.add(treeView, 4, 2, 3, 3);
+            cGrid.add(infoLabel, 0, 0);
+            cGrid.add(courseComboBox, 0, 1, 3, 1);
+            cGrid.add(chooseCourseButton, 4, 1);
+            cGrid.add(treeView, 4, 2, 3, 3);
 
-            this.setContent(grid);
+            this.setContent(cGrid);
             this.setId("designTab");
 
             // Setting css id:s.
-            grid.getStyleClass().add("grid-pane");
+            cGrid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
             chooseCourseButton.getStyleClass().add("basicButton");
             addCourseLabel.getStyleClass().add("heading");
@@ -206,14 +194,14 @@ public class MainStage {
             chooseCourseButton.setOnAction(e -> {
                 gradeField.setText("");
                 gradeField.setStyle(null);
-                grid.getChildren().removeIf(n -> n instanceof VBox);
+                cGrid.getChildren().removeIf(n -> n instanceof VBox);
                 if(courseComboBox.getValue() != null) {
                     var courseString = courseComboBox.getValue();
                     selectedCourse = courses.stream()
                             .filter(c -> courseString.equals(c.getCourseName()))
                             .collect(Collectors.toList()).get(0);
                     selectedCourseLabel.setText(selectedCourse.getCourseName());
-                    grid.add(vbox, 0, 2, 3, 1);
+                    cGrid.add(vbox, 0, 2, 3, 1);
                 }
             });
 
@@ -238,7 +226,7 @@ public class MainStage {
                             treeView.setRoot(null);
                             makeAttainmentTreeView();
                             meanNumberLabel.setText(student.getMean());
-                            grid.getChildren().removeIf(n -> n instanceof VBox);
+                            cGrid.getChildren().removeIf(n -> n instanceof VBox);
                             courseComboBox.getItems().remove(selectedCourse.getCourseName());
                         }
                     });
@@ -344,15 +332,16 @@ public class MainStage {
                         }
                         catch(Exception ignored) {
                         }
-                        courseComboBox.getItems().clear();
-                        courseComboBox.getItems().addAll(courseObsList());
+                        cGrid.getChildren().removeIf(n -> n instanceof ComboBox);
+                        courseComboBox = new SearchableComboBox<>(courseObsList());
+                        cGrid.add(courseComboBox, 0, 1, 3, 1);
+
                         makeTreeView(degree);
                     }
                 }
                 changeDegreeButton.setDisable(false);
             });
 
-            // TODO: Calculate mean.
             treeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
                 try {
                     var courseName = treeView.getSelectionModel().getSelectedItem().getValue();
@@ -419,6 +408,7 @@ public class MainStage {
             grid.add(studentNumberLabel, 1, 2);
             grid.add(emailInfoLabel, 0, 3);
             grid.add(emailLabel, 0, 4);
+            grid.add(logOutLabel, 2, 5);
 
             // Add all student info visible
             nameLabel.setText(student.getName());
@@ -434,6 +424,7 @@ public class MainStage {
             nameInfoLabel.getStyleClass().add("smallHeading");
             studentNumberInfoLabel.getStyleClass().add("smallHeading");
             emailInfoLabel.getStyleClass().add("smallHeading");
+            logOutLabel.getStyleClass().add("basicButton");
         }
     }
 }
