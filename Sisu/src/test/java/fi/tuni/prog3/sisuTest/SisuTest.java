@@ -240,12 +240,5 @@ public class SisuTest extends ApplicationTest {
 
 
 
-    public static void main(String[] args) throws Exception {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(Main.class);
-    }
-
-
-
 
 }
