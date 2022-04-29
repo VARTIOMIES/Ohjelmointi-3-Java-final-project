@@ -129,25 +129,6 @@
     -fx-padding: 0.25em ;
 }
 
-.menu-bar {
-    -fx-background-color: #202020 ;
-    -fx-border-color: BLACK ;
-    -fx-border-width: 2;
-    -fx-min-width: 100px;
-}
-
-.menu-bar .label {
-    -fx-font-size: 12;
-    -fx-font-family: "Adamina";
-    -fx-text-fill: WHITE;
-}
-
-.menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
-    -fx-background: #101010 ;
-    -fx-opacity: 0.5;
-    -fx-text-fill: white;
-}
-
 .hbox {
     -fx-background-color: #202020;
 }
