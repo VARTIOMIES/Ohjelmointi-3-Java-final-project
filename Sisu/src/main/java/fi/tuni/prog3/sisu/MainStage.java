@@ -28,7 +28,7 @@ public class MainStage {
     private TabPane tabPane;
     private MenuBar menuBar;
     private Label logOutLabel;
-    private List<Course> courses = new ArrayList<>();
+    private List<Course> courses;
     private SearchableComboBox<String> courseComboBox;
     private Label meanNumberLabel;
 
@@ -50,6 +50,7 @@ public class MainStage {
         logOutLabel.setOnMouseClicked(e -> {
             new LogInStage(stage, degrees, students);
         });
+        this.courses = new ArrayList<>();
 
         // Creating containers.
         VBox layout = new VBox();
