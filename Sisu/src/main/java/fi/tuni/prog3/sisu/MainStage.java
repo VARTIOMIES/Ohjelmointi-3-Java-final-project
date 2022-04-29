@@ -228,7 +228,7 @@ public class MainStage {
                         if(isValueOK.get()) {
                             courseComboBox.getSelectionModel().clearSelection();
                             int grade = Integer.parseInt(gradeField.getText());
-                            student.addAttainment(new Attainment(selectedCourse, student, grade));
+                            student.addAttainment(new Attainment(selectedCourse, grade));
                             treeView.setRoot(null);
                             makeAttainmentTreeView();
                             meanNumberLabel.setText(student.getMean());

@@ -138,7 +138,7 @@ public class NewStudentScene {
                 });
 
         previousButton.setOnAction(e -> {
-                new LogInStage(stage, degrees, students);
+                new LogInGui(stage, degrees, students);
         });
 
         nextButton.setOnAction(e -> {
