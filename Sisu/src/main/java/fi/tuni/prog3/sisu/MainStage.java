@@ -375,7 +375,7 @@ public class MainStage {
 
     private class PersonalTab extends Tab{
         //Buttons and other elements
-        private final Label infoLabel = new Label("Henkilötiedot");
+        private final Label infoLabel;
         private final Label nameInfoLabel;
         private Label nameLabel;
         private final Label studentNumberInfoLabel;
@@ -386,12 +386,17 @@ public class MainStage {
 
         // Constructor
         PersonalTab(String label){
+            // First create a basic Tab
             super(label);
+            // Layout for the tab
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
             grid.setPadding(new Insets(15,15,15,15));
 
+            // Initializing and setting Ids for everything
+            infoLabel = new Label("Henkilötiedot");
+            infoLabel.setId("infoLabel");
             nameInfoLabel = new Label("Koko nimi");
             nameInfoLabel.setId("nameInfoLabel");
             nameLabel = new Label();
@@ -405,7 +410,7 @@ public class MainStage {
             emailLabel = new Label();
             emailLabel.setId("emailLabel");
 
-
+            // Put all into the grid
             grid.add(infoLabel, 0, 0);
             grid.add(nameInfoLabel, 0, 1);
             grid.add(nameLabel, 0, 2);
@@ -414,6 +419,7 @@ public class MainStage {
             grid.add(emailInfoLabel, 0, 3);
             grid.add(emailLabel, 0, 4);
 
+            // Add all student info visible
             nameLabel.setText(student.getName());
             studentNumberLabel.setText(student.getStudentNumber());
             emailLabel.setText(student.getEmailAddress());
