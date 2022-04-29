@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Heikki Paasonen",
+    "studentNumber": "12345678",
+    "startingYear": 2001,
+    "expectedEndYear": 2004,
+    "degree": {
+      "id": "otm-91901c8b-e109-4cf8-b9c7-eaac16417268",
+      "code": "AUTM",
+      "language": "fi",
+      "groupId": "tut-dp-g-1105",
+      "name": "Automaatiotekniikan DI-ohjelma",
+      "creditsMin": 120
+    },
+    "firstName": "Heikki",
+    "lastName": "Paasonen",
+    "sameNamed": 0,
+    "attainments": []
+  },
+  {
+    "name": "Kimmo Koodari",
+    "studentNumber": "12345679",
+    "startingYear": 2002,
+    "expectedEndYear": 2005,
+    "degree": {
+      "id": "otm-6ab4ce4a-4eb7-4c76-8ed7-9ab3a2faa5b6",
+      "code": "MEDAANEEL2020",
+      "language": "fi",
+      "groupId": "otm-6ab4ce4a-4eb7-4c76-8ed7-9ab3a2faa5b6",
+      "name": "Anestesiologian ja tehohoidon erikoislääkärikoulutus (55/2020)",
+      "creditsMin": 0
+    },
+    "firstName": "Kimmo",
+    "lastName": "Koodari",
+    "sameNamed": 0,
+    "attainments": []
+  },
+  {
+    "name": "Kimmo Koodari",
+    "studentNumber": "15344444",
+    "startingYear": 2020,
+    "expectedEndYear": 2023,
+    "degree": {
+      "id": "otm-8ce94179-9807-4837-a539-00d95ac9ad0e",
+      "code": "FILK",
+      "language": "fi",
+      "groupId": "uta-tohjelma-1773",
+      "name": "Filosofian kandidaattiohjelma",
+      "creditsMin": 180
+    },
+    "firstName": "Kimmo",
+    "lastName": "Koodari",
+    "sameNamed": 0,
+    "attainments": []
+  },
+  {
+    "name": "Ronja Lipsonen",
+    "studentNumber": "50121133",
+    "startingYear": 2020,
+    "expectedEndYear": 2023,
+    "degree": {
+      "id": "otm-872015a5-14ce-46a4-a1e1-1932c975a856",
+      "code": "MEDAANEEL2015",
+      "language": "fi",
+      "groupId": "otm-872015a5-14ce-46a4-a1e1-1932c975a856",
+      "name": "Anestesiologian ja tehohoidon erikoislääkärikoulutus (56/2015)",
+      "creditsMin": 0
+    },
+    "firstName": "Ronja",
+    "lastName": "Lipsonen",
+    "sameNamed": 0,
+    "attainments": []
+  }
+]
