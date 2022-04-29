@@ -47,7 +47,7 @@ public class MainStage {
         this.logOutLabel = new Label("Kirjaudu ulos");
         this.logOutLabel.setId("logOutLabel");
         logOutLabel.setOnMouseClicked(e -> {
-            new LogInStage(stage, degrees, students);
+            new LogInGui(stage, degrees, students);
         });
 
         // Creating containers.
