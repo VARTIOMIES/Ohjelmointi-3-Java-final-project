@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -24,6 +25,8 @@ public class Main extends Application {
     public Main() throws IOException {
 
         // TODO: Datafile reading
+        //Reader reader = Files.newBufferedReader(Paths.get("Sisudatafile.json"));
+        //ArrayList students = gson.fromJson(reader,ArrayList.class);
 
         // Initializing all containers
         students = new ArrayList<>();
@@ -87,9 +90,6 @@ public class Main extends Application {
             degrees.add(newDegree);
         }
     }
-
-
-
 
 
     public void addTestStudents() {

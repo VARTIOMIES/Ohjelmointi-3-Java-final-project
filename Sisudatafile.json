@@ -5,12 +5,12 @@
     "startingYear": 2001,
     "expectedEndYear": 2004,
     "degree": {
-      "id": "otm-91901c8b-e109-4cf8-b9c7-eaac16417268",
-      "code": "AUTM",
+      "id": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "code": "MEDAAKUEL2020",
       "language": "fi",
-      "groupId": "tut-dp-g-1105",
-      "name": "Automaatiotekniikan DI-ohjelma",
-      "creditsMin": 120
+      "groupId": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "name": "Akuuttilääketieteen erikoislääkärikoulutus (55/2020)",
+      "creditsMin": 0
     },
     "firstName": "Heikki",
     "lastName": "Paasonen",
