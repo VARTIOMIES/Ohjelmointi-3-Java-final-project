@@ -5,13 +5,11 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Main extends Application {
 
