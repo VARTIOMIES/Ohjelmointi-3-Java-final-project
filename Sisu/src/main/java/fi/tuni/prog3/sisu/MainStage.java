@@ -242,18 +242,18 @@ public class MainStage {
 
     private class CourseTab extends Tab {
         //Buttons and other elements
-        private final Label infoLabel = new Label("Tutkintorakenne");
-        private final Button changeDegreeButton = new Button("Vaihda");
+        private final Label infoLabel;
+        private final Button changeDegreeButton;
         private TreeView<String> treeView;
         private TreeItem<String> rootNode;
         private final SearchableComboBox<String> degreeComboBox;
-        private final Label courseInfoLabel = new Label();
-        private final Label courseNameInfoLabel = new Label();
-        private Label courseNameLabel = new Label();
-        private final Label codeInfoLabel = new Label();
-        private Label codeLabel = new Label();
-        private Label creditsLabel = new Label();
-        private Label creditsInfoLabel = new Label();
+        private final Label courseInfoLabel;
+        private final Label courseNameInfoLabel;
+        private Label courseNameLabel;
+        private final Label codeInfoLabel;
+        private Label codeLabel;
+        private Label creditsLabel;
+        private Label creditsInfoLabel;
 
         private void makeTreeView(Degree degree){
             rootNode = new TreeItem<>(degree.getName());
@@ -272,7 +272,21 @@ public class MainStage {
 
         // Constructor
         CourseTab(String label){
+
+            // First create a tab
             super(label);
+
+            // Initializing private attributes
+            infoLabel = new Label("Tutkintorakenne");
+            changeDegreeButton = new Button("Vaihda");
+            courseInfoLabel = new Label();
+            courseNameInfoLabel = new Label();
+            courseNameLabel = new Label();
+            codeInfoLabel = new Label();
+            codeLabel = new Label();
+            creditsLabel = new Label();
+            creditsInfoLabel = new Label();
+
             // Setting the degreeBox.
             List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
             ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
