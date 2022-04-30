@@ -20,19 +20,33 @@ import java.util.stream.Collectors;
 public class NewStudentScene {
 
     // Creating all the elements.
-    Label newStudentLabel = new Label("Uusi oppilas");
-    Label nameLabel = new Label("Koko nimi");
-    TextField nameField = new TextField();
-    Label studentNumberLabel = new Label("Opiskelijanumero");
-    TextField studentNumberField = new TextField();
-    Label startingYearLabel = new Label("Opintojen aloitusvuosi");
-    TextField startingYearField = new TextField();
-    Label degreeLabel = new Label("Valitse tutkinto (voit vaihtaa tämän myöhemmin)");
-    Pane gap = new Pane();
-    Button previousButton = new Button("Takaisin");
-    Button nextButton = new Button("Jatka");
+    Label newStudentLabel;
+    Label nameLabel;
+    TextField nameField;
+    Label studentNumberLabel;
+    TextField studentNumberField;
+    Label startingYearLabel;
+    TextField startingYearField;
+    Label degreeLabel;
+    Pane gap;
+    Button previousButton;
+    Button nextButton;
 
     NewStudentScene(Stage stage, List<Degree> degrees, List<Student> students){
+        // Initializing
+        newStudentLabel = new Label("Uusi oppilas");
+        nameLabel = new Label("Koko nimi");
+        nameField = new TextField();
+        studentNumberLabel = new Label("Opiskelijanumero");
+        studentNumberField = new TextField();
+        startingYearLabel = new Label("Opintojen aloitusvuosi");
+        startingYearField = new TextField();
+        degreeLabel = new Label("Valitse tutkinto (voit vaihtaa tämän myöhemmin)");
+        gap = new Pane();
+        previousButton = new Button("Takaisin");
+        nextButton = new Button("Jatka");
+
+
         // Making the degree drop box.
         List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
         ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
