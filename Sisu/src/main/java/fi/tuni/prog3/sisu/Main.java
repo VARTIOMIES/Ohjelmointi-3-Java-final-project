@@ -1,18 +1,15 @@
 package fi.tuni.prog3.sisu;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,15 +19,19 @@ public class Main extends Application {
     make sure that every object can be accessed at least somehow. */
     private List<Student> students;
     private List<Degree> degrees;
+    private Gson gson;
 
     // Constructor
     public Main() throws IOException {
 
         // TODO: Datafile reading
+        //Reader reader = Files.newBufferedReader(Paths.get("Sisudatafile.json"));
+        //ArrayList students = gson.fromJson(reader,ArrayList.class);
 
         // Initializing all containers
         students = new ArrayList<>();
         degrees = new ArrayList<>();
+        gson = new GsonBuilder().setPrettyPrinting().create();
 
 
         // TODO: Fill containers with the data from datafile.
@@ -50,7 +51,7 @@ public class Main extends Application {
     // The Sisu main window now exists in class MainStage.
     @Override
     public void start(Stage stage) {
-        new LogInStage(stage, degrees, students);
+        new LogInGui(stage, degrees, students);
     }
 
     public static void main(String[] args) throws IOException {
@@ -91,15 +92,19 @@ public class Main extends Application {
     }
 
 
-
-
-
     public void addTestStudents() {
         students.add(new Student("Heikki Paasonen", "12345678", 2001, degrees.get(0)));
         students.add(new Student("Kimmo Koodari", "12345679", 2002, degrees.get(2)));
         students.add(new Student("Kimmo Koodari", "15344444", 2020, degrees.get(20)));
         Student courseTestStudent = new Student("Ronja Lipsonen", "50121133", 2020, degrees.get(3));
         students.add(courseTestStudent);
+    }
+
+    @Override
+    public void stop() throws IOException {
+        Writer writer = Files.newBufferedWriter(Paths.get("Sisudatafile.json"));
+        gson.toJson(students,writer);
+        writer.close();
     }
 }
 

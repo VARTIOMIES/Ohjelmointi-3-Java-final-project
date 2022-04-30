@@ -47,7 +47,7 @@ public class MainStage {
         this.logOutLabel = new Label("Kirjaudu ulos");
         this.logOutLabel.setId("logOutLabel");
         logOutLabel.setOnMouseClicked(e -> {
-            new LogInStage(stage, degrees, students);
+            new LogInGui(stage, degrees, students);
         });
         this.courses = new ArrayList<>();
 
@@ -80,7 +80,13 @@ public class MainStage {
     }
 
     private ObservableList<String> courseObsList() {
+        List<String> attCourses = new ArrayList<>();
+        for(var a : student.getAttainments()) {
+            attCourses.add(a.getCourse().getCourseName());
+        }
+
         List<String> courseNames = courses.stream().map(Course::getCourseName).collect(Collectors.toList());
+        courseNames.removeIf(attCourses::contains);
         List<String> listWithoutDuplicates = Lists.newArrayList(Sets.newHashSet(courseNames));
         ObservableList<String> ret = FXCollections.observableArrayList(listWithoutDuplicates);
         FXCollections.sort(ret);
@@ -221,8 +227,9 @@ public class MainStage {
 
             addCourseButton.setOnAction(e -> {
                         if(isValueOK.get()) {
+                            courseComboBox.getSelectionModel().clearSelection();
                             int grade = Integer.parseInt(gradeField.getText());
-                            student.addAttainment(new Attainment(selectedCourse, student, grade));
+                            student.addAttainment(new Attainment(selectedCourse, grade));
                             treeView.setRoot(null);
                             makeAttainmentTreeView();
                             meanNumberLabel.setText(student.getMean());
