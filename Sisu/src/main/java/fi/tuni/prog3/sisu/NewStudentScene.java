@@ -20,17 +20,17 @@ import java.util.stream.Collectors;
 public class NewStudentScene {
 
     // Creating all the elements.
-    Label newStudentLabel;
-    Label nameLabel;
-    TextField nameField;
-    Label studentNumberLabel;
-    TextField studentNumberField;
-    Label startingYearLabel;
-    TextField startingYearField;
-    Label degreeLabel;
-    Pane gap;
-    Button previousButton;
-    Button nextButton;
+    private final Label newStudentLabel;
+    private final Label nameLabel;
+    private TextField nameField;
+    private final Label studentNumberLabel;
+    private final TextField studentNumberField;
+    private final Label startingYearLabel;
+    private final TextField startingYearField;
+    private final Label degreeLabel;
+    private Pane gap;
+    private final Button previousButton;
+    private final Button nextButton;
 
     NewStudentScene(Stage stage, List<Degree> degrees, List<Student> students){
         // Initializing
