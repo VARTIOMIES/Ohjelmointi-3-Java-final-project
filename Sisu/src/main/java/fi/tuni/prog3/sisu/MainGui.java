@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.controlsfx.control.SearchableComboBox;
-import org.controlsfx.control.spreadsheet.Grid;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,9 +45,10 @@ public class MainGui {
 
     // Elements that multiple tabs use.
     private SearchableComboBox<String> courseComboBox;
-    private final GridPane designGrid = new GridPane();
+    private GridPane designGrid;
     private Label meanNumberLabel;
     private ProgressBar studentDegreeProgressBar;
+    private Label progress;
 
 
     /**
@@ -160,6 +160,7 @@ public class MainGui {
             grid = new GridPane();
             studentProgressLabel = new Label("Edistyminen");
             studentDegreeProgressBar = new ProgressBar(student.getDegreeProgress());
+            progress = new Label(String.format("  %d/%d", student.getTotalCredits(), student.getDegree().getCreditsMin()));
 
             // Element prepping.
             grid.setHgap(15);
@@ -176,6 +177,7 @@ public class MainGui {
             grid.add(meanNumberLabel, 0, 5);
             grid.add(studentDegreeProgressBar,1,5);
             grid.add(studentProgressLabel,1,4);
+            grid.add(progress, 1, 6);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
@@ -185,6 +187,7 @@ public class MainGui {
             meanNumberLabel.getStyleClass().add("heading");
             studentProgressLabel.getStyleClass().add("heading");
             studentDegreeProgressBar.getStyleClass().add("heading");
+            progress.getStyleClass().add("smallHeading");
             this.getStyleClass().add("homeIcon");
         }
     }
@@ -227,11 +230,13 @@ public class MainGui {
             addCourseButton = new Button("Lisää");
             treeView = new TreeView<>();
             vbox = new VBox(15);
+            designGrid = new GridPane();
 
             // Element prepping.
             courseComboBox.setPromptText("Hae kursseja");
             gradeField.setMaxWidth(25);
-            treeView.setMinWidth(400);
+            treeView.setMinWidth(300);
+            treeView.setMaxWidth(350);
             vbox.setAlignment(Pos.BASELINE_CENTER);
             this.setContent(designGrid);
             this.setId("designTab");
@@ -342,6 +347,7 @@ public class MainGui {
 
                     meanNumberLabel.setText(student.getMean());
                     studentDegreeProgressBar.setProgress(student.getDegreeProgress());
+                    progress.setText(String.format("%d/%d", student.getTotalCredits(), student.getDegree().getCreditsMin()));
 
                     designGrid.getChildren().removeIf(n -> n instanceof VBox);
                     courseComboBox.getItems().remove(selectedCourse.getCourseName());
@@ -478,6 +484,8 @@ public class MainGui {
                                 .filter(d -> degreeString.equals(d.getName()))
                                 .collect(Collectors.toList()).get(0);
                         student.changeDegree(degree);
+                        studentDegreeProgressBar.setProgress(student.getDegreeProgress());
+                        progress.setText(String.format("  %d/%d", student.getTotalCredits(), student.getDegree().getCreditsMin()));
 
                         // Removing instances of the old degree's courses and adding in the new ones.
                         courses.clear();
@@ -533,8 +541,13 @@ public class MainGui {
         private final Label nameLabel;
         private final Label studentNumberInfoLabel;
         private final Label studentNumberLabel;
+        private final Label startYearInfoLabel;
+        private final Label startYearLabel;
+        private final Label endYearInfoLabel;
+        private final Label endYearLabel;
         private final Label emailInfoLabel;
         private final Label emailLabel;
+        private final Pane gap;
         private final GridPane grid;
 
         /**
@@ -548,17 +561,20 @@ public class MainGui {
             // Declaring all elements.
             infoLabel = new Label("Henkilötiedot");
             nameInfoLabel = new Label("Koko nimi");
-            nameLabel = new Label();
+            nameLabel = new Label(student.getName());
             studentNumberInfoLabel = new Label("Opiskelijanumero");
-            studentNumberLabel = new Label();
+            studentNumberLabel = new Label(student.getStudentNumber());
+            startYearInfoLabel = new Label("Aloitusvuosi");
+            startYearLabel = new Label(String.valueOf(student.getStartingYear()));
+            endYearInfoLabel = new Label("Odotettu päättymisvuosi");
+            endYearLabel = new Label(String.valueOf(student.getExpectedEndYear()));
             emailInfoLabel = new Label("Sähköpostiosoite");
-            emailLabel = new Label();
+            emailLabel = new Label(student.getEmailAddress());
+            gap = new Pane();
             grid = new GridPane();
 
             // Element prepping.
-            nameLabel.setText(student.getName());
-            studentNumberLabel.setText(student.getStudentNumber());
-            emailLabel.setText(student.getEmailAddress());
+            gap.minHeightProperty().set(40);
             grid.setHgap(15);
             grid.setVgap(15);
             grid.setPadding(new Insets(15,15,15,15));
@@ -571,15 +587,22 @@ public class MainGui {
             grid.add(nameLabel, 0, 2);
             grid.add(studentNumberInfoLabel, 1, 1);
             grid.add(studentNumberLabel, 1, 2);
-            grid.add(emailInfoLabel, 0, 3);
-            grid.add(emailLabel, 0, 4);
-            grid.add(logOutLabel, 4, 7);
+            grid.add(startYearInfoLabel, 0, 3);
+            grid.add(startYearLabel, 0, 4);
+            grid.add(endYearInfoLabel, 1, 3);
+            grid.add(endYearLabel, 1, 4);
+            grid.add(emailInfoLabel, 0, 5);
+            grid.add(emailLabel, 0, 6);
+            grid.add(gap, 0, 7);
+            grid.add(logOutLabel, 0, 8);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
             nameInfoLabel.getStyleClass().add("smallHeading");
             studentNumberInfoLabel.getStyleClass().add("smallHeading");
+            startYearInfoLabel.getStyleClass().add("smallHeading");
+            endYearInfoLabel.getStyleClass().add("smallHeading");
             emailInfoLabel.getStyleClass().add("smallHeading");
             logOutLabel.getStyleClass().add("basicButton");
 

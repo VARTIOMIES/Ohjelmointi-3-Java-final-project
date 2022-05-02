@@ -109,8 +109,12 @@ public class Student {
      */
     public double getDegreeProgress(){
         int i = getTotalCredits();
-        int k = getDegree().getCreditsMin();
-        return (double) i / k;
+        int k = degree.getCreditsMin();
+        if(k > 0) {
+            return (double) i / k;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -125,10 +129,11 @@ public class Student {
         }
     }
 
-    /**
-     * Gets the attainments what the student has completed
-     * @return list of attainments
-     */
+    public String progressString() {
+        return String.format("%d/%d", getTotalCredits(), degree.getCreditsMin());
+    }
+
+    
     public ArrayList<Attainment> getAttainments() {
         return attainments;
     }
