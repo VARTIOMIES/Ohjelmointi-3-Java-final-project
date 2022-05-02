@@ -27,7 +27,7 @@ public class MainStage {
     private List<Degree> degrees;
     private TabPane tabPane;
     private Label logOutLabel;
-    private List<Course> courses = new ArrayList<>();
+    private List<Course> courses;
     private SearchableComboBox<String> courseComboBox;
     GridPane cGrid = new GridPane();
     private Label meanNumberLabel;
@@ -49,6 +49,7 @@ public class MainStage {
         logOutLabel.setOnMouseClicked(e -> {
             new LogInGui(stage, degrees, students);
         });
+        this.courses = new ArrayList<>();
 
         // Creating containers.
         VBox layout = new VBox();
@@ -228,7 +229,7 @@ public class MainStage {
                         if(isValueOK.get()) {
                             courseComboBox.getSelectionModel().clearSelection();
                             int grade = Integer.parseInt(gradeField.getText());
-                            student.addAttainment(new Attainment(selectedCourse, student, grade));
+                            student.addAttainment(new Attainment(selectedCourse, grade));
                             treeView.setRoot(null);
                             makeAttainmentTreeView();
                             meanNumberLabel.setText(student.getMean());
@@ -241,18 +242,18 @@ public class MainStage {
 
     private class CourseTab extends Tab {
         //Buttons and other elements
-        private final Label infoLabel = new Label("Tutkintorakenne");
-        private final Button changeDegreeButton = new Button("Vaihda");
+        private final Label infoLabel;
+        private final Button changeDegreeButton;
         private TreeView<String> treeView;
         private TreeItem<String> rootNode;
         private final SearchableComboBox<String> degreeComboBox;
-        private final Label courseInfoLabel = new Label();
-        private final Label courseNameInfoLabel = new Label();
-        private Label courseNameLabel = new Label();
-        private final Label codeInfoLabel = new Label();
-        private Label codeLabel = new Label();
-        private Label creditsLabel = new Label();
-        private Label creditsInfoLabel = new Label();
+        private final Label courseInfoLabel;
+        private final Label courseNameInfoLabel;
+        private Label courseNameLabel;
+        private final Label codeInfoLabel;
+        private Label codeLabel;
+        private Label creditsLabel;
+        private Label creditsInfoLabel;
 
         private void makeTreeView(Degree degree){
             rootNode = new TreeItem<>(degree.getName());
@@ -271,7 +272,21 @@ public class MainStage {
 
         // Constructor
         CourseTab(String label){
+
+            // First create a tab
             super(label);
+
+            // Initializing private attributes
+            infoLabel = new Label("Tutkintorakenne");
+            changeDegreeButton = new Button("Vaihda");
+            courseInfoLabel = new Label();
+            courseNameInfoLabel = new Label();
+            courseNameLabel = new Label();
+            codeInfoLabel = new Label();
+            codeLabel = new Label();
+            creditsLabel = new Label();
+            creditsInfoLabel = new Label();
+
             // Setting the degreeBox.
             List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
             ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
@@ -371,7 +386,7 @@ public class MainStage {
 
     private class PersonalTab extends Tab{
         //Buttons and other elements
-        private final Label infoLabel = new Label("Henkilötiedot");
+        private final Label infoLabel;
         private final Label nameInfoLabel;
         private Label nameLabel;
         private final Label studentNumberInfoLabel;
@@ -382,12 +397,17 @@ public class MainStage {
 
         // Constructor
         PersonalTab(String label){
+            // First create a basic Tab
             super(label);
+            // Layout for the tab
             GridPane grid = new GridPane();
             grid.setHgap(15);
             grid.setVgap(15);
             grid.setPadding(new Insets(15,15,15,15));
 
+            // Initializing and setting Ids for everything
+            infoLabel = new Label("Henkilötiedot");
+            infoLabel.setId("infoLabel");
             nameInfoLabel = new Label("Koko nimi");
             nameInfoLabel.setId("nameInfoLabel");
             nameLabel = new Label();
@@ -401,7 +421,7 @@ public class MainStage {
             emailLabel = new Label();
             emailLabel.setId("emailLabel");
 
-
+            // Put all into the grid
             grid.add(infoLabel, 0, 0);
             grid.add(nameInfoLabel, 0, 1);
             grid.add(nameLabel, 0, 2);
@@ -411,6 +431,7 @@ public class MainStage {
             grid.add(emailLabel, 0, 4);
             grid.add(logOutLabel, 2, 5);
 
+            // Add all student info visible
             nameLabel.setText(student.getName());
             studentNumberLabel.setText(student.getStudentNumber());
             emailLabel.setText(student.getEmailAddress());

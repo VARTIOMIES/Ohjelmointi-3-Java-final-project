@@ -21,7 +21,7 @@ public class Degree {
     private final String name;
     private final int creditsMin;
 
-    private ArrayList<Module> modules;
+    private transient ArrayList<Module> modules;
 
 
 
