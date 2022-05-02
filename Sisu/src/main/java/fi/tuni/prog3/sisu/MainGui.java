@@ -53,6 +53,11 @@ public class MainGui {
 
     /**
      * Constructs the main page and adds tabs to it.
+     * Precondition: stage has been created
+     * Precondition: student has been created
+     * Precondition: degrees is not empty
+     * Precondition: students is not empty
+     * Post-condition: degrees don't change
      * @param stage the stage of the whole program.
      * @param degrees all the degrees that exist in Tampere's Sisu.
      * @param students all the students from json file.

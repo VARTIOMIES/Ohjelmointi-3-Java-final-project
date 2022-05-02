@@ -16,6 +16,8 @@ public class StudyModule {
 
     /**
      * Constructor
+     * Precondition: courses is not empty
+     * Post-condition: courses don't change
      * @param moduleName Name of the study module
      * @param moduleRules JsonArray of module rules
      * @param courses ArrayList of courses

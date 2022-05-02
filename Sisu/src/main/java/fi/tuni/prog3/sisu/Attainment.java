@@ -9,6 +9,8 @@ public class Attainment {
 
     /**
      * Constructor
+     * Precondition: course has been created
+     * Post-conditions: course is not empty
      * @param course Name of the course
      * @param grade Grade of the completed course
      */

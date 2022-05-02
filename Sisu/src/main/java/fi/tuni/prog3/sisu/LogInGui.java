@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
  * A class that imitates scene. User can create new account or log in to main stage here.
  */
 
-
 public class LogInGui {
     // Creating all the elements.
     private final Stage stage;
@@ -45,6 +44,10 @@ public class LogInGui {
 
     /**
      * Constructs the whole log in page.
+     * Precondition: stage has been created
+     * Precondition: degrees is not empty
+     * Precondition: students is not empty
+     * Post-condition: degrees don't change
      * @param stage the stage of the whole program.
      * @param degrees all the degrees that exist in Tampere's Sisu.
      * @param students all the students from json file.

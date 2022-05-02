@@ -18,6 +18,8 @@ public class Student {
 
     /**
      * Constructor
+     * Precondition: degree has been created
+     * Post-conditions: degree is not empty
      * @param name Name of the student
      * @param studentNumber Student number of the student
      * @param startingYear Starting year of the student
