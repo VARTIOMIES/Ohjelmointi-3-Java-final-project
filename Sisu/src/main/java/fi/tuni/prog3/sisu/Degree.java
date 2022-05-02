@@ -3,6 +3,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.Expose;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
 
 /**
  * This class is used to read API and store information about a specific Degree.
@@ -30,10 +32,11 @@ public class Degree {
      * @param creditsMin Minimum amount of credits to complete the degree.
      */
     public Degree(String groupId, String name, int creditsMin) {
+
         this.groupId = groupId;
+
         this.name = name;
         this.creditsMin = creditsMin;
-
 
         modules = new ArrayList<>();
 
@@ -71,7 +74,10 @@ public class Degree {
      * @param module the stored module
      */
     public void setModules(Module module) {
-        this.modules.add(module);
+        if(modules == null) {
+            this.modules = new ArrayList<>();
+        }
+        modules.add(module);
     }
 
     /**
@@ -88,12 +94,12 @@ public class Degree {
      * @throws IOException
      */
     public void readAPI() throws IOException {
-        /*
+
         moduleRead(this);
         studyModuleRead();
         courseRead(this);
 
-        */
+
 
     }
 

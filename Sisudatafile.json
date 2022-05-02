@@ -13,5 +13,37 @@
     "lastName": "Jou",
     "sameNamed": 1,
     "attainments": []
+  },
+  {
+    "name": "Ville Niemi",
+    "studentNumber": "12312312",
+    "startingYear": 2020,
+    "expectedEndYear": 2023,
+    "degree": {
+      "groupId": "otm-fa02a1e7-4fe1-43e3-818b-810d8e723531",
+      "name": "Tieto- ja sähkötekniikan kandidaattiohjelma",
+      "creditsMin": 180
+    },
+    "firstName": "Ville",
+    "lastName": "Niemi",
+    "sameNamed": 1,
+    "attainments": [
+      {
+        "course": {
+          "courseName": "Antennas I",
+          "courseCode": "COMM.RF.420",
+          "credits": 5
+        },
+        "grade": 2
+      },
+      {
+        "course": {
+          "courseName": "Aurinkosähkön perusteet",
+          "courseCode": "EE.REE.210",
+          "credits": 5
+        },
+        "grade": 3
+      }
+    ]
   }
 ]
