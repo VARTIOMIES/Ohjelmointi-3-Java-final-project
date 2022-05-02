@@ -75,9 +75,13 @@ public class Degree {
 
 
     public void readAPI() throws IOException {
+        /*
         moduleRead(this);
         studyModuleRead();
         courseRead(this);
+
+        */
+
     }
 
     private void moduleRead(Degree degree) throws IOException {
