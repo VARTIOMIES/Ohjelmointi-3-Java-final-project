@@ -155,6 +155,7 @@ public class MainGui {
             // Declaring all elements.
             meanNumberLabel = new Label(student.getMean());
             greetingLabel= new Label(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
+            greetingLabel.setId("greetingLabel");
             gap = new Pane();
             meanLabel = new Label("Opintojen keskiarvo");
             grid = new GridPane();
@@ -595,6 +596,7 @@ public class MainGui {
             studentNumberLabel.setId("studentNumberLabel");
             emailInfoLabel.setId("emailInfoLabel");
             emailLabel.setId("emailLabel");
+
         }
     }
 }

@@ -138,6 +138,7 @@ public class NewStudentGui {
         degreeLabel.setId("degreeLabel");
         previousButton.setId("previousButton");
         nextButton.setId("nextButton");
+        degreeComboBox.setId("degreeComboBox");
     }
 
     /**

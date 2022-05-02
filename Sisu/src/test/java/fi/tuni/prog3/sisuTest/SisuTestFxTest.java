@@ -4,11 +4,8 @@ package fi.tuni.prog3.sisuTest;
  */
 
 import fi.tuni.prog3.sisu.Main;
-import fi.tuni.prog3.sisu.MainGui;
-import fi.tuni.prog3.sisu.NewStudentGui;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
@@ -17,21 +14,17 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
-import org.testfx.assertions.api.WindowAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.robot.Motion;
-import org.testfx.service.query.PointQuery;
 import org.testfx.util.WaitForAsyncUtils;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxAssert.verifyThatIter;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
 
-public class SisuTest extends ApplicationTest {
+public class SisuTestFxTest extends ApplicationTest {
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -148,6 +141,7 @@ public class SisuTest extends ApplicationTest {
     public void testLogOut(){
         FxRobot robot = new FxRobot();
         goToMainMenu(robot);
+        robot.clickOn("#personalTab");
         robot.clickOn("#logOutLabel");
         verifyThat("#logInLabel",Node::isVisible);
     }
@@ -184,7 +178,7 @@ public class SisuTest extends ApplicationTest {
         }
 
         else {
-            verifyThat("#menuBox",Node::isVisible);
+            verifyThat("#greetinLabel",Node::isVisible);
 
         }
 
@@ -222,10 +216,10 @@ public class SisuTest extends ApplicationTest {
 
     static Stream<Arguments> badInputArgumentProvider(){
         return Stream.of(
-                arguments("Onni Merilä","H299725","2020"),
+                arguments("Onni Merilä","H299324","2020"),
                 arguments("","",""),
                 arguments("Onni","","2020"),
-                arguments("Onni","H299725","")
+                arguments("Onni","12342678","")
         );
     }
 
