@@ -1,28 +1,13 @@
 [
   {
-    "name": "Jea Jou",
-    "studentNumber": "87654321",
-    "startingYear": 2020,
-    "expectedEndYear": 2023,
-    "degree": {
-      "groupId": "",
-      "name": "",
-      "creditsMin": 0
-    },
-    "firstName": "Jea",
-    "lastName": "Jou",
-    "sameNamed": 1,
-    "attainments": []
-  },
-  {
     "name": "Ville Niemi",
     "studentNumber": "12312312",
     "startingYear": 2020,
     "expectedEndYear": 2023,
     "degree": {
-      "groupId": "otm-fa02a1e7-4fe1-43e3-818b-810d8e723531",
-      "name": "Tieto- ja sähkötekniikan kandidaattiohjelma",
-      "creditsMin": 180
+      "groupId": "tut-dp-g-1163",
+      "name": "Arkkitehdin tutkinto-ohjelma",
+      "creditsMin": 120
     },
     "firstName": "Ville",
     "lastName": "Niemi",
@@ -43,6 +28,54 @@
           "credits": 5
         },
         "grade": 3
+      }
+    ]
+  },
+  {
+    "name": "Ronja Lipsonen",
+    "studentNumber": "50121133",
+    "startingYear": 2020,
+    "expectedEndYear": 2023,
+    "degree": {
+      "groupId": "otm-6ab4ce4a-4eb7-4c76-8ed7-9ab3a2faa5b6",
+      "name": "Anestesiologian ja tehohoidon erikoislääkärikoulutus (55/2020)",
+      "creditsMin": 0
+    },
+    "firstName": "Ronja",
+    "lastName": "Lipsonen",
+    "sameNamed": 1,
+    "attainments": [
+      {
+        "course": {
+          "courseName": "EPA-arviointi, Anestesiologia ja tehohoito",
+          "courseCode": "MEDAANEEPA",
+          "credits": 0
+        },
+        "grade": 4
+      },
+      {
+        "course": {
+          "courseName": "Johtamisen vuorovaikutus ja organisaatioviestintä",
+          "courseCode": "MOJOPP3",
+          "credits": 2
+        },
+        "grade": 4
+      },
+      {
+        "course": {
+          "courseName": "Anestesiologian ja tehohoiton koulutkseen liittyvä tutkimustyö (6 kk)",
+          "courseCode": "MEDAANETUT",
+          "credits": 0
+        },
+        "grade": 3
+      },
+      {
+        "course": {
+          "courseName": "Henkilöstön voimavarojen johtaminen",
+          "courseCode": "MOJOPP2",
+          "credits": 2
+        },
+        "grade": 2
       }
     ]
   }
