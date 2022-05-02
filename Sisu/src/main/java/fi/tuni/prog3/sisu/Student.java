@@ -1,8 +1,10 @@
 package fi.tuni.prog3.sisu;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * This class stores information of an individual student
+ */
 public class Student {
     private final String name;
     private final String studentNumber;
@@ -14,6 +16,13 @@ public class Student {
     private int sameNamed;
     private ArrayList<Attainment> attainments;
 
+    /**
+     * Constructor
+     * @param name Name of the student
+     * @param studentNumber Student number of the student
+     * @param startingYear Starting year of the student
+     * @param degree Degree of the student
+     */
     public Student(String name, String studentNumber, int startingYear, Degree degree) {
         this.name = name;
         this.studentNumber = studentNumber;
@@ -26,34 +35,66 @@ public class Student {
         attainments = new ArrayList<>();
     }
 
+    /**
+     * Gets the name of the student
+     * @return name of the student
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the students student number
+     * @return student number of the student
+     */
     public String getStudentNumber() {
         return studentNumber;
     }
 
+    /**
+     * Gets the starting year of the student
+     * @return starting year of the student
+     */
     public int getStartingYear() {
         return startingYear;
     }
 
+    /**
+     * Gets the expected end year of the student
+     * @return expected end year of the student
+     */
     public int getExpectedEndYear() {
         return expectedEndYear;
     }
 
+    /**
+     * Gets the degree of the student
+     * @return degree of the student
+     */
     public Degree getDegree() {
         return degree;
     }
 
+    /**
+     * Gets the first name of the student
+     * @return first name of the student
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /**
+     * Gets the last name of the student
+     * @return last name of the student
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /**
+     * Gets the total credits of the student
+     * @return credit amount
+     */
     public int getTotalCredits(){
         int temp = 0;
         for (Attainment attainment : getAttainments()) {
@@ -62,12 +103,20 @@ public class Student {
         return temp;
     }
 
+    /**
+     * Gets the current degree progress
+     * @return degree progress
+     */
     public double getDegreeProgress(){
         int i = getTotalCredits();
         int k = getDegree().getCreditsMin();
         return (double) i / k;
     }
 
+    /**
+     * Changes the degree of the student
+     * @param newDegree changed degree
+     */
     public void changeDegree(Degree newDegree) {
         if(degree != newDegree) {
             degree = newDegree;
@@ -76,6 +125,7 @@ public class Student {
         }
     }
 
+    
     public ArrayList<Attainment> getAttainments() {
         return attainments;
     }
