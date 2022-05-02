@@ -54,6 +54,20 @@ public class Student {
         return lastName;
     }
 
+    public int getTotalCredits(){
+        int temp = 0;
+        for (Attainment attainment : getAttainments()) {
+            temp += attainment.getCourse().getCredits();
+        }
+        return temp;
+    }
+
+    public double getDegreeProgress(){
+        int i = getTotalCredits();
+        int k = getDegree().getCreditsMin();
+        return (double) i / k;
+    }
+
     public void changeDegree(Degree newDegree) {
         if(degree != newDegree) {
             degree = newDegree;
