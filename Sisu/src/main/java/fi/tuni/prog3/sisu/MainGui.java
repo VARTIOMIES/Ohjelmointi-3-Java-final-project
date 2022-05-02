@@ -1,3 +1,9 @@
+/**
+ * <p>
+ * @author Ronja Lipsonen
+ * @since 1.0
+ */
+
 package fi.tuni.prog3.sisu;
 
 import javafx.beans.value.ObservableValue;
@@ -21,46 +27,52 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A class that imitates scene. User can add courses, observe their degree's structure
+ * and personal information, change their degree and see their grades mean.
+ */
 
-public class MainStage {
-    private Student student;
-    private List<Degree> degrees;
-    private TabPane tabPane;
-    private Label logOutLabel;
+public class MainGui {
+    // Creating all the elements.
+    private final Student student;
+    private final List<Degree> degrees;
+    private List<Student> students;
     private List<Course> courses;
+    private final Label logOutLabel;
+    private final VBox layout;
+    private final Scene scene;
+    private final TabPane tabPane;
+
+    // Elements that multiple tabs use.
     private SearchableComboBox<String> courseComboBox;
-    GridPane cGrid = new GridPane();
+    private final GridPane designGrid = new GridPane();
     private Label meanNumberLabel;
 
-    MainStage(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
-        // Initializing stuff
-        student.getDegree().readAPI();
-        for(var module : student.getDegree().getModules()) {
-            for(var studyModule : module.getStudyModules()) {
-                courses = Stream.concat(courses.stream(), studyModule.getCourses().stream())
-                        .collect(Collectors.toList());
-            }
-        }
+    /**
+     * Constructs the main page and adds tabs to it.
+     * @param stage the stage of the whole program.
+     * @param degrees all the degrees that exist in Tampere's Sisu.
+     * @param students all the students from json file.
+     */
 
+    MainGui(Stage stage, Student student, List<Degree> degrees, List<Student> students) throws IOException {
+        // Declaring all elements.
         this.student = student;
         this.degrees = degrees;
-        this.logOutLabel = new Label("Kirjaudu ulos");
-        this.logOutLabel.setId("logOutLabel");
-        logOutLabel.setOnMouseClicked(e -> {
-            new LogInGui(stage, degrees, students);
-        });
+        this.students = students;
         this.courses = new ArrayList<>();
 
-        // Creating containers.
-        VBox layout = new VBox();
-        layout.getStyleClass().add("hbox");
-        var scene = new Scene(layout, 900, 650);
+        collectCourses(student);
 
-        // Preparing tabs.
+        logOutLabel = new Label("Kirjaudu ulos");
+        logOutLabel.setId("logOutLabel");
+        layout = new VBox();
+        scene = new Scene(layout, 900, 650);
         tabPane = new TabPane();
 
+        // Element prepping.
+        layout.getStyleClass().add("hbox");
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-
         tabPane.setId("tabPane");
 
         // Creating tabs and adding them to tabPane
@@ -70,14 +82,38 @@ public class MainStage {
         tabPane.getTabs().add(new PersonalTab("Omat tiedot"));
         layout.getChildren().add(tabPane);
 
-        // Setting scene and stage.
+        // Stage prepping.
         stage.setScene(scene);
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
         stage.setTitle("SISU");
         stage.show();
 
+        // Actions.
+        logOutLabel.setOnMouseClicked(e -> {
+            new LogInGui(stage, degrees, students);
+        });
     }
+
+    /**
+     * Collects the courses from API according to student's degree.
+     * @param student the student who has logged in or created an account.
+     */
+
+    private void collectCourses(Student student) throws IOException {
+        student.getDegree().readAPI();
+        for(var module : student.getDegree().getModules()) {
+            for(var studyModule : module.getStudyModules()) {
+                courses = Stream.concat(courses.stream(), studyModule.getCourses().stream())
+                        .collect(Collectors.toList());
+            }
+        }
+    }
+
+    /**
+     * Creates an observable list from the course list. It removes courses that student has in their
+     * attainments and duplicates and then sorts the courses.
+     */
 
     private ObservableList<String> courseObsList() {
         List<String> attCourses = new ArrayList<>();
@@ -88,32 +124,46 @@ public class MainStage {
         List<String> courseNames = courses.stream().map(Course::getCourseName).collect(Collectors.toList());
         courseNames.removeIf(attCourses::contains);
         List<String> listWithoutDuplicates = Lists.newArrayList(Sets.newHashSet(courseNames));
-        ObservableList<String> ret = FXCollections.observableArrayList(listWithoutDuplicates);
-        FXCollections.sort(ret);
-        return ret;
+        ObservableList<String> obsList = FXCollections.observableArrayList(listWithoutDuplicates);
+        FXCollections.sort(obsList);
+        return obsList;
     }
 
-    private class HomeTab extends Tab{
-        //Buttons and other elements
-        private final Label greetingLabel;
-        private final Pane gap = new Pane();
-        private final Label meanLabel = new Label("Opintojen keskiarvo");
+    /**
+     * A tab class for the home page. This tab greets the user and tells them their grade mean.
+     */
 
-        // Constructor
+    private class HomeTab extends Tab{
+        // Creating all the elements.
+        private final Label greetingLabel;
+        private final Pane gap;
+        private final Label meanLabel;
+        private final GridPane grid;
+
+        /**
+         * Constructs the whole home tab.
+         * @param label the tab label.
+         */
+
         HomeTab(String label) {
             super(label);
-            GridPane grid = new GridPane();
+
+            // Declaring all elements.
+            meanNumberLabel = new Label(student.getMean());
+            greetingLabel= new Label(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
+            gap = new Pane();
+            meanLabel = new Label("Opintojen keskiarvo");
+            grid = new GridPane();
+
+            // Element prepping.
             grid.setHgap(15);
             grid.setVgap(15);
             grid.setPadding(new Insets(15,15,15,15));
             gap.minHeightProperty().set(160);
-
             this.setContent(grid);
             this.setId("homeTab");
 
-            greetingLabel = new Label(String.format("Tervetuloa Sisuun %s!", student.getFirstName()));
-            meanNumberLabel = new Label(student.getMean());
-
+            // Setting the elements.
             grid.add(greetingLabel,0,0);
             grid.add(gap, 0, 3);
             grid.add(meanLabel, 0, 4);
@@ -128,46 +178,58 @@ public class MainStage {
             this.getStyleClass().add("homeIcon");
         }
     }
+
+    /**
+     * A tab class for the course design page. This tab allows the user to add courses with a grade (1-5)
+     * that are in their degree. It also shows the student's attainments.
+     */
+
     private class DesignTab extends Tab{
-        //Buttons and other elements
+        // Creating all the elements.
         private Course selectedCourse;
-        private final Label infoLabel = new Label("Merkitse kursseja");
-        private TreeView<String> treeView;
+        private final Label infoLabel;
         private TreeItem<String> rootNode;
-        private final Button chooseCourseButton = new Button("Valitse");
-        private final Label addCourseLabel = new Label("Merkitse suoritus");
-        private Label selectedCourseLabel = new Label();
-        private final Label gradeLabel = new Label("Merkitse arvosana (1-5)");
-        private final TextField gradeField = new TextField();
-        private final Button addCourseButton = new Button("Lisää");
+        private final Button chooseCourseButton;
+        private final Label addCourseLabel;
+        private Label selectedCourseLabel;
+        private final Label gradeLabel;
+        private final TextField gradeField;
+        private final Button addCourseButton;
+        private final TreeView<String> treeView;
+        private final VBox vbox;
 
-        private void makeAttainmentTreeView() {
-            rootNode = new TreeItem<>("Suoritetut kurssit\n (Arvosana - Nimi)");
-            for(var treeItem : student.getAttainments()) {
-                TreeItem<String> moduleItem = new TreeItem<>(String.format("%d - %s", treeItem.getGrade(), treeItem.getCourse().getCourseName()));
-                rootNode.getChildren().add(moduleItem);
-            }
-            treeView.setRoot(rootNode);
-        }
+        /**
+         * Constructs the whole design tab.
+         * @param label the tab label.
+         */
 
-        // Constructor
         DesignTab(String label){
             super(label);
-            // Initializing stuff.
+
+            // Declaring all elements.
             courseComboBox = new SearchableComboBox<>(courseObsList());
-            courseComboBox.setPromptText("Hae kursseja");
+            infoLabel = new Label("Merkitse kursseja");
+            chooseCourseButton = new Button("Valitse");
+            addCourseLabel = new Label("Merkitse suoritus");
+            selectedCourseLabel = new Label();
+            gradeLabel = new Label("Merkitse arvosana (1-5)");
+            gradeField = new TextField();
+            addCourseButton = new Button("Lisää");
             treeView = new TreeView<>();
+            vbox = new VBox(15);
+
+            // Element prepping.
+            courseComboBox.setPromptText("Hae kursseja");
             gradeField.setMaxWidth(25);
             treeView.setMinWidth(400);
+            vbox.setAlignment(Pos.BASELINE_CENTER);
+            this.setContent(designGrid);
+            this.setId("designTab");
 
-            // Initializing attainment TreeView.
             makeAttainmentTreeView();
             treeView.setShowRoot(true);
 
             // Inner box.
-            VBox vbox = new VBox(15);
-            vbox.setAlignment(Pos.BASELINE_CENTER);
-
             vbox.getChildren().add(addCourseLabel);
             vbox.getChildren().add(selectedCourseLabel);
             vbox.getChildren().add(gradeLabel);
@@ -175,46 +237,45 @@ public class MainStage {
             vbox.getChildren().add(addCourseButton);
 
             // Outer grid.
-            //GridPane grid = new GridPane();
-            cGrid.setHgap(15);
-            cGrid.setVgap(15);
-            cGrid.setPadding(new Insets(15,15,15,15));
+            designGrid.setHgap(15);
+            designGrid.setVgap(15);
+            designGrid.setPadding(new Insets(15,15,15,15));
 
-            // node, columnIndex, rowIndex, columnSpan, rowSpan:
-            cGrid.add(infoLabel, 0, 0);
-            cGrid.add(courseComboBox, 0, 1, 3, 1);
-            cGrid.add(chooseCourseButton, 4, 1);
-            cGrid.add(treeView, 4, 2, 3, 3);
-
-            this.setContent(cGrid);
-            this.setId("designTab");
+            // Setting the elements.
+            designGrid.add(infoLabel, 0, 0);
+            designGrid.add(courseComboBox, 0, 1, 3, 1);
+            designGrid.add(chooseCourseButton, 4, 1);
+            designGrid.add(treeView, 4, 2, 3, 3);
 
             // Setting css id:s.
-            cGrid.getStyleClass().add("grid-pane");
+            designGrid.getStyleClass().add("grid-pane");
             infoLabel.getStyleClass().add("bigHeading");
-            chooseCourseButton.getStyleClass().add("basicButton");
             addCourseLabel.getStyleClass().add("heading");
             selectedCourseLabel.getStyleClass().add("basicText");
+            chooseCourseButton.getStyleClass().add("basicButton");
             addCourseButton.getStyleClass().add("basicButton");
 
+            // Actions.
             chooseCourseButton.setOnAction(e -> {
+                // Making sure previous actions don't interfere here.
                 gradeField.setText("");
                 gradeField.setStyle(null);
-                cGrid.getChildren().removeIf(n -> n instanceof VBox);
+                designGrid.getChildren().removeIf(n -> n instanceof VBox);
+
+                // Initializes selected course.
                 if(courseComboBox.getValue() != null) {
                     var courseString = courseComboBox.getValue();
                     selectedCourse = courses.stream()
                             .filter(c -> courseString.equals(c.getCourseName()))
                             .collect(Collectors.toList()).get(0);
                     selectedCourseLabel.setText(selectedCourse.getCourseName());
-                    cGrid.add(vbox, 0, 2, 3, 1);
+                    designGrid.add(vbox, 0, 2, 3, 1);
                 }
             });
 
             AtomicBoolean isValueOK = new AtomicBoolean(false);
             gradeField.textProperty().
                     addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-
                     {
                         if (gradeField.getText().matches("^[1-5]$")) {
                             gradeField.setStyle(null);
@@ -228,55 +289,64 @@ public class MainStage {
             addCourseButton.setOnAction(e -> {
                         if(isValueOK.get()) {
                             courseComboBox.getSelectionModel().clearSelection();
+
+                            // Adding the new attainment.
                             int grade = Integer.parseInt(gradeField.getText());
                             student.addAttainment(new Attainment(selectedCourse, grade));
                             treeView.setRoot(null);
                             makeAttainmentTreeView();
+
                             meanNumberLabel.setText(student.getMean());
-                            cGrid.getChildren().removeIf(n -> n instanceof VBox);
+                            designGrid.getChildren().removeIf(n -> n instanceof VBox);
                             courseComboBox.getItems().remove(selectedCourse.getCourseName());
                         }
                     });
             }
-        }
 
-    private class CourseTab extends Tab {
-        //Buttons and other elements
-        private final Label infoLabel;
-        private final Button changeDegreeButton;
-        private TreeView<String> treeView;
-        private TreeItem<String> rootNode;
-        private final SearchableComboBox<String> degreeComboBox;
-        private final Label courseInfoLabel;
-        private final Label courseNameInfoLabel;
-        private Label courseNameLabel;
-        private final Label codeInfoLabel;
-        private Label codeLabel;
-        private Label creditsLabel;
-        private Label creditsInfoLabel;
+        /**
+         * Constructs the attainment tree view.
+         */
 
-        private void makeTreeView(Degree degree){
-            rootNode = new TreeItem<>(degree.getName());
-            for(var treeItem : student.getDegree().getModules()) {
-                TreeItem<String> moduleItem = new TreeItem<>(treeItem.getModuleName());
-                for(var studyModuleItem : treeItem.getStudyModules()) {
-                    for(var courseItem : studyModuleItem.getCourses()) {
-                        TreeItem<String> course = new TreeItem<>(courseItem.getCourseName());
-                        moduleItem.getChildren().add(course);
-                    }
-                }
+        private void makeAttainmentTreeView() {
+            rootNode = new TreeItem<>("Suoritetut kurssit\n (Arvosana - Nimi)");
+            for(var treeItem : student.getAttainments()) {
+                TreeItem<String> moduleItem = new TreeItem<>(String.format("%d - %s", treeItem.getGrade(), treeItem.getCourse().getCourseName()));
                 rootNode.getChildren().add(moduleItem);
             }
             treeView.setRoot(rootNode);
         }
 
-        // Constructor
-        CourseTab(String label){
+    }
 
-            // First create a tab
+    /**
+     * A tab class for the course page. The user can change their degree here and observe the
+     * courses under that degree.
+     */
+
+    private class CourseTab extends Tab {
+        // Buttons and other elements.
+        private final Label infoLabel;
+        private final Button changeDegreeButton;
+        private final SearchableComboBox<String> degreeComboBox;
+        private final Label courseInfoLabel;
+        private final Label courseNameInfoLabel;
+        private final Label courseNameLabel;
+        private final Label codeInfoLabel;
+        private final Label codeLabel;
+        private final Label creditsLabel;
+        private final Label creditsInfoLabel;
+        private TreeItem<String> rootNode;
+        private final TreeView<String> treeView;
+
+        /**
+         * Constructs the whole course tab.
+         * @param label the tab label.
+         */
+
+        CourseTab(String label){
             super(label);
 
-            // Initializing private attributes
+            // Declaring all elements.
             infoLabel = new Label("Tutkintorakenne");
             changeDegreeButton = new Button("Vaihda");
             courseInfoLabel = new Label();
@@ -353,9 +423,9 @@ public class MainStage {
                         }
                         catch(Exception ignored) {
                         }
-                        cGrid.getChildren().removeIf(n -> n instanceof ComboBox);
+                        designGrid.getChildren().removeIf(n -> n instanceof ComboBox);
                         courseComboBox = new SearchableComboBox<>(courseObsList());
-                        cGrid.add(courseComboBox, 0, 1, 3, 1);
+                        designGrid.add(courseComboBox, 0, 1, 3, 1);
 
                         makeTreeView(degree);
                     }
@@ -382,20 +452,46 @@ public class MainStage {
 
             });
         }
+
+        /**
+         * Constructs the degree and course tree view.
+         */
+
+        private void makeTreeView(Degree degree){
+            rootNode = new TreeItem<>(degree.getName());
+            for(var treeItem : student.getDegree().getModules()) {
+                TreeItem<String> moduleItem = new TreeItem<>(treeItem.getModuleName());
+                for(var studyModuleItem : treeItem.getStudyModules()) {
+                    for(var courseItem : studyModuleItem.getCourses()) {
+                        TreeItem<String> course = new TreeItem<>(courseItem.getCourseName());
+                        moduleItem.getChildren().add(course);
+                    }
+                }
+                rootNode.getChildren().add(moduleItem);
+            }
+            treeView.setRoot(rootNode);
+        }
     }
+
+    /**
+     * A tab class for the personal info page. The user can observe their personal information here.
+     */
 
     private class PersonalTab extends Tab{
         //Buttons and other elements
         private final Label infoLabel;
         private final Label nameInfoLabel;
-        private Label nameLabel;
+        private final Label nameLabel;
         private final Label studentNumberInfoLabel;
-        private Label studentNumberLabel;
+        private final Label studentNumberLabel;
         private final Label emailInfoLabel;
-        private Label emailLabel;
+        private final Label emailLabel;
 
+        /**
+         * Constructs the whole personal info tab.
+         * @param label the tab label.
+         */
 
-        // Constructor
         PersonalTab(String label){
             // First create a basic Tab
             super(label);
@@ -407,19 +503,12 @@ public class MainStage {
 
             // Initializing and setting Ids for everything
             infoLabel = new Label("Henkilötiedot");
-            infoLabel.setId("infoLabel");
             nameInfoLabel = new Label("Koko nimi");
-            nameInfoLabel.setId("nameInfoLabel");
             nameLabel = new Label();
-            nameLabel.setId("nameLabel");
             studentNumberInfoLabel = new Label("Opiskelijanumero");
-            studentNumberInfoLabel.setId("studentNumberInfoLabel");
             studentNumberLabel = new Label();
-            studentNumberLabel.setId("studentNumberLabel");
             emailInfoLabel = new Label("Sähköpostiosoite");
-            emailInfoLabel.setId("emailInfoLabel");
             emailLabel = new Label();
-            emailLabel.setId("emailLabel");
 
             // Put all into the grid
             grid.add(infoLabel, 0, 0);
@@ -446,6 +535,19 @@ public class MainStage {
             studentNumberInfoLabel.getStyleClass().add("smallHeading");
             emailInfoLabel.getStyleClass().add("smallHeading");
             logOutLabel.getStyleClass().add("basicButton");
+
+            // Set ids for every important item.
+            setIds();
+        }
+
+        private void setIds() {
+            infoLabel.setId("infoLabel");
+            nameInfoLabel.setId("nameInfoLabel");
+            nameLabel.setId("nameLabel");
+            studentNumberInfoLabel.setId("studentNumberInfoLabel");
+            studentNumberLabel.setId("studentNumberLabel");
+            emailInfoLabel.setId("emailInfoLabel");
+            emailLabel.setId("emailLabel");
         }
     }
 }

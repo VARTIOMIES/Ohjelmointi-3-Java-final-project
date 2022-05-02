@@ -141,6 +141,15 @@
     "firstName": "Ronja",
     "lastName": "Lipsonen",
     "sameNamed": 0,
-    "attainments": []
+    "attainments": [
+      {
+        "course": {
+          "courseName": "Erikoisalakohtainen teoreettinen kurssimuotoinen koulutus",
+          "courseCode": "MEDATEOR",
+          "credits": 0
+        },
+        "grade": 3
+      }
+    ]
   }
 ]
