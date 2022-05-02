@@ -38,8 +38,7 @@ public class Main extends Application {
 
         // Initializing functions
 
-        //degreeRead();
-        degrees.add(new Degree("","",0));
+        degreeRead();
         createStudents();
     }
 
@@ -86,7 +85,7 @@ public class Main extends Application {
 
             var groupId = degree.getAsJsonObject().get("groupId").getAsString();
             var name = degree.getAsJsonObject().get("name").getAsString();
-            var creditEntries = degree.getAsJsonObject().get("targetCredits").getAsJsonObject().get("min").getAsInt();
+            var creditEntries = degree.getAsJsonObject().get("credits").getAsJsonObject().get("min").getAsInt();
 
             var newDegree = new Degree(groupId, name, creditEntries);
             degrees.add(newDegree);
