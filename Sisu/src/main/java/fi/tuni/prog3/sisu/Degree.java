@@ -10,13 +10,12 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
+/**
+ * This class is used to read API and store information about a specific Degree.
+ */
 public class Degree {
-    private final String id;
-    private final String code;
-    private final String language;
+
     private final String groupId;
     private final String name;
     private final int creditsMin;
@@ -24,11 +23,13 @@ public class Degree {
     private transient ArrayList<Module> modules;
 
 
-
-    public Degree(String id, String code, String language, String groupId, String name, int creditsMin) {
-        this.id = id;
-        this.code = code;
-        this.language = language;
+    /**
+     * Constructor for the Degree object.
+     * @param groupId Used to navigate to the modules.
+     * @param name Name of the degree.
+     * @param creditsMin Minimum amount of credits to complete the degree.
+     */
+    public Degree(String groupId, String name, int creditsMin) {
         this.groupId = groupId;
         this.name = name;
         this.creditsMin = creditsMin;
@@ -38,29 +39,30 @@ public class Degree {
 
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
+    /**
+     * Gets the groupId for advancing in the API
+     * @return degree groupId
+     */
     public String getGroupId() {
         return groupId;
     }
 
+    /**
+     * Gets the name of the degree
+     * @return degree name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns credits
+     * @return
+     */
     public int getCreditsMin() {
         return creditsMin;
     }
 
-    public String getCode() {
-        return code;
-    }
 
     public void setModules(Module module) {
         this.modules.add(module);

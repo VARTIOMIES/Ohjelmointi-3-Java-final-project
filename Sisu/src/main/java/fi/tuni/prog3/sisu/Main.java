@@ -83,14 +83,12 @@ public class Main extends Application {
 
         // Initializing Degree objects
         for (var degree : degreePrograms) {
-            var id = degree.getAsJsonObject().get("id").getAsString();
-            var code = degree.getAsJsonObject().get("code").getAsString();
-            var language = degree.getAsJsonObject().get("lang").getAsString();
+
             var groupId = degree.getAsJsonObject().get("groupId").getAsString();
             var name = degree.getAsJsonObject().get("name").getAsString();
             var creditEntries = degree.getAsJsonObject().get("targetCredits").getAsJsonObject().get("min").getAsInt();
 
-            var newDegree = new Degree(id, code, language, groupId, name, creditEntries);
+            var newDegree = new Degree(groupId, name, creditEntries);
             degrees.add(newDegree);
         }
     }
@@ -105,18 +103,11 @@ public class Main extends Application {
         Reader reader = Files.newBufferedReader(Paths.get("Sisudatafile.json"));
 
         // Initializing studentsArray
-        JsonArray studentsArray = gson.fromJson(reader,JsonArray.class);
+        Student[] studentsArray = gson.fromJson(reader,Student[].class);
 
         // Looping through JsonObjects
-        for(var student : studentsArray) {
-            Random random  = new Random();
-            int degreeNum = random.nextInt(270);
-            students.add(new Student(
-                    student.getAsJsonObject().get("name").getAsString(),
-                    student.getAsJsonObject().get("studentNumber").getAsString(),
-                    student.getAsJsonObject().get("startingYear").getAsInt(),
-                    degrees.get(degreeNum)));
-        }
+        students.addAll(Arrays.asList(studentsArray));
+
     }
 
     /**
