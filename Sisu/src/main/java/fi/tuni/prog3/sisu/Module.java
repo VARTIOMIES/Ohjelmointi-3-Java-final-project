@@ -13,6 +13,8 @@ public class Module {
 
     /**
      * Constructor
+     * Precondition: studyModules is not empty
+     * Post-condition: studyModules don't change
      * @param moduleName Module name
      * @param moduleCode Module code
      * @param studyModules Arraylist of study modules
