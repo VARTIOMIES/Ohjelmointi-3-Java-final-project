@@ -110,14 +110,13 @@ public class NewStudentGui {
         stage.setScene(scene);
         stage.show();
 
-        // Actions for text fields and buttons.
+        // Actions.
         AtomicBoolean isNameOK = new AtomicBoolean(false);
         AtomicBoolean isStudentOK = new AtomicBoolean(false);
         AtomicBoolean isYearOK = new AtomicBoolean(false);
         AtomicBoolean isDegreeOK = new AtomicBoolean(false);
         nameField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-
                 {
                     if (nameField.getText().matches("^[\\p{L} .'-]+$")) {
                         nameField.setStyle(null);
@@ -130,7 +129,6 @@ public class NewStudentGui {
 
         studentNumberField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-
                 {
                     var oldNumberRegex = "^([H][0-9]{6})$"; // H9999999
                     var newNumberRegex = "^[0-9]{8}$"; // 99999999
@@ -146,7 +144,6 @@ public class NewStudentGui {
 
         startingYearField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-
                 {
                     if (startingYearField.getText().matches("^[0-9]{4}$")) {
                         startingYearField.setStyle(null);
@@ -159,7 +156,6 @@ public class NewStudentGui {
 
         degreeComboBox.valueProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-
                 {
                     if (degreeComboBox.getPromptText() == null) {
                         degreeComboBox.setStyle(null);
@@ -233,7 +229,7 @@ public class NewStudentGui {
                         newStudent.setSameNamed(howMany);
 
                         try {
-                            new MainStage(stage, newStudent, degrees, students);
+                            new MainGui(stage, newStudent, degrees, students);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
