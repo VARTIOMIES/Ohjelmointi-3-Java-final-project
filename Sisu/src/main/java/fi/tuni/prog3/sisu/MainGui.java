@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.controlsfx.control.SearchableComboBox;
+import org.controlsfx.control.spreadsheet.Grid;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -265,6 +266,7 @@ public class MainGui {
                 // Making sure previous actions don't interfere here.
                 gradeField.setText("");
                 gradeField.setStyle(null);
+                // TODO: Why is this here two times?
                 designGrid.getChildren().removeIf(n -> n instanceof VBox);
 
                 // Initializes selected course.
@@ -302,6 +304,7 @@ public class MainGui {
                             makeAttainmentTreeView();
 
                             meanNumberLabel.setText(student.getMean());
+                            // TODO: 2.
                             designGrid.getChildren().removeIf(n -> n instanceof VBox);
                             courseComboBox.getItems().remove(selectedCourse.getCourseName());
                         }
@@ -332,7 +335,6 @@ public class MainGui {
         // Buttons and other elements.
         private final Label infoLabel;
         private final Button changeDegreeButton;
-        private final SearchableComboBox<String> degreeComboBox;
         private final Label courseInfoLabel;
         private final Label courseNameInfoLabel;
         private final Label courseNameLabel;
@@ -340,8 +342,11 @@ public class MainGui {
         private final Label codeLabel;
         private final Label creditsLabel;
         private final Label creditsInfoLabel;
+        private final SearchableComboBox<String> degreeComboBox;
         private TreeItem<String> rootNode;
         private final TreeView<String> treeView;
+        private final GridPane grid;
+        private final VBox vbox;
 
         /**
          * Constructs the whole course tab.
@@ -350,6 +355,10 @@ public class MainGui {
 
         CourseTab(String label){
             super(label);
+
+            // Preparing for degreeComboBox.
+            List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
+            ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
 
             // Declaring all elements.
             infoLabel = new Label("Tutkintorakenne");
@@ -361,27 +370,20 @@ public class MainGui {
             codeLabel = new Label();
             creditsLabel = new Label();
             creditsInfoLabel = new Label();
-
-            // Setting the degreeBox.
-            List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
-            ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
             degreeComboBox = new SearchableComboBox<>(degreeObsList);
-            degreeComboBox.setPromptText("Voit vaihtaa tästä tutkinnon");
-
             treeView = new TreeView<>();
-            makeTreeView(student.getDegree());
-            treeView.setShowRoot(true);
+            grid = new GridPane();
+            vbox = new VBox(15);
 
-            GridPane grid = new GridPane();
-            grid.setHgap(15);
-            grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
+            // Element prepping.
+            degreeComboBox.setPromptText("Voit vaihtaa tästä tutkinnon");
             this.setContent(grid);
             this.setId("courseTab");
 
-            // Inner vbox.
-            VBox vbox = new VBox(15);
+            makeTreeView(student.getDegree());
+            treeView.setShowRoot(true);
 
+            // Inner vbox.
             vbox.getChildren().add(courseNameInfoLabel);
             vbox.getChildren().add(courseNameLabel);
             vbox.getChildren().add(codeInfoLabel);
@@ -390,6 +392,11 @@ public class MainGui {
             vbox.getChildren().add(creditsLabel);
 
             // Outer grid.
+            grid.setHgap(15);
+            grid.setVgap(15);
+            grid.setPadding(new Insets(15,15,15,15));
+
+            // Setting the elements.
             grid.add(infoLabel, 0, 0);
             grid.add(degreeComboBox,0,1,3,1);
             grid.add(changeDegreeButton,4,1);
@@ -405,33 +412,39 @@ public class MainGui {
 
             // Actions.
 
-            // Update courses up to the degree and initializes nodes that use courses or degree.
+            // This updates courses up to the degree and initializes nodes that use courses or degree.
             changeDegreeButton.getStyleClass().add("basicButton");
             changeDegreeButton.setOnAction(e -> {
                 changeDegreeButton.setDisable(true);
+
                 if(degreeComboBox.getValue() != null) {
                     var degreeString = degreeComboBox.getValue();
+
+                    // Making sure the degree isn't the same as the old one.
                     if(!Objects.equals(degreeString, student.getDegree().getName())) {
                         var degree = degrees.stream()
                                 .filter(d -> degreeString.equals(d.getName()))
                                 .collect(Collectors.toList()).get(0);
                         student.changeDegree(degree);
+
+                        // Removing instances of the old degree's courses and adding in the new ones.
                         courses.clear();
                         try {
-                            student.getDegree().readAPI();
-                            for(var module : student.getDegree().getModules()) {
-                                for(var studyModule : module.getStudyModules()) {
-                                    courses = Stream.concat(courses.stream(), studyModule.getCourses().stream())
-                                            .collect(Collectors.toList());
-                                }
-                            }
+                            // TODO: Try if this works.
+//                            student.getDegree().readAPI();
+//                            for(var module : student.getDegree().getModules()) {
+//                                for(var studyModule : module.getStudyModules()) {
+//                                    courses = Stream.concat(courses.stream(), studyModule.getCourses().stream())
+//                                            .collect(Collectors.toList());
+//                                }
+//                            }
+                            collectCourses(student);
                         }
                         catch(Exception ignored) {
                         }
                         designGrid.getChildren().removeIf(n -> n instanceof ComboBox);
                         courseComboBox = new SearchableComboBox<>(courseObsList());
                         designGrid.add(courseComboBox, 0, 1, 3, 1);
-
                         makeTreeView(degree);
                     }
                 }
@@ -444,6 +457,7 @@ public class MainGui {
                     var course = courses.stream()
                             .filter(c -> courseName.equals(c.getCourseName()))
                             .collect(Collectors.toList()).get(0);
+                    // These only appear when a course is selected.
                     if(courses.stream().anyMatch(c -> courseName.equals(c.getCourseName()))) {
                         courseNameInfoLabel.setText("Kurssin nimi");
                         courseNameLabel.setText(courseName);
@@ -454,7 +468,6 @@ public class MainGui {
                     }
                 } catch (Exception ignored) {
                 }
-
             });
         }
 
@@ -483,7 +496,7 @@ public class MainGui {
      */
 
     private class PersonalTab extends Tab{
-        //Buttons and other elements
+        // Creating all the elements.
         private final Label infoLabel;
         private final Label nameInfoLabel;
         private final Label nameLabel;
@@ -491,6 +504,7 @@ public class MainGui {
         private final Label studentNumberLabel;
         private final Label emailInfoLabel;
         private final Label emailLabel;
+        private final GridPane grid;
 
         /**
          * Constructs the whole personal info tab.
@@ -498,15 +512,9 @@ public class MainGui {
          */
 
         PersonalTab(String label){
-            // First create a basic Tab
             super(label);
-            // Layout for the tab
-            GridPane grid = new GridPane();
-            grid.setHgap(15);
-            grid.setVgap(15);
-            grid.setPadding(new Insets(15,15,15,15));
 
-            // Initializing and setting Ids for everything
+            // Declaring all elements.
             infoLabel = new Label("Henkilötiedot");
             nameInfoLabel = new Label("Koko nimi");
             nameLabel = new Label();
@@ -514,8 +522,19 @@ public class MainGui {
             studentNumberLabel = new Label();
             emailInfoLabel = new Label("Sähköpostiosoite");
             emailLabel = new Label();
+            grid = new GridPane();
 
-            // Put all into the grid
+            // Element prepping.
+            nameLabel.setText(student.getName());
+            studentNumberLabel.setText(student.getStudentNumber());
+            emailLabel.setText(student.getEmailAddress());
+            grid.setHgap(15);
+            grid.setVgap(15);
+            grid.setPadding(new Insets(15,15,15,15));
+            this.setContent(grid);
+            this.setId("personalTab");
+
+            // Setting the elements.
             grid.add(infoLabel, 0, 0);
             grid.add(nameInfoLabel, 0, 1);
             grid.add(nameLabel, 0, 2);
@@ -524,14 +543,6 @@ public class MainGui {
             grid.add(emailInfoLabel, 0, 3);
             grid.add(emailLabel, 0, 4);
             grid.add(logOutLabel, 2, 5);
-
-            // Add all student info visible
-            nameLabel.setText(student.getName());
-            studentNumberLabel.setText(student.getStudentNumber());
-            emailLabel.setText(student.getEmailAddress());
-
-            this.setContent(grid);
-            this.setId("personalTab");
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
