@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class NewStudentGui {
 
     // Creating all the elements.
-    private  final Label newStudentLabel;
+    private final Label newStudentLabel;
     private final Label nameLabel;
     private final TextField nameField;
     private final Label studentNumberLabel;
@@ -85,7 +85,7 @@ public class NewStudentGui {
         grid.add(newStudentLabel, 1, 0, 2, 1);
         grid.add(nameLabel, 0, 1);
         grid.add(nameField, 0, 2, 3, 1);
-        grid.add(studentNumberLabel, 0, 3);
+        grid.add(studentNumberLabel, 0, 3,2,1);
         grid.add(studentNumberField, 0, 4, 2, 1);
         grid.add(startingYearLabel, 2, 3);
         grid.add(startingYearField, 2, 4);
@@ -172,6 +172,7 @@ public class NewStudentGui {
 
         nextButton.setOnAction(e -> {
             String studentNumber = studentNumberField.getText();
+            nextButton.setDisable(true);
 
             // Student number is already being used.
             if(students.stream().anyMatch(s ->
@@ -236,6 +237,7 @@ public class NewStudentGui {
                     }
                 }
             }
+            nextButton.setDisable(false);
         });
 
     }

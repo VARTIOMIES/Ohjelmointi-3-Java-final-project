@@ -54,6 +54,20 @@ public class Student {
         return lastName;
     }
 
+    public int getTotalCredits(){
+        int temp = 0;
+        for (Attainment attainment : getAttainments()) {
+            temp += attainment.getCourse().getCredits();
+        }
+        return temp;
+    }
+
+    public double getDegreeProgress(){
+        int i = getTotalCredits();
+        int k = getDegree().getCreditsMin();
+        return (double) i / k;
+    }
+
     public void changeDegree(Degree newDegree) {
         if(degree != newDegree) {
             degree = newDegree;
@@ -87,21 +101,27 @@ public class Student {
 
     public String getEmailAddress() {
         String emailAddress = "";
+        String names = "";
+        if(firstName.equals(lastName)) {
+            names = "%s";
+        } else {
+            names = "%s.%s";
+        }
 
         // Checking for char "'".
         if(firstName.contains("'") || lastName.contains("'")) {
             if(lastName.contains("'")) {
-                emailAddress = String.format("%s.%s", firstName.toLowerCase(), lastName.toLowerCase().replace("'", ""));
+                emailAddress = String.format(names, firstName.toLowerCase(), lastName.toLowerCase().replace("'", ""));
             } else {
-                emailAddress = String.format("%s.%s", firstName.toLowerCase().replace("'", "")
+                emailAddress = String.format(names, firstName.toLowerCase().replace("'", "")
                         , lastName.toLowerCase());
             }
         }
         else if(firstName.contains("'") && lastName.contains("'")) {
-            emailAddress = String.format("%s.%s", firstName.toLowerCase().replace("'", "")
+            emailAddress = String.format(names, firstName.toLowerCase().replace("'", "")
                     , lastName.toLowerCase().replace("'", ""));
         } else {
-            emailAddress = String.format("%s.%s", firstName.toLowerCase(), lastName.toLowerCase());
+            emailAddress = String.format(names, firstName.toLowerCase(), lastName.toLowerCase());
         }
 
         if(sameNamed >= 2) {

@@ -48,6 +48,8 @@ public class MainGui {
     private SearchableComboBox<String> courseComboBox;
     private final GridPane designGrid = new GridPane();
     private Label meanNumberLabel;
+    private ProgressBar studentDegreeProgressBar;
+
 
     /**
      * Constructs the main page and adds tabs to it.
@@ -140,7 +142,7 @@ public class MainGui {
         private final Pane gap;
         private final Label meanLabel;
         private final GridPane grid;
-        private ProgressIndicator studentDegreeProgressIndicator;
+        private final Label studentProgressLabel;
 
         /**
          * Constructs the whole home tab.
@@ -156,9 +158,8 @@ public class MainGui {
             gap = new Pane();
             meanLabel = new Label("Opintojen keskiarvo");
             grid = new GridPane();
-
-            studentDegreeProgressIndicator = new ProgressIndicator();
-            studentDegreeProgressIndicator.setProgress(0.25F);
+            studentProgressLabel = new Label("Edistyminen");
+            studentDegreeProgressBar = new ProgressBar(student.getDegreeProgress());
 
             // Element prepping.
             grid.setHgap(15);
@@ -173,7 +174,8 @@ public class MainGui {
             grid.add(gap, 0, 3);
             grid.add(meanLabel, 0, 4);
             grid.add(meanNumberLabel, 0, 5);
-            grid.add(studentDegreeProgressIndicator,1,5);
+            grid.add(studentDegreeProgressBar,1,5);
+            grid.add(studentProgressLabel,1,4);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
@@ -181,6 +183,8 @@ public class MainGui {
             greetingLabel.getStyleClass().add("bigHeading");
             meanLabel.getStyleClass().add("heading");
             meanNumberLabel.getStyleClass().add("heading");
+            studentProgressLabel.getStyleClass().add("heading");
+            studentDegreeProgressBar.getStyleClass().add("heading");
             this.getStyleClass().add("homeIcon");
         }
     }
@@ -304,6 +308,8 @@ public class MainGui {
                             makeAttainmentTreeView();
 
                             meanNumberLabel.setText(student.getMean());
+                            studentDegreeProgressBar.setProgress(student.getDegreeProgress());
+
                             // TODO: 2.
                             designGrid.getChildren().removeIf(n -> n instanceof VBox);
                             courseComboBox.getItems().remove(selectedCourse.getCourseName());
