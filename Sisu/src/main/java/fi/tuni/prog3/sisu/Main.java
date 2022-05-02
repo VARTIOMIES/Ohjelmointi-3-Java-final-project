@@ -37,8 +37,10 @@ public class Main extends Application {
         gson = new GsonBuilder().setPrettyPrinting().create();
 
         // Initializing functions
-        degreeRead(degrees);
-        createStudents();
+
+        //degreeRead();
+        degrees.add(new Degree("","","","","",0));
+        //createStudents();
     }
 
     // The Sisu main window now exists in class MainStage.
@@ -62,10 +64,9 @@ public class Main extends Application {
 
     /**
      * Reads the degrees and creates objects for each degree.
-     * @param degrees List of the degrees (Empty when creating new objects
      * @throws IOException
      */
-    public static void degreeRead(List<Degree> degrees) throws IOException {
+    public void degreeRead() throws IOException {
 
         // Connecting to all degrees.
         String stringURL = "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000";

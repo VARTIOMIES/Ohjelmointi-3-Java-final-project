@@ -139,6 +139,7 @@ public class MainGui {
         private final Pane gap;
         private final Label meanLabel;
         private final GridPane grid;
+        private ProgressIndicator studentDegreeProgressIndicator;
 
         /**
          * Constructs the whole home tab.
@@ -155,6 +156,9 @@ public class MainGui {
             meanLabel = new Label("Opintojen keskiarvo");
             grid = new GridPane();
 
+            studentDegreeProgressIndicator = new ProgressIndicator();
+            studentDegreeProgressIndicator.setProgress(0.25F);
+
             // Element prepping.
             grid.setHgap(15);
             grid.setVgap(15);
@@ -168,6 +172,7 @@ public class MainGui {
             grid.add(gap, 0, 3);
             grid.add(meanLabel, 0, 4);
             grid.add(meanNumberLabel, 0, 5);
+            grid.add(studentDegreeProgressIndicator,1,5);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");
