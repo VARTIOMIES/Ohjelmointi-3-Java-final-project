@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 
 public class LogInGui {
-
     // Creating all the elements.
     private final Label logInLabel;
     private final Label studentNumberLabel;
@@ -64,7 +63,6 @@ public class LogInGui {
         // Element prepping.
         stage.setResizable(false);
         vbox.setAlignment(Pos.BASELINE_CENTER);
-
         grid.setHgap(15);
         grid.setAlignment(Pos.CENTER);
         smallGap.minHeightProperty().set(5);
@@ -88,7 +86,7 @@ public class LogInGui {
         newStudentButton.getStyleClass().add("linkButton");
         nextButton.getStyleClass().add("nextButton");
 
-        // Set ids for every important item
+        // Set ids for every important item.
         setIds();
 
         // Stage prepping.
@@ -98,12 +96,10 @@ public class LogInGui {
         stage.setScene(scene);
         stage.show();
 
-        // Actions for text fields and buttons.
-
+        // Actions.
         AtomicBoolean isValueOK = new AtomicBoolean(false);
         studentNumberField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-
                 {
                     var oldNumberRegex = "^([H][0-9]{6})$"; // H9999999
                     var newNumberRegex = "^[0-9]{8}$"; // 99999999
@@ -134,7 +130,7 @@ public class LogInGui {
                         .collect(Collectors.toList()).get(0);
 
                 try {
-                    new MainStage(stage, student, degrees, students);
+                    new MainGui(stage, student, degrees, students);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -146,7 +142,7 @@ public class LogInGui {
         });
     }
 
-    private void setIds(){
+    private void setIds() {
         logInLabel.setId("logInLabel");
         studentNumberLabel.setId("studentNumberLabel");
         studentNumberField.setId("studentNumberField");
