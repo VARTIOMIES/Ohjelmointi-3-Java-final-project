@@ -39,6 +39,8 @@ public class Degree {
 
     }
 
+
+
     /**
      * Gets the groupId for advancing in the API
      * @return degree groupId
