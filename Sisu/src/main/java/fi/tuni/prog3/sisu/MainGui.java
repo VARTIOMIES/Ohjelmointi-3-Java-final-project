@@ -184,7 +184,6 @@ public class MainGui {
             meanLabel.getStyleClass().add("heading");
             meanNumberLabel.getStyleClass().add("heading");
             studentProgressLabel.getStyleClass().add("heading");
-            // TODO: ProgressBars style
             studentDegreeProgressBar.getStyleClass().add("heading");
             this.getStyleClass().add("homeIcon");
         }

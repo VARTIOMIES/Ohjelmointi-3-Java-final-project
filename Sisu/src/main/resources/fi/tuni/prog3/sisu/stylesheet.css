@@ -140,3 +140,12 @@
 .grid-pane {
     -fx-background-color: #efe2d6 ;
 }
+
+.progress-bar {
+    -fx-accent: rgba(0, 138, 230, 0.85);
+}
+
+.progress-bar > .track {
+  -fx-text-box-border: #202020;
+  -fx-control-inner-background: WHITE;
+}
