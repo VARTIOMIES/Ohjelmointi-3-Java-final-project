@@ -125,19 +125,34 @@ public class Student {
         }
     }
 
-    
+    /**
+     * Gets the attainments what the student has completed
+     * @return list of attainments
+     */
     public ArrayList<Attainment> getAttainments() {
         return attainments;
     }
 
+    /**
+     * Adds the attainment to the attainments ArrayList
+     * @param attainment wanted attainment to be added
+     */
     public void addAttainment(Attainment attainment) {
         attainments.add(attainment);
     }
 
+    /**
+     * Sets the amount of same named students
+     * @param howMany amount of same named students
+     */
     public void setSameNamed(int howMany) {
         this.sameNamed = howMany;
     }
 
+    /**
+     * Calculates the mean for the courses that the student has completed
+     * @return Returns the mean in string format
+     */
     public String getMean() {
         if(attainments.size() > 0) {
             float a = 0;
@@ -149,6 +164,10 @@ public class Student {
         return "   -";
     }
 
+    /**
+     * Generates the email address of the student
+     * @return email address as a string
+     */
     public String getEmailAddress() {
         String emailAddress = "";
         String names = "";
