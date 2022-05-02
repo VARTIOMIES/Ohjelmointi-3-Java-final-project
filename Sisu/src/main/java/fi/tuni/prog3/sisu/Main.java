@@ -39,6 +39,7 @@ public class Main extends Application {
         // Initializing functions
 
         degreeRead();
+        degrees.add(new Degree("","",0));
         createStudents();
     }
 
