@@ -28,8 +28,10 @@ import java.util.stream.Collectors;
  */
 
 public class NewStudentGui {
-
     // Creating all the elements.
+    private final Stage stage;
+    private final List<Degree> degrees;
+    private final List<Student> students;
     private final Label newStudentLabel;
     private final Label nameLabel;
     private final TextField nameField;
@@ -53,8 +55,10 @@ public class NewStudentGui {
      */
 
     NewStudentGui(Stage stage, List<Degree> degrees, List<Student> students){
-
         // Declaring all elements.
+        this.stage = stage;
+        this.students = students;
+        this.degrees = degrees;
         newStudentLabel = new Label("Uusi oppilas");
         nameLabel = new Label("Koko nimi");
         nameField = new TextField();
@@ -104,17 +108,43 @@ public class NewStudentGui {
         this.setIds();
 
         // Stage prepping.
-        stage.setTitle("Uusi oppilas");
+        this.stage.setTitle("Uusi oppilas");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
-        stage.setScene(scene);
-        stage.show();
+        this.stage.setScene(scene);
+        this.stage.show();
 
         // Actions.
         AtomicBoolean isNameOK = new AtomicBoolean(false);
         AtomicBoolean isStudentOK = new AtomicBoolean(false);
         AtomicBoolean isYearOK = new AtomicBoolean(false);
         AtomicBoolean isDegreeOK = new AtomicBoolean(false);
+        observeNameField(isNameOK);
+        observeStudentNumber(isStudentOK);
+        observeStartingYear(isYearOK);
+        observeDegreeBox(isDegreeOK);
+        onPreviousButtonClick();
+        onNextButtonClick(isNameOK, isStudentOK, isYearOK, isDegreeOK);
+    }
+
+    private void setIds(){
+        newStudentLabel.setId("newStudentLabel");
+        nameLabel.setId("nameLabel");
+        nameField.setId("nameField");
+        studentNumberLabel.setId("studentNumberLabel");
+        studentNumberField.setId("studentNumberField");
+        startingYearLabel.setId("startingYearLabel");
+        startingYearField.setId("startingYearField");
+        degreeLabel.setId("degreeLabel");
+        previousButton.setId("previousButton");
+        nextButton.setId("nextButton");
+    }
+
+    /**
+     * Checks if name is ok.
+     */
+
+    private void observeNameField(AtomicBoolean isNameOK) {
         nameField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
                 {
@@ -126,7 +156,13 @@ public class NewStudentGui {
                         isNameOK.set(false);
                     }
                 });
+    }
 
+    /**
+     * Checks if student number is ok.
+     */
+
+    private void observeStudentNumber(AtomicBoolean isStudentOK) {
         studentNumberField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
                 {
@@ -141,7 +177,13 @@ public class NewStudentGui {
                         isStudentOK.set(false);
                     }
                 });
+    }
 
+    /**
+     * Checks if starting year is ok.
+     */
+
+    private void observeStartingYear(AtomicBoolean isYearOK) {
         startingYearField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
                 {
@@ -153,7 +195,13 @@ public class NewStudentGui {
                         isYearOK.set(false);
                     }
                 });
+    }
 
+    /**
+     * Checks if degree is null.
+     */
+
+    private void observeDegreeBox(AtomicBoolean isDegreeOK) {
         degreeComboBox.valueProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
                 {
@@ -165,11 +213,24 @@ public class NewStudentGui {
                         isDegreeOK.set(false);
                     }
                 });
+    }
 
+    /**
+     * Goes back to log in page.
+     */
+
+    private void onPreviousButtonClick() {
         previousButton.setOnAction(e -> {
-                new LogInGui(stage, degrees, students);
+            new LogInGui(stage, degrees, students);
         });
+    }
 
+    /**
+     * Checks that all the parameters are ok and gives necessary warnings if they aren't. When everything is ok, the
+     * main window can be launched.
+     */
+
+    private void onNextButtonClick(AtomicBoolean isNameOK, AtomicBoolean isStudentOK, AtomicBoolean isYearOK, AtomicBoolean isDegreeOK) {
         nextButton.setOnAction(e -> {
             String studentNumber = studentNumberField.getText();
             nextButton.setDisable(true);
@@ -203,7 +264,7 @@ public class NewStudentGui {
                     grid.add(notFilledAllInfoLabel,1, 7, 2, 1);
                 }
 
-            // Opens the main scene.
+                // Opens the main scene.
             } else {
                 if(!Objects.equals(startingYearField.getText(), "")) {
                     if(Integer.parseInt(startingYearField.getText()) < 1960 || Integer.parseInt(startingYearField.getText()) > 2022) {
@@ -239,19 +300,5 @@ public class NewStudentGui {
             }
             nextButton.setDisable(false);
         });
-
-    }
-
-    private void setIds(){
-        newStudentLabel.setId("newStudentLabel");
-        nameLabel.setId("nameLabel");
-        nameField.setId("nameField");
-        studentNumberLabel.setId("studentNumberLabel");
-        studentNumberField.setId("studentNumberField");
-        startingYearLabel.setId("startingYearLabel");
-        startingYearField.setId("startingYearField");
-        degreeLabel.setId("degreeLabel");
-        previousButton.setId("previousButton");
-        nextButton.setId("nextButton");
     }
 }

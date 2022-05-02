@@ -266,55 +266,10 @@ public class MainGui {
             addCourseButton.getStyleClass().add("basicButton");
 
             // Actions.
-            chooseCourseButton.setOnAction(e -> {
-                // Making sure previous actions don't interfere here.
-                gradeField.setText("");
-                gradeField.setStyle(null);
-                // TODO: Why is this here two times?
-                designGrid.getChildren().removeIf(n -> n instanceof VBox);
-
-                // Initializes selected course.
-                if(courseComboBox.getValue() != null) {
-                    var courseString = courseComboBox.getValue();
-                    selectedCourse = courses.stream()
-                            .filter(c -> courseString.equals(c.getCourseName()))
-                            .collect(Collectors.toList()).get(0);
-                    selectedCourseLabel.setText(selectedCourse.getCourseName());
-                    designGrid.add(vbox, 0, 2, 3, 1);
-                }
-            });
-
             AtomicBoolean isValueOK = new AtomicBoolean(false);
-            gradeField.textProperty().
-                    addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
-                    {
-                        if (gradeField.getText().matches("^[1-5]$")) {
-                            gradeField.setStyle(null);
-                            isValueOK.set(true);
-                        } else {
-                            gradeField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
-                            isValueOK.set(false);
-                        }
-                    });
-
-            addCourseButton.setOnAction(e -> {
-                        if(isValueOK.get()) {
-                            courseComboBox.getSelectionModel().clearSelection();
-
-                            // Adding the new attainment.
-                            int grade = Integer.parseInt(gradeField.getText());
-                            student.addAttainment(new Attainment(selectedCourse, grade));
-                            treeView.setRoot(null);
-                            makeAttainmentTreeView();
-
-                            meanNumberLabel.setText(student.getMean());
-                            studentDegreeProgressBar.setProgress(student.getDegreeProgress());
-
-                            // TODO: 2.
-                            designGrid.getChildren().removeIf(n -> n instanceof VBox);
-                            courseComboBox.getItems().remove(selectedCourse.getCourseName());
-                        }
-                    });
+            chooseCourse();
+            observeGrade(isValueOK);
+            addCourse(isValueOK);
             }
 
         /**
@@ -328,6 +283,70 @@ public class MainGui {
                 rootNode.getChildren().add(moduleItem);
             }
             treeView.setRoot(rootNode);
+        }
+
+        /**
+         * Sets selected course.
+         */
+
+        private void chooseCourse() {
+            chooseCourseButton.setOnAction(e -> {
+                // Making sure previous actions don't interfere here.
+                gradeField.setText("");
+                gradeField.setStyle(null);
+
+                // Initializes selected course.
+                if(courseComboBox.getValue() != null) {
+                    var courseString = courseComboBox.getValue();
+                    selectedCourse = courses.stream()
+                            .filter(c -> courseString.equals(c.getCourseName()))
+                            .collect(Collectors.toList()).get(0);
+                    selectedCourseLabel.setText(selectedCourse.getCourseName());
+                    designGrid.add(vbox, 0, 2, 3, 1);
+                }
+            });
+        }
+
+        /**
+         * Sets boolean value according to the grade text field.
+         */
+
+        private void observeGrade(AtomicBoolean isValueOK) {
+            gradeField.textProperty().
+                    addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
+                    {
+                        if (gradeField.getText().matches("^[1-5]$")) {
+                            gradeField.setStyle(null);
+                            isValueOK.set(true);
+                        } else {
+                            gradeField.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
+                            isValueOK.set(false);
+                        }
+                    });
+        }
+
+        /**
+         * Adds a new attainment to the student. Clears selections after.
+         */
+
+        private void addCourse(AtomicBoolean isValueOK) {
+            addCourseButton.setOnAction(e -> {
+                if(isValueOK.get()) {
+                    courseComboBox.getSelectionModel().clearSelection();
+
+                    // Adding the new attainment.
+                    int grade = Integer.parseInt(gradeField.getText());
+                    student.addAttainment(new Attainment(selectedCourse, grade));
+                    treeView.setRoot(null);
+                    makeAttainmentTreeView();
+
+                    meanNumberLabel.setText(student.getMean());
+                    studentDegreeProgressBar.setProgress(student.getDegreeProgress());
+
+                    designGrid.getChildren().removeIf(n -> n instanceof VBox);
+                    courseComboBox.getItems().remove(selectedCourse.getCourseName());
+                }
+            });
         }
 
     }
@@ -417,64 +436,9 @@ public class MainGui {
             creditsInfoLabel.getStyleClass().add("smallHeading");
 
             // Actions.
+            changeDegree();
+            showCourseInfo();
 
-            // This updates courses up to the degree and initializes nodes that use courses or degree.
-            changeDegreeButton.getStyleClass().add("basicButton");
-            changeDegreeButton.setOnAction(e -> {
-                changeDegreeButton.setDisable(true);
-
-                if(degreeComboBox.getValue() != null) {
-                    var degreeString = degreeComboBox.getValue();
-
-                    // Making sure the degree isn't the same as the old one.
-                    if(!Objects.equals(degreeString, student.getDegree().getName())) {
-                        var degree = degrees.stream()
-                                .filter(d -> degreeString.equals(d.getName()))
-                                .collect(Collectors.toList()).get(0);
-                        student.changeDegree(degree);
-
-                        // Removing instances of the old degree's courses and adding in the new ones.
-                        courses.clear();
-                        try {
-                            // TODO: Try if this works.
-//                            student.getDegree().readAPI();
-//                            for(var module : student.getDegree().getModules()) {
-//                                for(var studyModule : module.getStudyModules()) {
-//                                    courses = Stream.concat(courses.stream(), studyModule.getCourses().stream())
-//                                            .collect(Collectors.toList());
-//                                }
-//                            }
-                            collectCourses(student);
-                        }
-                        catch(Exception ignored) {
-                        }
-                        designGrid.getChildren().removeIf(n -> n instanceof ComboBox);
-                        courseComboBox = new SearchableComboBox<>(courseObsList());
-                        designGrid.add(courseComboBox, 0, 1, 3, 1);
-                        makeTreeView(degree);
-                    }
-                }
-                changeDegreeButton.setDisable(false);
-            });
-
-            treeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-                try {
-                    var courseName = treeView.getSelectionModel().getSelectedItem().getValue();
-                    var course = courses.stream()
-                            .filter(c -> courseName.equals(c.getCourseName()))
-                            .collect(Collectors.toList()).get(0);
-                    // These only appear when a course is selected.
-                    if(courses.stream().anyMatch(c -> courseName.equals(c.getCourseName()))) {
-                        courseNameInfoLabel.setText("Kurssin nimi");
-                        courseNameLabel.setText(courseName);
-                        codeInfoLabel.setText("Kurssin koodi");
-                        codeLabel.setText(course.getCourseCode());
-                        creditsInfoLabel.setText("Laajuus");
-                        creditsLabel.setText(String.format("%d op", course.getCredits()));
-                    }
-                } catch (Exception ignored) {
-                }
-            });
         }
 
         /**
@@ -494,6 +458,67 @@ public class MainGui {
                 rootNode.getChildren().add(moduleItem);
             }
             treeView.setRoot(rootNode);
+        }
+
+        /**
+         * This updates courses up to the degree and initializes nodes that use courses or degree.
+         */
+
+        private void changeDegree() {
+            changeDegreeButton.getStyleClass().add("basicButton");
+            changeDegreeButton.setOnAction(e -> {
+                changeDegreeButton.setDisable(true);
+
+                if(degreeComboBox.getValue() != null) {
+                    var degreeString = degreeComboBox.getValue();
+
+                    // Making sure the degree isn't the same as the old one.
+                    if(!Objects.equals(degreeString, student.getDegree().getName())) {
+                        var degree = degrees.stream()
+                                .filter(d -> degreeString.equals(d.getName()))
+                                .collect(Collectors.toList()).get(0);
+                        student.changeDegree(degree);
+
+                        // Removing instances of the old degree's courses and adding in the new ones.
+                        courses.clear();
+                        try {
+                            collectCourses(student);
+                        }
+                        catch(Exception ignored) {
+                        }
+                        designGrid.getChildren().removeIf(n -> n instanceof ComboBox);
+                        courseComboBox = new SearchableComboBox<>(courseObsList());
+                        designGrid.add(courseComboBox, 0, 1, 3, 1);
+                        makeTreeView(degree);
+                    }
+                }
+                changeDegreeButton.setDisable(false);
+            });
+        }
+
+        /**
+         * Shows selected courses information on the page.
+         */
+
+        private void showCourseInfo() {
+            treeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+                try {
+                    var courseName = treeView.getSelectionModel().getSelectedItem().getValue();
+                    var course = courses.stream()
+                            .filter(c -> courseName.equals(c.getCourseName()))
+                            .collect(Collectors.toList()).get(0);
+                    // These only appear when a course is selected.
+                    if(courses.stream().anyMatch(c -> courseName.equals(c.getCourseName()))) {
+                        courseNameInfoLabel.setText("Kurssin nimi");
+                        courseNameLabel.setText(courseName);
+                        codeInfoLabel.setText("Kurssin koodi");
+                        codeLabel.setText(course.getCourseCode());
+                        creditsInfoLabel.setText("Laajuus");
+                        creditsLabel.setText(String.format("%d op", course.getCredits()));
+                    }
+                } catch (Exception ignored) {
+                }
+            });
         }
     }
 
@@ -548,7 +573,7 @@ public class MainGui {
             grid.add(studentNumberLabel, 1, 2);
             grid.add(emailInfoLabel, 0, 3);
             grid.add(emailLabel, 0, 4);
-            grid.add(logOutLabel, 2, 5);
+            grid.add(logOutLabel, 4, 7);
 
             // Setting css id:s.
             grid.getStyleClass().add("grid-pane");

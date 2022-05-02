@@ -29,6 +29,9 @@ import java.util.stream.Collectors;
 
 public class LogInGui {
     // Creating all the elements.
+    private final Stage stage;
+    private final List<Degree> degrees;
+    private final List<Student> students;
     private final Label logInLabel;
     private final Label studentNumberLabel;
     private final TextField studentNumberField;
@@ -49,6 +52,9 @@ public class LogInGui {
 
     LogInGui(Stage stage, List<Degree> degrees, List<Student> students) {
         // Declaring all elements.
+        this.stage = stage;
+        this.students = students;
+        this.degrees = degrees;
         logInLabel = new Label("Kirjaudu sisään");
         studentNumberLabel = new Label("Opiskelijanumero");
         studentNumberField = new TextField();
@@ -61,7 +67,7 @@ public class LogInGui {
         scene = new Scene(vbox, 350, 400);
 
         // Element prepping.
-        stage.setResizable(false);
+        this.stage.setResizable(false);
         vbox.setAlignment(Pos.BASELINE_CENTER);
         grid.setHgap(15);
         grid.setAlignment(Pos.CENTER);
@@ -90,14 +96,32 @@ public class LogInGui {
         setIds();
 
         // Stage prepping.
-        stage.setTitle("Kirjaudu sisään");
+        this.stage.setTitle("Kirjaudu sisään");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
-        stage.setScene(scene);
-        stage.show();
+        this.stage.setScene(scene);
+        this.stage.show();
 
         // Actions.
         AtomicBoolean isValueOK = new AtomicBoolean(false);
+        observeStudentNumber(isValueOK);
+        onNextButtonClick(isValueOK);
+        onNewStudentButtonClick();
+    }
+
+    private void setIds() {
+        logInLabel.setId("logInLabel");
+        studentNumberLabel.setId("studentNumberLabel");
+        studentNumberField.setId("studentNumberField");
+        nextButton.setId("nextButton");
+        newStudentButton.setId("newStudentButton");
+    }
+
+    /**
+     * Checks if student number is ok.
+     */
+
+    private void observeStudentNumber(AtomicBoolean isValueOK) {
         studentNumberField.textProperty().
                 addListener((ObservableValue<? extends String> o, String oldValue, String newValue) ->
                 {
@@ -112,8 +136,13 @@ public class LogInGui {
                         isValueOK.set(false);
                     }
                 });
+    }
 
-        // Checks if student number is alright and initializes either main scene or new student scene.
+    /**
+     * Checks if student number is alright and initializes either main scene or new student scene.
+     */
+
+    private void onNextButtonClick(AtomicBoolean isValueOK) {
         nextButton.setOnAction(e -> {
             String studentNumber = studentNumberField.getText();
 
@@ -136,17 +165,15 @@ public class LogInGui {
                 }
             }
         });
-
-        newStudentButton.setOnAction(e -> {
-             new NewStudentGui(stage, degrees, students);
-        });
     }
 
-    private void setIds() {
-        logInLabel.setId("logInLabel");
-        studentNumberLabel.setId("studentNumberLabel");
-        studentNumberField.setId("studentNumberField");
-        nextButton.setId("nextButton");
-        newStudentButton.setId("newStudentButton");
+    /**
+     * Goes back to log in page.
+     */
+
+    private void onNewStudentButtonClick() {
+        newStudentButton.setOnAction(e -> {
+            new NewStudentGui(stage, degrees, students);
+        });
     }
 }
