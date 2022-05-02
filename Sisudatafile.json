@@ -23,6 +23,78 @@
     "startingYear": 2002,
     "expectedEndYear": 2005,
     "degree": {
+      "id": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "code": "MEDAAKUEL2020",
+      "language": "fi",
+      "groupId": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "name": "Akuuttilääketieteen erikoislääkärikoulutus (55/2020)",
+      "creditsMin": 0
+    },
+    "firstName": "Kimmo",
+    "lastName": "Koodari",
+    "sameNamed": 0,
+    "attainments": []
+  },
+  {
+    "name": "Kimmo Koodari",
+    "studentNumber": "15344444",
+    "startingYear": 2020,
+    "expectedEndYear": 2023,
+    "degree": {
+      "id": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "code": "MEDAAKUEL2020",
+      "language": "fi",
+      "groupId": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "name": "Akuuttilääketieteen erikoislääkärikoulutus (55/2020)",
+      "creditsMin": 0
+    },
+    "firstName": "Kimmo",
+    "lastName": "Koodari",
+    "sameNamed": 0,
+    "attainments": []
+  },
+  {
+    "name": "Ronja Lipsonen",
+    "studentNumber": "50121133",
+    "startingYear": 2020,
+    "expectedEndYear": 2023,
+    "degree": {
+      "id": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "code": "MEDAAKUEL2020",
+      "language": "fi",
+      "groupId": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "name": "Akuuttilääketieteen erikoislääkärikoulutus (55/2020)",
+      "creditsMin": 0
+    },
+    "firstName": "Ronja",
+    "lastName": "Lipsonen",
+    "sameNamed": 0,
+    "attainments": []
+  },
+  {
+    "name": "Heikki Paasonen",
+    "studentNumber": "12345678",
+    "startingYear": 2001,
+    "expectedEndYear": 2004,
+    "degree": {
+      "id": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "code": "MEDAAKUEL2020",
+      "language": "fi",
+      "groupId": "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae",
+      "name": "Akuuttilääketieteen erikoislääkärikoulutus (55/2020)",
+      "creditsMin": 0
+    },
+    "firstName": "Heikki",
+    "lastName": "Paasonen",
+    "sameNamed": 0,
+    "attainments": []
+  },
+  {
+    "name": "Kimmo Koodari",
+    "studentNumber": "12345679",
+    "startingYear": 2002,
+    "expectedEndYear": 2005,
+    "degree": {
       "id": "otm-6ab4ce4a-4eb7-4c76-8ed7-9ab3a2faa5b6",
       "code": "MEDAANEEL2020",
       "language": "fi",

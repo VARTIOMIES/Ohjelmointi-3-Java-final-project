@@ -22,28 +22,15 @@ public class Main extends Application {
     // Constructor
     public Main() throws IOException {
 
-        // TODO: Datafile reading
-        //Reader reader = Files.newBufferedReader(Paths.get("Sisudatafile.json"));
-        //ArrayList students = gson.fromJson(reader,ArrayList.class);
 
         // Initializing all containers
         students = new ArrayList<>();
         degrees = new ArrayList<>();
         gson = new GsonBuilder().setPrettyPrinting().create();
 
-
-        // TODO: Fill containers with the data from datafile.
-
-        /*
-        TÄTÄ MUOKKAAMALLA LOKAALISTI SAA KÄÄNTYMÄÄN NOPEEMMIN KUN EI LUE APIA
-         */
-        boolean API_READ = true;
-
-        if(API_READ){
-            degreeRead(degrees);
-
-        }
-        addTestStudents();
+        // Initializing functions
+        degreeRead(degrees);
+        createStudents();
     }
 
     // The Sisu main window now exists in class MainStage.
@@ -52,11 +39,14 @@ public class Main extends Application {
         new LogInGui(stage, degrees, students);
     }
 
+    
     public static void main(String[] args) throws IOException {
         launch();
     }
 
     public static void degreeRead(List<Degree> degrees) throws IOException {
+
+        // Connecting to all degrees.
         String stringURL = "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000";
 
         URL url = new URL(stringURL);
@@ -76,30 +66,35 @@ public class Main extends Application {
             var language = degree.getAsJsonObject().get("lang").getAsString();
             var groupId = degree.getAsJsonObject().get("groupId").getAsString();
             var name = degree.getAsJsonObject().get("name").getAsString();
-            var creditEntries = degree.getAsJsonObject().get("credits").getAsJsonObject().entrySet();
+            var creditEntries = degree.getAsJsonObject().get("credits").getAsJsonObject().get("min").getAsInt();
 
-            var creditMin = 0;
-            for (var entry : creditEntries) {
-                if (Objects.equals(entry.getKey(), "min")) {
-                    creditMin = entry.getValue().getAsInt();
-                }
-            }
-            var newDegree = new Degree(id, code, language, groupId, name, creditMin);
+            var newDegree = new Degree(id, code, language, groupId, name, creditEntries);
             degrees.add(newDegree);
         }
     }
 
 
-    public void addTestStudents() {
-        students.add(new Student("Heikki Paasonen", "12345678", 2001, degrees.get(0)));
-        students.add(new Student("Kimmo Koodari", "12345679", 2002, degrees.get(2)));
-        students.add(new Student("Kimmo Koodari", "15344444", 2020, degrees.get(20)));
-        Student courseTestStudent = new Student("Ronja Lipsonen", "50121133", 2020, degrees.get(3));
-        students.add(courseTestStudent);
+    public void createStudents() throws IOException {
+        // Creating reade to read the datafile
+        Reader reader = Files.newBufferedReader(Paths.get("Sisudatafile.json"));
+
+        // Initializing studentsArray
+        JsonArray studentsArray = gson.fromJson(reader,JsonArray.class);
+
+        // Looping through JsonObjects
+        for(var student : studentsArray) {
+            students.add(new Student(
+                    student.getAsJsonObject().get("name").getAsString(),
+                    student.getAsJsonObject().get("studentNumber").getAsString(),
+                    student.getAsJsonObject().get("startingYear").getAsInt(),
+                    degrees.get(0)));
+        }
     }
 
     @Override
     public void stop() throws IOException {
+
+        // Creating a writer to update the Json datafile
         Writer writer = Files.newBufferedWriter(Paths.get("Sisudatafile.json"));
         gson.toJson(students,writer);
         writer.close();
