@@ -105,7 +105,7 @@ public class Main extends Application {
         // Initializing studentsArray
         Student[] studentsArray = gson.fromJson(reader,Student[].class);
 
-        // Looping through JsonObjects
+        // Adding the students from studentsArray to students.
         students.addAll(Arrays.asList(studentsArray));
 
     }
