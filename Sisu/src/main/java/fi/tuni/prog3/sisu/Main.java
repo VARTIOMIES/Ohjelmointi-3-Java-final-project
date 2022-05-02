@@ -11,6 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * A class to initialize the program and launch the GUI.
+ */
 public class Main extends Application {
 
     /* Lists containing references to every object used in the program. Just to
@@ -20,6 +23,11 @@ public class Main extends Application {
     private Gson gson;
 
     // Constructor
+
+    /**
+     * Constructor for the Main class
+     * @throws IOException
+     */
     public Main() throws IOException {
 
 
@@ -34,16 +42,29 @@ public class Main extends Application {
     }
 
     // The Sisu main window now exists in class MainStage.
+
+    /**
+     * Starts the GUI by launching LoginGUI
+     * @param stage Starts LoginStage
+     */
     @Override
     public void start(Stage stage) {
         new LogInGui(stage, degrees, students);
     }
 
-    
-    public static void main(String[] args) throws IOException {
+    /**
+     * Starts the whole program
+     *
+     */
+    public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Reads the degrees and creates objects for each degree.
+     * @param degrees List of the degrees (Empty when creating new objects
+     * @throws IOException
+     */
     public static void degreeRead(List<Degree> degrees) throws IOException {
 
         // Connecting to all degrees.
@@ -66,7 +87,7 @@ public class Main extends Application {
             var language = degree.getAsJsonObject().get("lang").getAsString();
             var groupId = degree.getAsJsonObject().get("groupId").getAsString();
             var name = degree.getAsJsonObject().get("name").getAsString();
-            var creditEntries = degree.getAsJsonObject().get("credits").getAsJsonObject().get("min").getAsInt();
+            var creditEntries = degree.getAsJsonObject().get("targetCredits").getAsJsonObject().get("min").getAsInt();
 
             var newDegree = new Degree(id, code, language, groupId, name, creditEntries);
             degrees.add(newDegree);
@@ -74,6 +95,10 @@ public class Main extends Application {
     }
 
 
+    /**
+     * Creates student objects by reading a datafile.
+     * @throws IOException
+     */
     public void createStudents() throws IOException {
         // Creating reade to read the datafile
         Reader reader = Files.newBufferedReader(Paths.get("Sisudatafile.json"));
@@ -83,14 +108,20 @@ public class Main extends Application {
 
         // Looping through JsonObjects
         for(var student : studentsArray) {
+            Random random  = new Random();
+            int degreeNum = random.nextInt(270);
             students.add(new Student(
                     student.getAsJsonObject().get("name").getAsString(),
                     student.getAsJsonObject().get("studentNumber").getAsString(),
                     student.getAsJsonObject().get("startingYear").getAsInt(),
-                    degrees.get(0)));
+                    degrees.get(degreeNum)));
         }
     }
 
+    /**
+     * Writes the Json file with updated students.
+     * @throws IOException
+     */
     @Override
     public void stop() throws IOException {
 
