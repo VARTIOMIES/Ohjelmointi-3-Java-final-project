@@ -1,3 +1,9 @@
+/**
+ * <p>
+ * @author Ronja Lipsonen
+ * @since 1.0
+ */
+
 package fi.tuni.prog3.sisu;
 
 import javafx.beans.value.ObservableValue;
@@ -17,23 +23,38 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public class NewStudentScene {
+/**
+ * A class that imitates scene. User can create new student account here.
+ */
+
+public class NewStudentGui {
 
     // Creating all the elements.
-    private final Label newStudentLabel;
+    private  final Label newStudentLabel;
     private final Label nameLabel;
-    private TextField nameField;
+    private final TextField nameField;
     private final Label studentNumberLabel;
     private final TextField studentNumberField;
     private final Label startingYearLabel;
     private final TextField startingYearField;
     private final Label degreeLabel;
-    private Pane gap;
+    private final Pane gap;
     private final Button previousButton;
     private final Button nextButton;
+    private final SearchableComboBox<String> degreeComboBox;
+    private final GridPane grid;
+    private final Scene scene;
 
-    NewStudentScene(Stage stage, List<Degree> degrees, List<Student> students){
-        // Initializing
+    /**
+     * Constructs the whole log in page.
+     * @param stage the stage of the whole program.
+     * @param degrees all the degrees that exist in Tampere's Sisu.
+     * @param students all the students from json file.
+     */
+
+    NewStudentGui(Stage stage, List<Degree> degrees, List<Student> students){
+
+        // Declaring all elements.
         newStudentLabel = new Label("Uusi oppilas");
         nameLabel = new Label("Koko nimi");
         nameField = new TextField();
@@ -45,17 +66,15 @@ public class NewStudentScene {
         gap = new Pane();
         previousButton = new Button("Takaisin");
         nextButton = new Button("Jatka");
-
+        grid = new GridPane();
+        scene = new Scene(grid, 350, 420);
 
         // Making the degree drop box.
         List<String> degreeNames = degrees.stream().map(Degree::getName).collect(Collectors.toList());
         ObservableList<String> degreeObsList = FXCollections.observableArrayList(degreeNames);
-        final SearchableComboBox<String> degreeComboBox = new SearchableComboBox<>(degreeObsList);
-        degreeComboBox.setId("degreeComboBox");
+        degreeComboBox = new SearchableComboBox<>(degreeObsList);
 
         // Grid prepping.
-        var grid = new GridPane();
-        grid.setId("gridPane2");
         grid.setHgap(15);
         grid.setVgap(15);
         grid.setPadding(new Insets(15,15,15,15));
@@ -84,7 +103,7 @@ public class NewStudentScene {
 
         this.setIds();
 
-        Scene scene = new Scene(grid, 350, 420);
+        // Stage prepping.
         stage.setTitle("Uusi oppilas");
         final String style = getClass().getResource("stylesheet.css").toExternalForm();
         scene.getStylesheets().add(style);
@@ -179,8 +198,7 @@ public class NewStudentScene {
             else if (!(isNameOK.get() && isStudentOK.get() && isYearOK.get() && isDegreeOK.get())) {
                 nextButton.setStyle("-fx-border-color: red ; -fx-border-width: 1px ;");
 
-                // Same as before. Made to prevent creating UNLIMITED POWe..
-                // labels
+                // Made to prevent creating UNLIMITED POWe.. labels
                 if (stage.getScene().lookup("#notFilledAllInfoLabel")==null){
                     Label notFilledAllInfoLabel =
                             new Label("Täytäthän jokaisen kohdan!");
@@ -188,7 +206,7 @@ public class NewStudentScene {
                     grid.add(notFilledAllInfoLabel,1, 7, 2, 1);
                 }
 
-            // Everything ok, opens the main scene.
+            // Opens the main scene.
             } else {
                 if(!Objects.equals(startingYearField.getText(), "")) {
                     if(Integer.parseInt(startingYearField.getText()) < 1960 || Integer.parseInt(startingYearField.getText()) > 2022) {
@@ -227,22 +245,14 @@ public class NewStudentScene {
     }
 
     private void setIds(){
-
         newStudentLabel.setId("newStudentLabel");
-
         nameLabel.setId("nameLabel");
-
         nameField.setId("nameField");
-
         studentNumberLabel.setId("studentNumberLabel");
-
         studentNumberField.setId("studentNumberField");
-
         startingYearLabel.setId("startingYearLabel");
-
         startingYearField.setId("startingYearField");
         degreeLabel.setId("degreeLabel");
-
         previousButton.setId("previousButton");
         nextButton.setId("nextButton");
     }

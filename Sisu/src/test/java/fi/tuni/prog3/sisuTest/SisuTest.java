@@ -4,8 +4,11 @@ package fi.tuni.prog3.sisuTest;
  */
 
 import fi.tuni.prog3.sisu.Main;
+import fi.tuni.prog3.sisu.MainStage;
+import fi.tuni.prog3.sisu.NewStudentGui;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
@@ -13,8 +16,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testfx.api.FxRobot;
+import org.testfx.api.FxToolkit;
+import org.testfx.assertions.api.WindowAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.robot.Motion;
+import org.testfx.service.query.PointQuery;
 import org.testfx.util.WaitForAsyncUtils;
 
 import java.util.stream.Stream;
@@ -33,8 +39,7 @@ public class SisuTest extends ApplicationTest {
 
     }
 
-    @Override
-    public void stop() {
+    @Override public void stop() {
 
     }
 
@@ -231,6 +236,13 @@ public class SisuTest extends ApplicationTest {
                 arguments("Pertti Perälä","12222222","1982"),
                 arguments("Jeesus Kristus","66642069","2001")
         );
+    }
+
+
+
+    public static void main(String[] args) throws Exception {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(Main.class);
     }
 
 
