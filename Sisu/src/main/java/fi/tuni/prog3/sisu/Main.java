@@ -47,6 +47,8 @@ public class Main extends Application {
 
     /**
      * Starts the GUI by launching LoginGUI
+     * Precondition: log in gui has been created
+     * Post-conditions: json-file has added new student
      * @param stage Starts LoginStage
      */
     @Override

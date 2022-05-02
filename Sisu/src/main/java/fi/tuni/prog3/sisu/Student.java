@@ -18,6 +18,8 @@ public class Student {
 
     /**
      * Constructor
+     * Precondition: degree has been created
+     * Post-conditions: degree is not empty
      * @param name Name of the student
      * @param studentNumber Student number of the student
      * @param startingYear Starting year of the student
@@ -109,8 +111,12 @@ public class Student {
      */
     public double getDegreeProgress(){
         int i = getTotalCredits();
-        int k = getDegree().getCreditsMin();
-        return (double) i / k;
+        int k = degree.getCreditsMin();
+        if(k > 0) {
+            return (double) i / k;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -125,19 +131,35 @@ public class Student {
         }
     }
 
+    public String progressString() {
+        return String.format("%d/%d", getTotalCredits(), degree.getCreditsMin());
+    }
+
     
     public ArrayList<Attainment> getAttainments() {
         return attainments;
     }
 
+    /**
+     * Adds the attainment to the attainments ArrayList
+     * @param attainment wanted attainment to be added
+     */
     public void addAttainment(Attainment attainment) {
         attainments.add(attainment);
     }
 
+    /**
+     * Sets the amount of same named students
+     * @param howMany amount of same named students
+     */
     public void setSameNamed(int howMany) {
         this.sameNamed = howMany;
     }
 
+    /**
+     * Calculates the mean for the courses that the student has completed
+     * @return Returns the mean in string format
+     */
     public String getMean() {
         if(attainments.size() > 0) {
             float a = 0;
@@ -149,6 +171,10 @@ public class Student {
         return "   -";
     }
 
+    /**
+     * Generates the email address of the student
+     * @return email address as a string
+     */
     public String getEmailAddress() {
         String emailAddress = "";
         String names = "";

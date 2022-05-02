@@ -3,7 +3,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.annotations.Expose;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,6 +70,8 @@ public class Degree {
 
     /**
      * Adds a module to the module list
+     * Precondition: module has been created
+     * Post-conditions: modules is not empty
      * @param module the stored module
      */
     public void setModules(Module module) {
