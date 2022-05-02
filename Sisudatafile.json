@@ -37,9 +37,9 @@
     "startingYear": 2020,
     "expectedEndYear": 2023,
     "degree": {
-      "groupId": "otm-6ab4ce4a-4eb7-4c76-8ed7-9ab3a2faa5b6",
-      "name": "Anestesiologian ja tehohoidon erikoislääkärikoulutus (55/2020)",
-      "creditsMin": 0
+      "groupId": "tut-dp-g-1163",
+      "name": "Arkkitehdin tutkinto-ohjelma",
+      "creditsMin": 120
     },
     "firstName": "Ronja",
     "lastName": "Lipsonen",
@@ -76,6 +76,38 @@
           "credits": 2
         },
         "grade": 2
+      },
+      {
+        "course": {
+          "courseName": "Rinnakkaisuus",
+          "courseCode": "COMP.CS.310",
+          "credits": 5
+        },
+        "grade": 4
+      },
+      {
+        "course": {
+          "courseName": "Electric Power Quality",
+          "courseCode": "DEE-24026",
+          "credits": 5
+        },
+        "grade": 4
+      },
+      {
+        "course": {
+          "courseName": "Antennas I",
+          "courseCode": "COMM.RF.420",
+          "credits": 5
+        },
+        "grade": 3
+      },
+      {
+        "course": {
+          "courseName": "Aurinkosähkön perusteet",
+          "courseCode": "EE.REE.210",
+          "credits": 5
+        },
+        "grade": 4
       }
     ]
   }

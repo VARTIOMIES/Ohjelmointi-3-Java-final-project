@@ -109,8 +109,12 @@ public class Student {
      */
     public double getDegreeProgress(){
         int i = getTotalCredits();
-        int k = getDegree().getCreditsMin();
-        return (double) i / k;
+        int k = degree.getCreditsMin();
+        if(k > 0) {
+            return (double) i / k;
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -123,6 +127,10 @@ public class Student {
         } else {
             throw new IllegalArgumentException("Uusi tutkinto ei saa olla sama kuin vanha tutkinto!");
         }
+    }
+
+    public String progressString() {
+        return String.format("%d/%d", getTotalCredits(), degree.getCreditsMin());
     }
 
     
